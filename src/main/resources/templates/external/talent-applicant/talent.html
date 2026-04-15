@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Talent Program</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb"><a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Talent Program</span></div>
+            <span class="section-label">Creative Empowerment</span>
+            <h1>Talent Application Portal</h1>
+            <p class="section-subtitle" style="margin-top: 1rem;">Apply online to join our community-based cultural performance and training programs.</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container" style="max-width: 860px;">
+            <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 1rem;" th:text="${successMessage}"></div>
+            <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+                <a class="btn btn--outline btn--sm" th:href="@{/talent/register}">Create Applicant Account</a>
+                <a class="btn btn--ghost btn--sm" th:href="@{/login}">Applicant Login</a>
+            </div>
+            <div th:if="${!isAuthenticated || !isTalentApplicant}" style="background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-bottom:1rem;">
+                <p class="text-muted" style="margin-bottom:.7rem;">To submit a talent application you must create a Talent Applicant account and sign in.</p>
+                <a class="btn btn--primary btn--sm" th:href="@{/talent/register}">Start Registration</a>
+            </div>
+            <form th:if="${isAuthenticated && isTalentApplicant}" th:action="@{/talent/apply}" method="post" style="background: var(--gradient-card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1.5rem;">
+                <div class="grid grid-2">
+                    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" name="fullName" required/></div>
+                    <div class="form-group"><label class="form-label">Email</label><input class="form-input" name="email" type="email"/></div>
+                    <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone"/></div>
+                    <div class="form-group"><label class="form-label">Location</label><input class="form-input" name="location"/></div>
+                    <div class="form-group">
+                        <label class="form-label">Applicant Category</label>
+                        <select class="form-select" name="applicantCategory" required>
+                            <option th:each="c : ${categories}" th:value="${c.name()}" th:text="${#strings.replace(c.name(),'_',' ')}">YOUTH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Talent Area</label>
+                        <select class="form-select" name="talentArea" required>
+                            <option th:each="a : ${areas}" th:value="${a.name()}" th:text="${#strings.replace(a.name(),'_',' ')}">TRADITIONAL_DANCE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"><label class="form-label">Experience</label><textarea class="form-textarea" name="experienceDescription"></textarea></div>
+                <div class="form-group"><label class="form-label">Motivation</label><textarea class="form-textarea" name="motivation"></textarea></div>
+                <input class="form-input" name="captchaToken" placeholder="Captcha token" />
+                <button class="btn btn--primary" type="submit">Submit Application</button>
+            </form>
+        </div>
+    </section>
+</main>
+</body>
+</html>

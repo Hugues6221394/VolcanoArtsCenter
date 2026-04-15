@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin-base}">
+<head><title>Staff &amp; Accounts</title></head>
+<body>
+<th:block layout:fragment="breadcrumb">
+    <a th:href="@{/admin/dashboard}">Admin</a>
+    <span class="sep">›</span>
+    <span>Staff &amp; Accounts</span>
+</th:block>
+<main layout:fragment="content">
+
+    <div class="admin-page-header">
+        <div class="admin-page-header__info">
+            <h1>Staff &amp; Accounts</h1>
+            <p>Create, edit, and manage staff accounts and role assignments.</p>
+        </div>
+        <div class="admin-page-header__actions">
+            <button class="btn btn--primary btn--sm" onclick="document.getElementById('create-staff-section').style.display = document.getElementById('create-staff-section').style.display === 'none' ? 'block' : 'none'">
+                + Create Staff User
+            </button>
+        </div>
+    </div>
+
+    <!-- Create Staff Form (hidden by default) -->
+    <div class="admin-card" id="create-staff-section" style="display:none; margin-bottom:1.5rem;">
+        <div class="admin-card__header">
+            <h3>Create New Staff Account</h3>
+        </div>
+        <div class="admin-card__body">
+            <form th:action="@{/admin/users/admins}" method="post" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input class="form-input" name="email" type="email" placeholder="staff@volcanoarts.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input class="form-input" name="password" type="password" placeholder="Secure password" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input class="form-input" name="firstName" placeholder="First name" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input class="form-input" name="lastName" placeholder="Last name" required />
+                    </div>
+                </div>
+                <div class="form-row--full">
+                    <div class="form-group">
+                        <label class="form-label">Assign Roles</label>
+                        <select class="form-select" name="roles" multiple required style="min-height:80px;">
+                            <option th:each="r : ${allRoles}" th:value="${r.name}" th:text="${r.name}">ROLE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('create-staff-section').style.display='none'">Cancel</button>
+                    <button type="submit" class="btn btn--primary btn--sm">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Staff Table -->
+    <div class="admin-card">
+        <div class="admin-card__header">
+            <h3>All Staff Accounts</h3>
+            <span class="chip chip--info" th:text="${#lists.size(staffUsers)} + ' users'">0 users</span>
+        </div>
+        <div class="admin-card__body--flush">
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Country</th>
+                        <th>Status</th>
+                        <th>Roles</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${staffUsers}">
+                        <td class="cell-mono" th:text="${u.email}">user@email</td>
+                        <td class="cell-primary" th:text="${u.fullName}">Name</td>
+                        <td th:text="${u.phone ?: '-'}">-</td>
+                        <td th:text="${u.country ?: '-'}">-</td>
+                        <td>
+                            <span class="chip" th:data-status="${u.enabled ? 'ENABLED' : 'DISABLED'}" th:text="${u.enabled ? 'ENABLED' : 'DISABLED'}">ENABLED</span>
+                        </td>
+                        <td>
+                            <span th:each="r,iter : ${u.roles}" class="chip chip--primary" style="margin-right:0.25rem; margin-bottom:0.25rem;" th:text="${r.name}">ROLE</span>
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+                                <button class="btn btn--outline btn--xs" th:onclick="'document.getElementById(\'edit-user-' + ${u.id} + '\').style.display = document.getElementById(\'edit-user-' + ${u.id} + '\').style.display === \'none\' ? \'table-row\' : \'none\''">Edit</button>
+                                <form th:action="@{|/admin/users/${u.id}/deactivate|}" method="post" style="display:inline;">
+                                    <button class="btn btn--ghost btn--xs" type="submit" onclick="return confirm('Deactivate this account?')">Deactivate</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Inline Edit Row (hidden by default) -->
+                    <tr th:each="u : ${staffUsers}" th:id="'edit-user-' + ${u.id}" style="display:none; background:rgba(0,162,89,0.04);">
+                        <td colspan="7">
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; padding:0.5rem 0;">
+                                <form th:action="@{|/admin/users/${u.id}/update|}" method="post" style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:flex-end;">
+                                    <div class="form-group" style="margin:0;flex:1;min-width:120px;">
+                                        <label class="form-label">First name</label>
+                                        <input class="form-input" name="firstName" th:value="${u.firstName}" required />
+                                    </div>
+                                    <div class="form-group" style="margin:0;flex:1;min-width:120px;">
+                                        <label class="form-label">Last name</label>
+                                        <input class="form-input" name="lastName" th:value="${u.lastName}" required />
+                                    </div>
+                                    <div class="form-group" style="margin:0;flex:1;min-width:120px;">
+                                        <label class="form-label">Phone</label>
+                                        <input class="form-input" name="phone" th:value="${u.phone}" placeholder="Phone" />
+                                    </div>
+                                    <div class="form-group" style="margin:0;flex:1;min-width:100px;">
+                                        <label class="form-label">Country</label>
+                                        <input class="form-input" name="country" th:value="${u.country}" placeholder="Country" />
+                                    </div>
+                                    <div class="form-group" style="margin:0;">
+                                        <label><input type="checkbox" name="enabled" th:checked="${u.enabled}" /> enabled</label>
+                                    </div>
+                                    <button class="btn btn--primary btn--xs" type="submit">Save</button>
+                                </form>
+                                <form th:action="@{|/admin/users/${u.id}/roles|}" method="post" style="display:flex; gap:0.5rem; align-items:flex-end;">
+                                    <div class="form-group" style="margin:0;flex:1;">
+                                        <label class="form-label">Update Roles</label>
+                                        <select class="form-select" name="roles" multiple required style="min-height:60px;">
+                                            <option th:each="r : ${allRoles}" th:value="${r.name}" th:text="${r.name}" th:selected="${u.roles.![name].contains(r.name)}">ROLE</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn--outline btn--xs" type="submit">Update Roles</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

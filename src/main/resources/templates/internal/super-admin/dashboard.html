@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin-base}">
+<head><title>Dashboard</title></head>
+<body>
+<th:block layout:fragment="breadcrumb">
+    <a th:href="@{/admin/dashboard}">Admin</a>
+    <span class="sep">›</span>
+    <span>Dashboard</span>
+</th:block>
+<main layout:fragment="content">
+
+    <!-- Page Header -->
+    <div class="admin-page-header">
+        <div class="admin-page-header__info">
+            <h1>Platform Overview</h1>
+            <p>Welcome back. Here's a snapshot of your platform activity.</p>
+        </div>
+        <div class="admin-page-header__actions">
+            <a class="btn btn--primary btn--sm" th:href="@{/admin/users}">Manage Staff</a>
+            <a class="btn btn--outline btn--sm" th:href="@{/admin/export}" target="_blank">Export Data</a>
+        </div>
+    </div>
+
+    <!-- KPI Grid -->
+    <div class="admin-kpi-grid">
+        <div class="admin-kpi">
+            <div class="admin-kpi__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
+            <div class="admin-kpi__label">Products</div>
+            <div class="admin-kpi__value" data-count th:text="${totalProducts}">0</div>
+            <div class="admin-kpi__trend">Catalog inventory</div>
+        </div>
+        <div class="admin-kpi">
+            <div class="admin-kpi__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            </div>
+            <div class="admin-kpi__label">Experiences</div>
+            <div class="admin-kpi__value" data-count th:text="${totalExperiences}">0</div>
+            <div class="admin-kpi__trend">Live tour offerings</div>
+        </div>
+        <div class="admin-kpi">
+            <div class="admin-kpi__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="admin-kpi__label">Bookings</div>
+            <div class="admin-kpi__value" data-count th:text="${totalBookings}">0</div>
+            <div class="admin-kpi__trend">Total inquiries received</div>
+        </div>
+        <div class="admin-kpi">
+            <div class="admin-kpi__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="admin-kpi__label">Donations</div>
+            <div class="admin-kpi__value" data-count th:text="${totalDonations}">0</div>
+            <div class="admin-kpi__trend">Conservation support</div>
+        </div>
+        <div class="admin-kpi">
+            <div class="admin-kpi__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div class="admin-kpi__label">Shipping Orders</div>
+            <div class="admin-kpi__value" data-count th:text="${totalShippingOrders}">0</div>
+            <div class="admin-kpi__trend">Order fulfillment</div>
+        </div>
+        <div class="admin-kpi">
+            <div class="admin-kpi__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="admin-kpi__label">Blog Posts</div>
+            <div class="admin-kpi__value" data-count th:text="${totalBlogPosts}">0</div>
+            <div class="admin-kpi__trend">Published content</div>
+        </div>
+        <div class="admin-kpi">
+            <div class="admin-kpi__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            </div>
+            <div class="admin-kpi__label">Talent Applications</div>
+            <div class="admin-kpi__value" data-count th:text="${totalTalentApplications}">0</div>
+            <div class="admin-kpi__trend">Program applicants</div>
+        </div>
+        <div class="admin-kpi">
+            <div class="admin-kpi__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="admin-kpi__label">Contact Inquiries</div>
+            <div class="admin-kpi__value" data-count th:text="${totalInquiries}">0</div>
+            <div class="admin-kpi__trend">Visitor messages</div>
+        </div>
+    </div>
+
+    <!-- Two-Column Layout: Recent Bookings + Recent Activity -->
+    <div class="admin-grid-2">
+        <!-- Recent Bookings -->
+        <div class="admin-card">
+            <div class="admin-card__header">
+                <h3>Recent Bookings</h3>
+                <a class="btn btn--outline btn--xs" th:href="@{/admin/ops/bookings}">View All</a>
+            </div>
+            <div class="admin-card__body--flush">
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Guest</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="b : ${latestBookings}">
+                            <td class="cell-mono" th:text="${b.bookingReference}">BOOK-000</td>
+                            <td class="cell-primary" th:text="${b.guestName}">Guest</td>
+                            <td th:text="${b.preferredDate}">2026-01-01</td>
+                            <td><span class="chip" th:data-status="${b.status}" th:text="${b.status}">PENDING</span></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(latestBookings)}">
+                            <td colspan="4" style="text-align:center; color:var(--color-gray-500); padding:2rem;">No bookings yet</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Audit Activity -->
+        <div class="admin-card">
+            <div class="admin-card__header">
+                <h3>Recent Activity</h3>
+                <a class="btn btn--outline btn--xs" th:href="@{/admin/audit-log}">View Full Log</a>
+            </div>
+            <div class="admin-card__body">
+                <div class="admin-activity">
+                    <div class="admin-activity__item" th:each="e : ${auditEvents}" th:if="${#lists.size(auditEvents) > 0}">
+                        <div class="admin-activity__dot"></div>
+                        <div class="admin-activity__content">
+                            <div class="admin-activity__text">
+                                <strong th:text="${e.actorEmail}">admin</strong>
+                                <span th:text="${e.eventType}">EVENT</span>
+                                on <span th:text="${e.entityType}">Entity</span>
+                            </div>
+                            <div class="admin-activity__time" th:text="${e.createdAt}">2026-01-01</div>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(auditEvents)}" class="admin-empty">
+                        <div class="admin-empty__icon">📋</div>
+                        <div class="admin-empty__text">No activity recorded yet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Navigation -->
+    <div class="admin-card" style="margin-top:1rem;">
+        <div class="admin-card__header">
+            <h3>Quick Navigation</h3>
+        </div>
+        <div class="admin-card__body">
+            <div class="admin-quick-actions">
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/content/products}">Art Catalog</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/content/experiences}">Experiences</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/content/blog-posts}">Blog Posts</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/ops/bookings}">Bookings</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/ops/shipping-orders}">Shipping Orders</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/ops/donations}">Donations</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/ops/contact-inquiries}">Inquiries</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/ops/operator-requests}">Tour Op. Requests</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/ops/talent-applications}">Talent Apps</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/ops/availability-slots}">Availability</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/users}">Staff Accounts</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/settings}">Settings</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/admin/overrides}">Overrides</a>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Product</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb">
+                <a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><a th:href="@{/art-store}">Art Store</a><span class="breadcrumb__separator">/</span><span th:text="${product.name}">Product</span>
+            </div>
+            <span class="section-label">Product</span>
+            <h1 th:text="${product.name}">Product</h1>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+                <img th:src="${product.primaryImageUrl != null ? product.primaryImageUrl : '/images/logo.jpg'}" alt="Product image" style="width:100%; border-radius: var(--radius-lg); border:1px solid rgba(255,255,255,.08)"/>
+            </div>
+            <div>
+                <p style="color:var(--color-gray-300); margin-bottom:1rem;" th:text="${product.description}">Description</p>
+                <p style="margin-bottom:.6rem;"><strong>Type:</strong> <span th:text="${product.inventoryType}">UNIQUE</span></p>
+                <p style="margin-bottom:.6rem;"><strong>Price:</strong> $<span th:text="${#numbers.formatDecimal(product.price,1,'COMMA',2,'POINT')}">0.00</span></p>
+                <p style="margin-bottom:1.5rem;"><strong>Shipping:</strong> FedEx international + local Rwanda delivery</p>
+
+                <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 1rem;" th:text="${successMessage}"></div>
+
+                <form th:if="${isAuthenticated}" th:action="@{|/art-store/${product.slug}/order|}" method="post" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-bottom: 1rem;">
+                    <h3 style="margin-bottom:1rem;">Reserve / Order</h3>
+                    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" name="recipientName" required/></div>
+                    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="recipientEmail" required/></div>
+                    <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="recipientPhone"/></div>
+                    <div class="form-group"><label class="form-label">Address</label><input class="form-input" name="addressLine1" required/></div>
+                    <div class="form-group"><label class="form-label">City</label><input class="form-input" name="city" required/></div>
+                    <div class="form-group"><label class="form-label">Country</label><input class="form-input" name="country" required/></div>
+                    <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" name="quantity" type="number" min="1" value="1"/></div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <select class="form-select" name="paymentMethod" required>
+                            <option value="STRIPE_CARD">Card (Stripe)</option>
+                            <option value="MTN_MOMO">MTN Mobile Money</option>
+                            <option value="AIRTEL_MONEY">Airtel Money</option>
+                            <option value="BANK_TRANSFER">Bank Transfer</option>
+                            <option value="OFFLINE_CASH">Offline / Cash</option>
+                        </select>
+                    </div>
+                    <input class="form-input" name="captchaToken" placeholder="Captcha token" />
+                    <button class="btn btn--primary" type="submit">Submit Order Request</button>
+                </form>
+                <div th:if="${!isAuthenticated}" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-bottom: 1rem;">
+                    <h3 style="margin-bottom:.5rem;">Purchase requires account</h3>
+                    <p class="text-muted" style="margin-bottom:.8rem;">Register or sign in as a registered client to buy this artwork.</p>
+                    <a class="btn btn--primary btn--sm" th:href="@{/login}">Sign in to Purchase</a>
+                </div>
+
+                <div style="display:flex; gap:.5rem; margin-bottom:1rem;">
+                    <form th:if="${isAuthenticated}" th:action="@{|/art-store/${product.slug}/save|}" method="post">
+                        <button class="btn btn--outline btn--sm" type="submit">Save Item</button>
+                    </form>
+                    <form th:if="${isAuthenticated}" th:action="@{|/art-store/${product.slug}/unsave|}" method="post">
+                        <button class="btn btn--ghost btn--sm" type="submit">Remove Saved</button>
+                    </form>
+                </div>
+
+                <form th:if="${isAuthenticated}" th:action="@{|/art-store/${product.slug}/reviews|}" method="post" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem;">
+                    <h3 style="margin-bottom:1rem;">Leave a Review</h3>
+                    <div class="form-group"><label class="form-label">Name</label><input class="form-input" name="reviewerName" required/></div>
+                    <div class="form-group"><label class="form-label">Rating (1-5)</label><input class="form-input" type="number" min="1" max="5" name="rating" required/></div>
+                    <div class="form-group"><label class="form-label">Comment</label><textarea class="form-textarea" name="comment" required></textarea></div>
+                    <input class="form-input" name="captchaToken" placeholder="Captcha token" />
+                    <button class="btn btn--outline" type="submit">Submit Review</button>
+                </form>
+                <p th:if="${!isAuthenticated}" class="text-muted">Sign in to save items or submit reviews.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

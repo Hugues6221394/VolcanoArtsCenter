@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Blog Post</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb"><a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><a th:href="@{/blog}">Blog</a></div>
+            <span class="section-label">Article</span>
+            <h1 th:text="${post.title}">Post title</h1>
+            <p class="section-subtitle" style="margin-top: 1rem;" th:text="${post.excerpt}">Excerpt</p>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container container--narrow">
+            <img th:src="${post.featuredImageUrl != null ? post.featuredImageUrl : '/images/logo.jpg'}" alt="Post image" style="width:100%; border-radius: var(--radius-lg); border:1px solid rgba(255,255,255,.08); margin-bottom: 1.5rem;"/>
+            <div style="color:var(--color-gray-300); line-height:1.9; white-space:pre-line;" th:text="${post.content}">Content</div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

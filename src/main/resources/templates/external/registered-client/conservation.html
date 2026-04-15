@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Conservation</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb"><a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Conservation</span></div>
+            <span class="section-label">Impact Pillar</span>
+            <h1>Environmental Conservation</h1>
+            <p class="section-subtitle" style="margin-top: 1rem;">Support tree planting, community awareness, and sustainable tourism initiatives.</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem;">
+            <div>
+                <h2>Our Programs</h2>
+                <p style="color:var(--color-gray-400); margin-top:1rem;">We integrate conservation in tourism through eco-conscious experiences, community education, and sustainability campaigns near Volcanoes National Park.</p>
+                <ul style="margin-top:1rem; color:var(--color-gray-300); line-height:1.9; padding-left: 1.25rem;">
+                    <li>Community tree planting & nursery preparation</li>
+                    <li>Conservation storytelling in cultural experiences</li>
+                    <li>Eco-friendly tourism awareness programs</li>
+                    <li>School and group educational engagements</li>
+                </ul>
+            </div>
+            <div>
+                <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 1rem;" th:text="${successMessage}"></div>
+                <form th:action="@{/conservation/donate}" method="post" style="background: var(--gradient-card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem;">
+                    <h3 style="margin-bottom:1rem;">Donate to Conservation</h3>
+                    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" name="donorName" required/></div>
+                    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="donorEmail" required/></div>
+                    <div class="form-group"><label class="form-label">Country</label><input class="form-input" name="donorCountry"/></div>
+                    <div class="form-group"><label class="form-label">Amount</label><input class="form-input" name="amount" type="number" min="1" step="0.01" required/></div>
+                    <div class="form-group"><label class="form-label">Currency</label><input class="form-input" name="currency" value="USD"/></div>
+                    <div class="form-group">
+                        <label class="form-label">Purpose</label>
+                        <select class="form-select" name="purpose">
+                            <option value="GENERAL">General</option>
+                            <option value="REFORESTATION">Reforestation</option>
+                            <option value="COMMUNITY_EDUCATION">Community Education</option>
+                            <option value="YOUTH_EMPOWERMENT">Youth Empowerment</option>
+                            <option value="CONSERVATION">Conservation Activities</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <select class="form-select" name="paymentMethod" required>
+                            <option value="STRIPE_CARD">Card (Stripe)</option>
+                            <option value="MTN_MOMO">MTN Mobile Money</option>
+                            <option value="AIRTEL_MONEY">Airtel Money</option>
+                            <option value="BANK_TRANSFER">Bank Transfer</option>
+                            <option value="OFFLINE">Offline</option>
+                        </select>
+                    </div>
+                    <input class="form-input" name="captchaToken" placeholder="Captcha token" />
+                    <button class="btn btn--primary" type="submit">Submit Donation</button>
+                </form>
+                <p style="margin-top:.7rem; color:var(--color-gray-400); font-size:.9rem;">Logged-in registered clients can track donations in their dashboard.</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

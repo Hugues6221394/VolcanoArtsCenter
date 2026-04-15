@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head><title>Registered Client Dashboard</title></head>
+<body>
+<main layout:fragment="content" style="background-color: var(--color-background-alt); padding: 3rem 0; min-height: 80vh;">
+    <div class="container" style="max-width: 1200px;">
+        
+        <!-- Page Header -->
+        <div class="admin-page-header" style="background:transparent; padding:0; margin-bottom:2rem; border-bottom:none;">
+            <div class="admin-page-header__info">
+                <h1>Client Dashboard</h1>
+                <p>Welcome back, <strong th:text="${userEmail}">client</strong>. Manage your bookings, purchases, and profile.</p>
+            </div>
+            <div class="admin-page-header__actions">
+                <a class="btn btn--primary btn--sm" th:href="@{/experiences}">Book Experiences</a>
+                <a class="btn btn--outline btn--sm" th:href="@{/art-store}">Browse Art Store</a>
+            </div>
+        </div>
+
+        <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 2rem;" th:text="${successMessage}"></div>
+
+        <!-- Dashboard Grid -->
+        <div class="admin-grid-2">
+            <!-- Profile Column -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>Profile Information</h3></div>
+                    <div class="admin-card__body">
+                        <form th:action="@{/client/profile}" method="post" class="modal-form">
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">First Name</label><input class="form-input" name="firstName" th:value="${user.firstName}" required/></div>
+                                <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" name="lastName" th:value="${user.lastName}" required/></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Phone Phone</label><input class="form-input" name="phone" th:value="${user.phone}"/></div>
+                                <div class="form-group"><label class="form-label">Country</label><input class="form-input" name="country" th:value="${user.country}"/></div>
+                            </div>
+                            <div class="form-actions" style="margin-top:0.5rem;"><button class="btn btn--primary btn--sm" type="submit">Update Profile</button></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>Saved Items</h3><span class="chip chip--info" th:text="${#lists.size(savedItems)}">0</span></div>
+                    <div class="admin-card__body--flush">
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <tbody>
+                                    <tr th:each="s : ${savedItems}">
+                                        <td>
+                                            <div style="display:flex; align-items:center; gap:0.75rem;">
+                                                <img th:if="${s.product.primaryImageUrl != null}" th:src="${s.product.primaryImageUrl}" alt="" style="width:40px; height:40px; object-fit:cover; border-radius:var(--radius-sm);" />
+                                                <div class="cell-primary" th:text="${s.product.name}">Product</div>
+                                            </div>
+                                        </td>
+                                        <td style="text-align:right;"><a class="btn btn--outline btn--xs" th:href="@{|/art-store/${s.product.slug}|}">View Product</a></td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(savedItems)}"><td style="text-align:center; padding:2rem; color:var(--color-gray-500);">No saved items yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Column -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <!-- Bookings -->
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>My Bookings</h3></div>
+                    <div class="admin-card__body--flush">
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead><tr><th>Reference</th><th>Experience</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="b : ${bookings}">
+                                        <td class="cell-mono" th:text="${b.bookingReference}">REF</td>
+                                        <td th:text="${b.experience != null ? b.experience.title : '-'}">Exp</td>
+                                        <td><span class="chip" th:data-status="${b.status}" th:text="${b.status}">PENDING</span></td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(bookings)}"><td colspan="3" style="text-align:center; padding:1.5rem; color:var(--color-gray-500);">No bookings yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders -->
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>My Orders</h3></div>
+                    <div class="admin-card__body--flush">
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead><tr><th>Reference</th><th>Status</th><th>Payment</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="o : ${orders}">
+                                        <td class="cell-mono" th:text="${o.orderReference}">REF</td>
+                                        <td><span class="chip" th:data-status="${o.status}" th:text="${o.status}">PENDING</span></td>
+                                        <td><span class="chip" th:data-status="${o.paymentStatus}" th:text="${o.paymentStatus}">UNPAID</span></td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(orders)}"><td colspan="3" style="text-align:center; padding:1.5rem; color:var(--color-gray-500);">No orders yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donations & Reviews -->
+                <div class="admin-grid-2" style="gap:1.5rem; grid-template-columns: 1fr 1fr; margin-top:0;">
+                    <div class="admin-card">
+                        <div class="admin-card__header"><h3>Donations</h3></div>
+                        <div class="admin-card__body--flush">
+                            <div class="admin-table-wrap">
+                                <table class="admin-table">
+                                    <tbody>
+                                        <tr th:each="d : ${donations}">
+                                            <td style="font-weight:600;" th:text="${d.amount + ' ' + d.currency}">10 USD</td>
+                                            <td><span class="chip" th:data-status="${d.status}" th:text="${d.status}">PENDING</span></td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(donations)}"><td style="text-align:center; padding:1.5rem; color:var(--color-gray-500);">No donations.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="admin-card">
+                        <div class="admin-card__header"><h3>Reviews</h3></div>
+                        <div class="admin-card__body--flush">
+                            <div class="admin-table-wrap">
+                                <table class="admin-table">
+                                    <tbody>
+                                        <tr th:each="r : ${reviews}">
+                                            <td><span th:text="${r.rating + '/5'}">5/5</span></td>
+                                            <td><span class="chip chip--info" th:text="${r.approved ? 'Approved' : 'Pending'}">Pending</span></td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(reviews)}"><td style="text-align:center; padding:1.5rem; color:var(--color-gray-500);">No reviews.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

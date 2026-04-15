@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head><title>Talent Applicant Dashboard</title></head>
+<body>
+<main layout:fragment="content" style="background-color: var(--color-background-alt); padding: 3rem 0; min-height: 80vh;">
+    <div class="container" style="max-width: 1100px;">
+        
+        <!-- Page Header -->
+        <div class="admin-page-header" style="background:transparent; padding:0; margin-bottom:2rem; border-bottom:none;">
+            <div class="admin-page-header__info">
+                <h1>Talent Application Hub</h1>
+                <p>Welcome! Submit and track your talent program applications.</p>
+            </div>
+            <div class="admin-page-header__actions">
+                <a class="btn btn--outline btn--sm" th:href="@{/talent}">Public Talent Page</a>
+            </div>
+        </div>
+
+        <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 2rem;" th:text="${successMessage}"></div>
+
+        <!-- Dashboard Grid -->
+        <div class="admin-grid-2" style="grid-template-columns: 1fr 1fr;">
+            <!-- Column 1: Application Status and Profile -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                
+                <!-- Status Card -->
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>Application Status</h3></div>
+                    <div class="admin-card__body">
+                        <p th:if="${latestApplication == null}" class="text-muted">No application submitted yet.</p>
+                        <div th:if="${latestApplication != null}" style="display:grid; gap:0.5rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong>Status</strong>
+                                <span class="chip" th:data-status="${latestApplication.status}" th:text="${latestApplication.status}">SUBMITTED</span>
+                            </div>
+                            <hr style="border-top:1px solid rgba(255,255,255,0.05); margin:0.5rem 0;" />
+                            <p><strong>Category:</strong> <span th:text="${latestApplication.applicantCategory}">YOUTH</span></p>
+                            <p><strong>Talent area:</strong> <span th:text="${latestApplication.talentArea}">DANCE</span></p>
+                            <p><strong>Contact channel:</strong> <span th:text="${latestApplication.preferredContactChannel != null ? latestApplication.preferredContactChannel : 'EMAIL'}">EMAIL</span></p>
+                            <p><strong>Last update:</strong> <span class="text-muted" th:text="${latestApplication.lastNotifiedAt != null ? #temporals.format(latestApplication.lastNotifiedAt, 'yyyy-MM-dd HH:mm') : 'Pending review'}">Pending</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Info -->
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>My Profile</h3></div>
+                    <div class="admin-card__body">
+                        <form th:action="@{/talent/dashboard/profile}" method="post" class="modal-form">
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">First Name</label><input class="form-input" name="firstName" th:value="${user.firstName}" required/></div>
+                                <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" name="lastName" th:value="${user.lastName}" required/></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone" th:value="${user.phone}"/></div>
+                                <div class="form-group"><label class="form-label">Location</label><input class="form-input" name="country" th:value="${user.country}"/></div>
+                            </div>
+                            <button class="btn btn--primary btn--sm" type="submit">Update Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: New Application & History -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>Submit New Application</h3></div>
+                    <div class="admin-card__body">
+                        <form th:action="@{/talent/dashboard/apply}" method="post" class="modal-form">
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" name="fullName" th:value="${user.fullName}" required/></div>
+                                <div class="form-group"><label class="form-label">Email</label><input class="form-input" name="email" type="email" th:value="${user.email}" required/></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone" th:value="${user.phone}"/></div>
+                                <div class="form-group"><label class="form-label">Location</label><input class="form-input" name="location" th:value="${user.country}"/></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-select" name="applicantCategory" required>
+                                        <option th:each="c : ${categories}" th:value="${c.name()}" th:text="${#strings.replace(c.name(),'_',' ')}">YOUTH</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Talent Area</label>
+                                    <select class="form-select" name="talentArea" required>
+                                        <option th:each="a : ${areas}" th:value="${a.name()}" th:text="${#strings.replace(a.name(),'_',' ')}">DANCE</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Availability</label><input class="form-input" name="availabilityDetails" placeholder="When are you free?"/></div>
+                                <div class="form-group"><label class="form-label">Comm Channel</label>
+                                    <select class="form-select" name="preferredContactChannel">
+                                        <option value="EMAIL">EMAIL</option>
+                                        <option value="WHATSAPP">WHATSAPP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row--full">
+                                <div class="form-group"><label class="form-label">Experience</label><textarea class="form-input" name="experienceDescription" rows="2" placeholder="Briefly describe your experience"></textarea></div>
+                            </div>
+                            <div class="form-row--full">
+                                <div class="form-group"><label class="form-label">Motivation</label><textarea class="form-input" name="motivation" rows="2" placeholder="Why do you want to join?"></textarea></div>
+                            </div>
+                            <div class="form-row--full">
+                                <div class="form-group"><label class="form-label">Accessibility Needs</label><input class="form-input" name="accessibilityNeeds" placeholder="Any specific accommodations needed?"/></div>
+                            </div>
+                            
+                            <!-- Hidden captcha until integrated -->
+                            <input type="hidden" name="captchaToken" value="skip" />
+                            
+                            <button class="btn btn--primary" type="submit" style="width:100%;">Submit Application</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- History -->
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>Application History</h3></div>
+                    <div class="admin-card__body--flush">
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead><tr><th>Category</th><th>Area</th><th>Status</th><th>Actions</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="app : ${applications}">
+                                        <td><div class="cell-primary" th:text="${app.applicantCategory}">CAT</div></td>
+                                        <td th:text="${app.talentArea}">AREA</td>
+                                        <td><span class="chip" th:data-status="${app.status}" th:text="${app.status}">SUBMITTED</span></td>
+                                        <td>
+                                            <button th:if="${app.status == T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).SUBMITTED or app.status == T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).UNDER_REVIEW}" class="btn btn--outline btn--xs" th:onclick="'document.getElementById(\'edit-app-' + ${app.id} + '\').style.display=document.getElementById(\'edit-app-' + ${app.id} + '\').style.display===\'none\'?\'table-row\' : \'none\''">Edit</button>
+                                        </td>
+                                    </tr>
+                                    <!-- Edit Drawer -->
+                                    <tr th:each="app : ${applications}" th:id="'edit-app-' + ${app.id}" style="display:none; background:rgba(255,255,255,0.02);">
+                                        <td colspan="4">
+                                            <form th:action="@{|/talent/dashboard/applications/${app.id}/update|}" method="post" style="display:grid; gap:0.5rem; padding:0.5rem 0;">
+                                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+                                                    <input class="form-input" name="availabilityDetails" th:value="${app.availabilityDetails}" placeholder="Availability" style="padding:0.4rem;"/>
+                                                    <input class="form-input" name="preferredContactChannel" th:value="${app.preferredContactChannel}" placeholder="Channel" style="padding:0.4rem;"/>
+                                                </div>
+                                                <textarea class="form-input" name="experienceDescription" th:text="${app.experienceDescription}" rows="2" placeholder="Experience" style="padding:0.4rem;"></textarea>
+                                                <textarea class="form-input" name="motivation" th:text="${app.motivation}" rows="2" placeholder="Motivation" style="padding:0.4rem;"></textarea>
+                                                <button class="btn btn--primary btn--xs" type="submit" style="justify-self:start;">Save Update</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(applications)}"><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--color-gray-500);">No past applications.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</main>
+</body>
+</html>

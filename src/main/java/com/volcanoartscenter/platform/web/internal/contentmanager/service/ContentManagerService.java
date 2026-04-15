@@ -1,0 +1,471 @@
+package com.volcanoartscenter.platform.web.internal.contentmanager.service;
+
+import com.volcanoartscenter.platform.shared.model.BlogPost;
+import com.volcanoartscenter.platform.shared.model.Experience;
+import com.volcanoartscenter.platform.shared.model.Product;
+import com.volcanoartscenter.platform.shared.model.ProductCategory;
+import com.volcanoartscenter.platform.shared.model.ProductCollection;
+import com.volcanoartscenter.platform.shared.model.Review;
+import com.volcanoartscenter.platform.shared.model.TalentApplication;
+import com.volcanoartscenter.platform.shared.model.TalentProfile;
+import com.volcanoartscenter.platform.shared.model.Testimonial;
+import com.volcanoartscenter.platform.shared.model.MediaAsset;
+import com.volcanoartscenter.platform.shared.repository.ExperienceRepository;
+import com.volcanoartscenter.platform.shared.repository.MediaAssetRepository;
+import com.volcanoartscenter.platform.shared.repository.BlogPostRepository;
+import com.volcanoartscenter.platform.shared.repository.ProductCategoryRepository;
+import com.volcanoartscenter.platform.shared.repository.ProductCollectionRepository;
+import com.volcanoartscenter.platform.shared.repository.ProductRepository;
+import com.volcanoartscenter.platform.shared.repository.ReviewRepository;
+import com.volcanoartscenter.platform.shared.repository.TalentProfileRepository;
+import com.volcanoartscenter.platform.shared.repository.TestimonialRepository;
+import com.volcanoartscenter.platform.web.internal.superadmin.service.SuperAdminService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Locale;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class ContentManagerService {
+
+    private final SuperAdminService superAdminService;
+    private final ExperienceRepository experienceRepository;
+    private final TestimonialRepository testimonialRepository;
+    private final TalentProfileRepository talentProfileRepository;
+    private final MediaAssetRepository mediaAssetRepository;
+    private final ProductRepository productRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final ProductCollectionRepository productCollectionRepository;
+    private final ReviewRepository reviewRepository;
+    private final BlogPostRepository blogPostRepository;
+
+    public long totalProducts() { return productRepository.count(); }
+    public long totalCategories() { return productCategoryRepository.count(); }
+    public long totalCollections() { return productCollectionRepository.count(); }
+    public long totalBlogPosts() { return blogPostRepository.count(); }
+    public long totalExperiences() { return experienceRepository.count(); }
+    public long totalMediaAssets() { return mediaAssetRepository.count(); }
+    public long pendingReviews() {
+        return reviewRepository.findTop200ByOrderByCreatedAtDesc().stream().filter(r -> !Boolean.TRUE.equals(r.getApproved())).count();
+    }
+
+    public java.util.List<Product> listProducts(Boolean available, Boolean featured, Long categoryId, Long collectionId, String q) {
+        return productRepository.searchForCms(available, featured, categoryId, collectionId, q);
+    }
+    public Product createProduct(String name, String slug, java.math.BigDecimal price, Long categoryId, Long collectionId,
+                                 String primaryImageUrl, Integer stockQuantity, Product.InventoryType inventoryType) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Product name is required");
+        }
+        if (slug == null || slug.isBlank()) {
+            throw new IllegalArgumentException("Product slug is required");
+        }
+        if (price == null || price.signum() < 0) {
+            throw new IllegalArgumentException("Price must be zero or positive");
+        }
+        String normalizedSlug = slug.trim().toLowerCase(Locale.ROOT);
+        if (productRepository.existsBySlug(normalizedSlug)) {
+            throw new IllegalArgumentException("Product slug already exists");
+        }
+        ProductCategory category = categoryId == null ? null : productCategoryRepository.findById(categoryId).orElse(null);
+        ProductCollection collection = collectionId == null ? null : productCollectionRepository.findById(collectionId).orElse(null);
+        Product product = Product.builder()
+                .name(name)
+                .slug(normalizedSlug)
+                .description("New product")
+                .shortDescription("New product")
+                .price(price)
+                .category(category)
+                .collection(collection)
+                .primaryImageUrl(primaryImageUrl)
+                .stockQuantity(stockQuantity == null ? 1 : Math.max(0, stockQuantity))
+                .inventoryType(inventoryType == null ? Product.InventoryType.BATCH : inventoryType)
+                .available(true)
+                .featured(false)
+                .build();
+        return productRepository.save(product);
+    }
+    public Product updateProduct(Long id, java.lang.String name, java.math.BigDecimal price, java.lang.Boolean available, java.lang.Boolean featured,
+                                 Long categoryId, Long collectionId, String primaryImageUrl, Integer stockQuantity) {
+        Product product = productRepository.findById(id).orElseThrow();
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Product name is required");
+        }
+        if (price == null || price.signum() < 0) {
+            throw new IllegalArgumentException("Price must be zero or positive");
+        }
+        ProductCategory category = categoryId == null ? null : productCategoryRepository.findById(categoryId).orElse(null);
+        ProductCollection collection = collectionId == null ? null : productCollectionRepository.findById(collectionId).orElse(null);
+        product.setName(name);
+        product.setPrice(price);
+        product.setAvailable(Boolean.TRUE.equals(available));
+        product.setFeatured(Boolean.TRUE.equals(featured));
+        product.setCategory(category);
+        product.setCollection(collection);
+        product.setPrimaryImageUrl(primaryImageUrl);
+        if (stockQuantity != null) {
+            product.setStockQuantity(Math.max(0, stockQuantity));
+        }
+        return productRepository.save(product);
+    }
+
+    public int bulkUpdateProducts(java.util.List<Long> productIds, Boolean available, Boolean featured, Long categoryId, Long collectionId) {
+        if (productIds == null || productIds.isEmpty()) {
+            return 0;
+        }
+        ProductCategory category = categoryId == null ? null : productCategoryRepository.findById(categoryId).orElse(null);
+        ProductCollection collection = collectionId == null ? null : productCollectionRepository.findById(collectionId).orElse(null);
+        int updated = 0;
+        for (Long productId : productIds) {
+            Product product = productRepository.findById(productId).orElse(null);
+            if (product == null) {
+                continue;
+            }
+            if (available != null) {
+                product.setAvailable(available);
+            }
+            if (featured != null) {
+                product.setFeatured(featured);
+            }
+            if (categoryId != null) {
+                product.setCategory(category);
+            }
+            if (collectionId != null) {
+                product.setCollection(collection);
+            }
+            productRepository.save(product);
+            updated++;
+        }
+        return updated;
+    }
+    public void deleteProduct(Long id) { superAdminService.deleteProduct(id); }
+    public java.util.List<ProductCategory> listCategories() {
+        return productCategoryRepository.findAll().stream()
+                .sorted(java.util.Comparator
+                        .comparing(ProductCategory::getDisplayOrder, java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder()))
+                        .thenComparing(ProductCategory::getName, java.util.Comparator.nullsLast(String::compareToIgnoreCase)))
+                .toList();
+    }
+    public ProductCategory createCategory(String name, String slug, String description, Integer displayOrder, Boolean active) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Category name is required");
+        }
+        if (slug == null || slug.isBlank()) {
+            throw new IllegalArgumentException("Category slug is required");
+        }
+        String normalizedSlug = slug.trim().toLowerCase(Locale.ROOT);
+        if (productCategoryRepository.existsBySlug(normalizedSlug)) {
+            throw new IllegalArgumentException("Category slug already exists");
+        }
+        return productCategoryRepository.save(ProductCategory.builder()
+                .name(name)
+                .slug(normalizedSlug)
+                .description(description)
+                .displayOrder(displayOrder == null ? 0 : displayOrder)
+                .active(Boolean.TRUE.equals(active))
+                .build());
+    }
+    public ProductCategory updateCategory(Long id, String name, String description, Integer displayOrder, Boolean active) {
+        ProductCategory category = productCategoryRepository.findById(id).orElseThrow();
+        category.setName(name);
+        category.setDescription(description);
+        category.setDisplayOrder(displayOrder == null ? 0 : displayOrder);
+        category.setActive(Boolean.TRUE.equals(active));
+        return productCategoryRepository.save(category);
+    }
+    public void deleteCategory(Long id) { productCategoryRepository.deleteById(id); }
+    public java.util.List<ProductCollection> listCollections() {
+        return productCollectionRepository.findAll().stream()
+                .sorted(java.util.Comparator
+                        .comparing(ProductCollection::getDisplayOrder, java.util.Comparator.nullsLast(java.util.Comparator.naturalOrder()))
+                        .thenComparing(ProductCollection::getName, java.util.Comparator.nullsLast(String::compareToIgnoreCase)))
+                .toList();
+    }
+    public ProductCollection createCollection(String name, String slug, String description, Integer displayOrder, Boolean active) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Collection name is required");
+        }
+        if (slug == null || slug.isBlank()) {
+            throw new IllegalArgumentException("Collection slug is required");
+        }
+        String normalizedSlug = slug.trim().toLowerCase(Locale.ROOT);
+        if (productCollectionRepository.existsBySlug(normalizedSlug)) {
+            throw new IllegalArgumentException("Collection slug already exists");
+        }
+        return productCollectionRepository.save(ProductCollection.builder()
+                .name(name)
+                .slug(normalizedSlug)
+                .description(description)
+                .displayOrder(displayOrder == null ? 0 : displayOrder)
+                .active(Boolean.TRUE.equals(active))
+                .build());
+    }
+    public ProductCollection updateCollection(Long id, String name, String description, Integer displayOrder, Boolean active) {
+        ProductCollection collection = productCollectionRepository.findById(id).orElseThrow();
+        collection.setName(name);
+        collection.setDescription(description);
+        collection.setDisplayOrder(displayOrder == null ? 0 : displayOrder);
+        collection.setActive(Boolean.TRUE.equals(active));
+        return productCollectionRepository.save(collection);
+    }
+    public void deleteCollection(Long id) { productCollectionRepository.deleteById(id); }
+
+    public Object listBlogPosts(String q, BlogPost.BlogCategory category) {
+        return blogPostRepository.searchForCms(q, category);
+    }
+    public BlogPost createBlogPost(String title, String slug, String excerpt, String content,
+                                   BlogPost.BlogCategory category, Boolean published, String featuredImageUrl,
+                                   Long coverMediaId, Boolean highlighted, String metaTitle, String metaDescription) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Blog title is required");
+        }
+        if (slug == null || slug.isBlank()) {
+            throw new IllegalArgumentException("Blog slug is required");
+        }
+        String normalizedSlug = slug.trim().toLowerCase(Locale.ROOT);
+        if (blogPostRepository.findBySlug(normalizedSlug).isPresent()) {
+            throw new IllegalArgumentException("Blog post slug already exists");
+        }
+        boolean publish = Boolean.TRUE.equals(published);
+        BlogPost post = BlogPost.builder()
+                .title(title)
+                .slug(normalizedSlug)
+                .excerpt(excerpt)
+                .content(content == null ? "" : content)
+                .category(category == null ? BlogPost.BlogCategory.UPDATE : category)
+                .featuredImageUrl(featuredImageUrl)
+                .coverMediaId(coverMediaId)
+                .highlighted(Boolean.TRUE.equals(highlighted))
+                .metaTitle(metaTitle)
+                .metaDescription(metaDescription)
+                .published(publish)
+                .publishedAt(publish ? java.time.LocalDateTime.now() : null)
+                .build();
+        return blogPostRepository.save(post);
+    }
+    public BlogPost updateBlogPost(Long id, String title, String excerpt, String content, BlogPost.BlogCategory category, Boolean published,
+                                   Long coverMediaId, Boolean highlighted, String featuredImageUrl,
+                                   String metaTitle, String metaDescription) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Blog title is required");
+        }
+        BlogPost post = blogPostRepository.findById(id).orElseThrow();
+        post.setTitle(title);
+        post.setExcerpt(excerpt);
+        post.setContent(content == null ? "" : content);
+        post.setCategory(category == null ? BlogPost.BlogCategory.UPDATE : category);
+        boolean publish = Boolean.TRUE.equals(published);
+        post.setPublished(publish);
+        post.setPublishedAt(publish ? (post.getPublishedAt() == null ? java.time.LocalDateTime.now() : post.getPublishedAt()) : null);
+        post.setFeaturedImageUrl(featuredImageUrl);
+        post.setCoverMediaId(coverMediaId);
+        post.setHighlighted(Boolean.TRUE.equals(highlighted));
+        post.setMetaTitle(metaTitle);
+        post.setMetaDescription(metaDescription);
+        return blogPostRepository.save(post);
+    }
+    public void deleteBlogPost(Long id) { superAdminService.deleteBlogPost(id); }
+
+    public Object listReviews() { return reviewRepository.findTop200ByOrderByCreatedAtDesc(); }
+    public Review approveReview(Long id, Boolean approved, Boolean featured) {
+        Review review = reviewRepository.findById(id).orElseThrow();
+        review.setApproved(Boolean.TRUE.equals(approved));
+        review.setFeatured(Boolean.TRUE.equals(featured));
+        if (Boolean.TRUE.equals(approved) && review.getApprovedAt() == null) {
+            review.setApprovedAt(java.time.LocalDateTime.now());
+        }
+        return reviewRepository.save(review);
+    }
+    public void deleteReview(Long id) { reviewRepository.deleteById(id); }
+
+    public Object listExperiences(Boolean active, String q) {
+        return experienceRepository.searchForCms(active, q);
+    }
+
+    public Experience createExperience(String title, String slug, String shortDescription, String location,
+                                       java.math.BigDecimal pricePerPerson, Experience.ExperienceType experienceType,
+                                       Experience.BookingType bookingType, Integer minGroupSize, Integer maxGroupSize,
+                                       Boolean active, Boolean featured, String primaryImageUrl, Long primaryMediaId) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Experience title is required");
+        }
+        if (slug == null || slug.isBlank()) {
+            throw new IllegalArgumentException("Experience slug is required");
+        }
+        String normalizedSlug = slug.trim().toLowerCase(Locale.ROOT);
+        if (experienceRepository.existsBySlug(normalizedSlug)) {
+            throw new IllegalArgumentException("Experience slug already exists");
+        }
+        Experience entity = Experience.builder()
+                .title(title)
+                .slug(normalizedSlug)
+                .description(shortDescription == null ? "" : shortDescription)
+                .shortDescription(shortDescription)
+                .location(location)
+                .pricePerPerson(pricePerPerson)
+                .experienceType(experienceType == null ? Experience.ExperienceType.CULTURAL : experienceType)
+                .bookingType(bookingType == null ? Experience.BookingType.INQUIRY : bookingType)
+                .minGroupSize(minGroupSize == null ? 1 : Math.max(1, minGroupSize))
+                .maxGroupSize(maxGroupSize == null ? 15 : Math.max(1, maxGroupSize))
+                .active(Boolean.TRUE.equals(active))
+                .featured(Boolean.TRUE.equals(featured))
+                .primaryImageUrl(primaryImageUrl)
+                .primaryMediaId(primaryMediaId)
+                .build();
+        return experienceRepository.save(entity);
+    }
+
+    public Experience updateExperience(Long id, String title, String shortDescription, String location,
+                                       java.math.BigDecimal pricePerPerson, Experience.ExperienceType experienceType,
+                                       Experience.BookingType bookingType, Integer minGroupSize, Integer maxGroupSize,
+                                       Boolean active, Boolean featured, String primaryImageUrl, Long primaryMediaId) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Experience title is required");
+        }
+        Experience entity = experienceRepository.findById(id).orElseThrow();
+        entity.setTitle(title);
+        entity.setDescription(shortDescription == null ? "" : shortDescription);
+        entity.setShortDescription(shortDescription);
+        entity.setLocation(location);
+        entity.setPricePerPerson(pricePerPerson);
+        entity.setExperienceType(experienceType);
+        entity.setBookingType(bookingType);
+        entity.setMinGroupSize(minGroupSize == null ? 1 : Math.max(1, minGroupSize));
+        entity.setMaxGroupSize(maxGroupSize == null ? 15 : Math.max(1, maxGroupSize));
+        entity.setActive(Boolean.TRUE.equals(active));
+        entity.setFeatured(Boolean.TRUE.equals(featured));
+        entity.setPrimaryImageUrl(primaryImageUrl);
+        entity.setPrimaryMediaId(primaryMediaId);
+        return experienceRepository.save(entity);
+    }
+
+    public void deleteExperience(Long id) {
+        experienceRepository.deleteById(id);
+    }
+
+    public Object listTestimonials() {
+        return testimonialRepository.findAll();
+    }
+
+    public Testimonial createTestimonial(String authorName, String authorCountry, String message, Integer rating, Boolean published, Boolean featured,
+                                          String authorTitle) {
+        if (authorName == null || authorName.isBlank()) {
+            throw new IllegalArgumentException("Author name is required");
+        }
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("Message is required");
+        }
+        return testimonialRepository.save(Testimonial.builder()
+                .authorName(authorName)
+                .authorCountry(authorCountry)
+                .message(message)
+                .authorTitle(authorTitle)
+                .rating(rating == null ? 5 : Math.max(1, Math.min(5, rating)))
+                .published(Boolean.TRUE.equals(published))
+                .featured(Boolean.TRUE.equals(featured))
+                .build());
+    }
+
+    public Testimonial updateTestimonial(Long id, String authorName, String authorCountry, String message, Integer rating, Boolean published, Boolean featured,
+                                          String authorTitle) {
+        if (authorName == null || authorName.isBlank()) {
+            throw new IllegalArgumentException("Author name is required");
+        }
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("Message is required");
+        }
+        Testimonial testimonial = testimonialRepository.findById(id).orElseThrow();
+        testimonial.setAuthorName(authorName);
+        testimonial.setAuthorCountry(authorCountry);
+        testimonial.setMessage(message);
+        testimonial.setAuthorTitle(authorTitle);
+        testimonial.setRating(rating == null ? 5 : Math.max(1, Math.min(5, rating)));
+        testimonial.setPublished(Boolean.TRUE.equals(published));
+        testimonial.setFeatured(Boolean.TRUE.equals(featured));
+        return testimonialRepository.save(testimonial);
+    }
+
+    public void deleteTestimonial(Long id) {
+        testimonialRepository.deleteById(id);
+    }
+
+    public Object listTalentProfiles() {
+        return talentProfileRepository.findAll();
+    }
+
+    public TalentProfile createTalentProfile(String displayName, TalentApplication.ApplicantCategory category, String headline,
+                                              String story, String primaryImageUrl, Boolean published, Long primaryMediaId) {
+        if (displayName == null || displayName.isBlank()) {
+            throw new IllegalArgumentException("Display name is required");
+        }
+        if (category == null) {
+            throw new IllegalArgumentException("Category is required");
+        }
+        return talentProfileRepository.save(TalentProfile.builder()
+                .displayName(displayName)
+                .category(category)
+                .headline(headline)
+                .story(story)
+                .primaryImageUrl(primaryImageUrl)
+                .primaryMediaId(primaryMediaId)
+                .published(Boolean.TRUE.equals(published))
+                .build());
+    }
+
+    public TalentProfile updateTalentProfile(Long id, String displayName, TalentApplication.ApplicantCategory category, String headline,
+                                              String story, String primaryImageUrl, Boolean published, Long primaryMediaId) {
+        if (displayName == null || displayName.isBlank()) {
+            throw new IllegalArgumentException("Display name is required");
+        }
+        if (category == null) {
+            throw new IllegalArgumentException("Category is required");
+        }
+        TalentProfile profile = talentProfileRepository.findById(id).orElseThrow();
+        profile.setDisplayName(displayName);
+        profile.setCategory(category);
+        profile.setHeadline(headline);
+        profile.setStory(story);
+        profile.setPrimaryImageUrl(primaryImageUrl);
+        profile.setPrimaryMediaId(primaryMediaId);
+        profile.setPublished(Boolean.TRUE.equals(published));
+        return talentProfileRepository.save(profile);
+    }
+
+    public void deleteTalentProfile(Long id) {
+        talentProfileRepository.deleteById(id);
+    }
+
+    public java.util.List<MediaAsset> listMediaAssets(String q, String contentType) {
+        return mediaAssetRepository.searchForCms(q, contentType);
+    }
+
+    public MediaAsset createMediaAsset(String storageKey, String publicUrl, String contentType, String title, String altText, Long fileSizeBytes) {
+        if (storageKey == null || storageKey.isBlank()) {
+            throw new IllegalArgumentException("Storage key is required");
+        }
+        if (publicUrl == null || publicUrl.isBlank()) {
+            throw new IllegalArgumentException("Public URL is required");
+        }
+        if (mediaAssetRepository.existsByStorageKey(storageKey)) {
+            throw new IllegalArgumentException("Storage key already exists");
+        }
+        return mediaAssetRepository.save(MediaAsset.builder()
+                .storageKey(storageKey)
+                .publicUrl(publicUrl)
+                .contentType(contentType)
+                .title(title)
+                .altText(altText)
+                .fileSizeBytes(fileSizeBytes)
+                .build());
+    }
+
+    public void deleteMediaAsset(Long id) {
+        mediaAssetRepository.deleteById(id);
+    }
+
+    public Optional<MediaAsset> findMediaAsset(Long id) {
+        return mediaAssetRepository.findById(id);
+    }
+}
