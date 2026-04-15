@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Shopping Cart</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header" style="padding-top: 6rem; padding-bottom: 3rem;">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb">
+                <a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Cart</span>
+            </div>
+            <h1>Your Shopping Cart</h1>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div th:if="${successMessage}" style="background: rgba(46,125,50,0.1); border: 1px solid rgba(46,125,50,0.3); color: #2e7d32; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem;" th:text="${successMessage}"></div>
+
+            <div th:if="${#maps.isEmpty(cartItems)}" style="text-align: center; padding: 4rem 1rem; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
+                <h3>Your cart is empty</h3>
+                <p style="color: var(--color-gray-500); margin-bottom: 1.5rem;">Looks like you haven't added any art yet.</p>
+                <a class="btn btn--primary" th:href="@{/art-store}">Continue Shopping</a>
+            </div>
+
+            <div th:unless="${#maps.isEmpty(cartItems)}" style="display: grid; grid-template-columns: 1fr 380px; gap: 2rem;">
+                
+                <!-- Cart Items List -->
+                <div>
+                    <h3 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Items (<span th:text="${#maps.size(cartItems)}"></span>)</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div th:each="entry : ${cartItems}" style="display: flex; gap: 1.5rem; background: var(--color-surface); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); align-items: center;">
+                            <img th:src="${entry.key.primaryImageUrl != null ? entry.key.primaryImageUrl : '/images/logo.jpg'}" alt="Item" style="width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md);" />
+                            <div style="flex: 1;">
+                                <h4 style="margin-bottom: 0.25rem;"><a th:href="@{|/art-store/${entry.key.slug}|}" th:text="${entry.key.name}" style="color: var(--color-text); text-decoration: none;">Product Name</a></h4>
+                                <div style="font-size: 0.9rem; color: var(--color-gray-500); margin-bottom: 0.5rem;" th:text="${entry.key.inventoryType}">Type</div>
+                                <div style="font-weight: 600; color: var(--color-primary);" th:text="'$' + ${#numbers.formatDecimal(entry.key.price,1,'COMMA',2,'POINT')}">$0.00</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="font-size: 0.9rem; color: var(--color-gray-500);">Qty: <span th:text="${entry.value}">1</span></span>
+                                <form th:action="@{/cart/remove}" method="post">
+                                    <input type="hidden" name="productId" th:value="${entry.key.id}" />
+                                    <button type="submit" class="btn btn--ghost btn--sm" style="color: var(--color-danger);">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkout Sidebar -->
+                <div>
+                    <div style="background: var(--color-surface); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); position: sticky; top: 6rem;">
+                        <h3 style="margin-bottom: 1.5rem; font-family: var(--font-heading); border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">Order Summary</h3>
+                        
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--color-gray-500);">
+                            <span>Subtotal</span>
+                            <span th:text="'$' + ${#numbers.formatDecimal(cartTotal,1,'COMMA',2,'POINT')}">$0.00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; color: var(--color-gray-500);">
+                            <span>Shipping</span>
+                            <span>Calculated remotely</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 2rem; font-weight: 600; font-size: 1.2rem; border-top: 1px solid var(--color-border); padding-top: 1rem;">
+                            <span>Total (Est)</span>
+                            <span th:text="'$' + ${#numbers.formatDecimal(cartTotal,1,'COMMA',2,'POINT')}">$0.00</span>
+                        </div>
+
+                        <form method="post" th:action="@{/cart/checkout}" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Shipping Information -->
+                            <div class="form-group" style="margin:0;"><label class="form-label">Recipient Name</label><input class="form-input" name="recipientName" th:value="${currentUser != null ? currentUser.fullName : ''}" required /></div>
+                            <div class="form-group" style="margin:0;"><label class="form-label">Email</label><input class="form-input" type="email" name="recipientEmail" th:value="${currentUser != null ? currentUser.email : ''}" required /></div>
+                            <div class="form-group" style="margin:0;"><label class="form-label">Phone</label><input class="form-input" name="recipientPhone" th:value="${currentUser != null ? currentUser.phone : ''}" /></div>
+                            <div class="form-group" style="margin:0;"><label class="form-label">Address Line 1</label><input class="form-input" name="addressLine1" required /></div>
+                            <div class="form-group" style="margin:0;"><label class="form-label">City</label><input class="form-input" name="city" required /></div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group" style="margin:0;"><label class="form-label">State/Region</label><input class="form-input" name="state" /></div>
+                                <div class="form-group" style="margin:0;"><label class="form-label">ZIP/Postal</label><input class="form-input" name="postalCode" /></div>
+                            </div>
+                            <div class="form-group" style="margin:0;"><label class="form-label">Country</label><input class="form-input" name="country" required /></div>
+                            
+                            <div class="form-group" style="margin-top: 0.5rem;">
+                                <label class="form-label">Payment Method</label>
+                                <select class="form-select" name="paymentMethod">
+                                    <option value="STRIPE">Credit Card (Stripe)</option>
+                                    <option value="BANK_TRANSFER">Bank Transfer</option>
+                                </select>
+                            </div>
+
+                            <input type="hidden" name="captchaToken" value="skip_for_now" />
+
+                            <button th:if="${isAuthenticated}" type="submit" class="btn btn--primary" style="width: 100%; margin-top: 1rem;">Proceed to Checkout</button>
+                            <a th:unless="${isAuthenticated}" th:href="@{/login}" class="btn btn--primary" style="width: 100%; margin-top: 1rem; text-align:center;">Sign In to Checkout</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

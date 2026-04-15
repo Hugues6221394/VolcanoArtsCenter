@@ -21,11 +21,11 @@
 
         <!-- KPI Strip -->
         <div class="admin-kpi-grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 2rem;">
-            <div class="admin-kpi"><div class="admin-kpi__label">Requests</div><div class="admin-kpi__value" th:text="${stats.total}">0</div></div>
-            <div class="admin-kpi"><div class="admin-kpi__label">Submitted</div><div class="admin-kpi__value" th:text="${stats.submitted}">0</div></div>
-            <div class="admin-kpi"><div class="admin-kpi__label">Under Review</div><div class="admin-kpi__value" th:text="${stats.underReview}">0</div></div>
-            <div class="admin-kpi"><div class="admin-kpi__label">Invoice Pending</div><div class="admin-kpi__value" th:text="${stats.invoicePending}">0</div></div>
-            <div class="admin-kpi"><div class="admin-kpi__label">Confirmed</div><div class="admin-kpi__value" th:text="${stats.confirmed}">0</div></div>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Requests</div><div class="admin-kpi__value" th:text="${stats.total}">0</div></a>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Submitted</div><div class="admin-kpi__value" th:text="${stats.submitted}">0</div></a>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Under Review</div><div class="admin-kpi__value" th:text="${stats.underReview}">0</div></a>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Invoice Pending</div><div class="admin-kpi__value" th:text="${stats.invoicePending}">0</div></a>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Confirmed</div><div class="admin-kpi__value" th:text="${stats.confirmed}">0</div></a>
         </div>
 
         <!-- Dashboard Grid -->
@@ -109,7 +109,7 @@
         </div>
 
         <!-- Requests Table -->
-        <div class="admin-card" style="margin-top:2rem;">
+        <div class="admin-card" id="my-requests" style="margin-top:2rem;">
             <div class="admin-card__header"><h3>My Requests</h3></div>
             <div class="admin-card__body--flush">
                 <div class="admin-table-wrap">

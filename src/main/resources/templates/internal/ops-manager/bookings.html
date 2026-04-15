@@ -8,10 +8,10 @@
         <div class="admin-page-header__info"><h1>Bookings</h1><p>Track and manage all experience bookings and their statuses.</p></div>
     </div>
     <div class="admin-kpi-grid" style="grid-template-columns:repeat(4,1fr);">
-        <div class="admin-kpi"><div class="admin-kpi__label">Total Bookings</div><div class="admin-kpi__value" th:text="${totalBookings}">0</div></div>
-        <div class="admin-kpi"><div class="admin-kpi__label">Shipping Orders</div><div class="admin-kpi__value" th:text="${totalOrders}">0</div></div>
-        <div class="admin-kpi"><div class="admin-kpi__label">Inquiries</div><div class="admin-kpi__value" th:text="${totalInquiries}">0</div></div>
-        <div class="admin-kpi"><div class="admin-kpi__label">Pending Talent Apps</div><div class="admin-kpi__value" th:text="${pendingTalentApplications}">0</div></div>
+        <a class="admin-kpi" th:href="@{/admin/ops/bookings}"><div class="admin-kpi__label">Total Bookings</div><div class="admin-kpi__value" th:text="${totalBookings}">0</div></a>
+        <a class="admin-kpi" th:href="@{/admin/ops/shipping-orders}"><div class="admin-kpi__label">Shipping Orders</div><div class="admin-kpi__value" th:text="${totalOrders}">0</div></a>
+        <a class="admin-kpi" th:href="@{/admin/ops/contact-inquiries}"><div class="admin-kpi__label">Inquiries</div><div class="admin-kpi__value" th:text="${totalInquiries}">0</div></a>
+        <a class="admin-kpi" th:href="@{/admin/ops/talent-applications}"><div class="admin-kpi__label">Pending Talent Apps</div><div class="admin-kpi__value" th:text="${pendingTalentApplications}">0</div></a>
     </div>
     <div class="admin-card">
         <div class="admin-card__header"><h3>All Bookings</h3><span class="chip chip--info" th:text="${#lists.size(items)} + ' total'">0</span></div>

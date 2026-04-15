@@ -5,50 +5,103 @@
 <head><title>Talent Program</title></head>
 <body>
 <main layout:fragment="content">
-    <section class="page-header">
+    
+    <!-- Hero Section -->
+    <section class="page-header" style="padding-top: 6rem; padding-bottom: 4rem;">
         <div class="page-header__decor"></div>
-        <div class="container">
-            <div class="breadcrumb"><a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Talent Program</span></div>
+        <div class="container" style="text-align: center; max-width: 800px;">
+            <div class="breadcrumb" style="justify-content: center;">
+                <a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Talent Program</span>
+            </div>
             <span class="section-label">Creative Empowerment</span>
-            <h1>Talent Application Portal</h1>
-            <p class="section-subtitle" style="margin-top: 1rem;">Apply online to join our community-based cultural performance and training programs.</p>
+            <h1 style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem;">Join Our <span style="color: var(--color-primary);">Talent Program</span></h1>
+            <p class="section-subtitle" style="margin: 0 auto; font-size: 1.25rem;">
+                We empower Youth, Women, the Elderly, and marginalized groups around Volcanoes National Park by preserving and celebrating our rich Rwandan cultural heritage.
+            </p>
         </div>
     </section>
 
-    <section class="section">
+    <!-- Impact Cards -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="grid grid-3">
+                <div style="background: var(--color-surface); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🥁</div>
+                    <h3 style="margin-bottom: 0.5rem; font-family: var(--font-heading);">Cultural Arts</h3>
+                    <p style="color: var(--color-gray-400); font-size: 0.95rem;">Master traditional Rwandan dance and drum lines under experienced instructors.</p>
+                </div>
+                <div style="background: var(--color-surface); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🪡</div>
+                    <h3 style="margin-bottom: 0.5rem; font-family: var(--font-heading);">Handicrafts</h3>
+                    <p style="color: var(--color-gray-400); font-size: 0.95rem;">Learn basket weaving and traditional carving to create premium artisan products.</p>
+                </div>
+                <div style="background: var(--color-surface); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🌱</div>
+                    <h3 style="margin-bottom: 0.5rem; font-family: var(--font-heading);">Sustainable Lives</h3>
+                    <p style="color: var(--color-gray-400); font-size: 0.95rem;">Empowering ex-poachers and youth with alternative, sustainable incomes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Form Section -->
+    <section class="section" style="background: rgba(0,0,0,0.2); border-top: 1px solid var(--color-border);">
         <div class="container" style="max-width: 860px;">
-            <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 1rem;" th:text="${successMessage}"></div>
-            <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem;">
-                <a class="btn btn--outline btn--sm" th:href="@{/talent/register}">Create Applicant Account</a>
-                <a class="btn btn--ghost btn--sm" th:href="@{/login}">Applicant Login</a>
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h2 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 1rem;">Submit Your Application</h2>
+                <p style="color: var(--color-gray-400);">Tell us about yourself and what you want to learn or showcase. Our team reviews applications weekly.</p>
             </div>
-            <div th:if="${!isAuthenticated || !isTalentApplicant}" style="background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-bottom:1rem;">
-                <p class="text-muted" style="margin-bottom:.7rem;">To submit a talent application you must create a Talent Applicant account and sign in.</p>
-                <a class="btn btn--primary btn--sm" th:href="@{/talent/register}">Start Registration</a>
+
+            <div th:if="${successMessage}" style="background: rgba(46,125,50,0.1); border: 1px solid rgba(46,125,50,0.3); border-radius: var(--radius-md); color: #81c784; padding: 1.5rem; margin-bottom: 2rem; text-align: center; font-weight: 500;" th:text="${successMessage}"></div>
+            
+            <div th:unless="${isAuthenticated && isTalentApplicant}" style="background: var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:3rem 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔐</div>
+                <h3 style="margin-bottom:1rem; font-family: var(--font-heading);">Account Required</h3>
+                <p class="text-muted" style="margin-bottom:2rem; max-width: 400px; margin-left: auto; margin-right: auto;">To protect your data and allow you to track your application status securely, please create an applicant profile or sign in.</p>
+                <div style="display:flex; gap:1rem; justify-content: center; flex-wrap:wrap;">
+                    <a class="btn btn--primary" th:href="@{/talent/register}">Register as Applicant</a>
+                    <a class="btn btn--outline" th:href="@{/login}">Applicant Login</a>
+                </div>
             </div>
-            <form th:if="${isAuthenticated && isTalentApplicant}" th:action="@{/talent/apply}" method="post" style="background: var(--gradient-card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1.5rem;">
-                <div class="grid grid-2">
-                    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" name="fullName" required/></div>
-                    <div class="form-group"><label class="form-label">Email</label><input class="form-input" name="email" type="email"/></div>
-                    <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="phone"/></div>
-                    <div class="form-group"><label class="form-label">Location</label><input class="form-input" name="location"/></div>
-                    <div class="form-group">
-                        <label class="form-label">Applicant Category</label>
+
+            <form th:if="${isAuthenticated && isTalentApplicant}" th:action="@{/talent/apply}" method="post" style="background: var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:2.5rem; box-shadow: var(--shadow-md);">
+                <div class="grid grid-2" style="gap: 1.5rem;">
+                    <div class="form-group" style="margin:0;"><label class="form-label" style="color: var(--color-gray-300);">Full Name</label><input class="form-input" name="fullName" required/></div>
+                    <div class="form-group" style="margin:0;"><label class="form-label" style="color: var(--color-gray-300);">Email</label><input class="form-input" name="email" type="email"/></div>
+                    <div class="form-group" style="margin:0;"><label class="form-label" style="color: var(--color-gray-300);">Phone Number</label><input class="form-input" name="phone"/></div>
+                    <div class="form-group" style="margin:0;"><label class="form-label" style="color: var(--color-gray-300);">Location / Village</label><input class="form-input" name="location"/></div>
+                    
+                    <div class="form-group" style="margin:0;">
+                        <label class="form-label" style="color: var(--color-gray-300);">Applicant Category</label>
                         <select class="form-select" name="applicantCategory" required>
+                            <option value="">Select category...</option>
                             <option th:each="c : ${categories}" th:value="${c.name()}" th:text="${#strings.replace(c.name(),'_',' ')}">YOUTH</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Talent Area</label>
+                    <div class="form-group" style="margin:0;">
+                        <label class="form-label" style="color: var(--color-gray-300);">Talent Area</label>
                         <select class="form-select" name="talentArea" required>
+                            <option value="">Select talent...</option>
                             <option th:each="a : ${areas}" th:value="${a.name()}" th:text="${#strings.replace(a.name(),'_',' ')}">TRADITIONAL_DANCE</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-group"><label class="form-label">Experience</label><textarea class="form-textarea" name="experienceDescription"></textarea></div>
-                <div class="form-group"><label class="form-label">Motivation</label><textarea class="form-textarea" name="motivation"></textarea></div>
-                <input class="form-input" name="captchaToken" placeholder="Captcha token" />
-                <button class="btn btn--primary" type="submit">Submit Application</button>
+
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label class="form-label" style="color: var(--color-gray-300);">Experience / Current Skills</label>
+                    <textarea class="form-textarea" name="experienceDescription" rows="4" placeholder="Briefly describe what you know or currently do..."></textarea>
+                </div>
+                
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label class="form-label" style="color: var(--color-gray-300);">Motivation</label>
+                    <textarea class="form-textarea" name="motivation" rows="3" placeholder="Why do you want to join?"></textarea>
+                </div>
+                
+                <input type="hidden" name="captchaToken" value="skip_for_now" />
+                
+                <div style="margin-top: 2.5rem; text-align: right;">
+                    <button class="btn btn--primary" type="submit" style="padding-left: 2rem; padding-right: 2rem;">Submit Application</button>
+                </div>
             </form>
         </div>
     </section>

@@ -66,14 +66,19 @@ public class ContentManagerController {
                                        @RequestParam BigDecimal price,
                                        @RequestParam(required = false) Long categoryId,
                                        @RequestParam(required = false) Long collectionId,
+                                       @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile,
                                        @RequestParam(required = false) String primaryImageUrl,
                                        @RequestParam(defaultValue = "1") Integer stockQuantity,
                                        @RequestParam(defaultValue = "BATCH") Product.InventoryType inventoryType,
                                        RedirectAttributes redirectAttributes) {
         try {
-            contentManagerService.createProduct(name, slug, price, categoryId, collectionId, primaryImageUrl, stockQuantity, inventoryType);
+            String finalImageUrl = primaryImageUrl;
+            if (imageFile != null && !imageFile.isEmpty()) {
+                finalImageUrl = handleFileUpload(imageFile);
+            }
+            contentManagerService.createProduct(name, slug, price, categoryId, collectionId, finalImageUrl, stockQuantity, inventoryType);
             redirectAttributes.addFlashAttribute("successMessage", "Product created.");
-        } catch (IllegalArgumentException ex) {
+        } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
         }
         return "redirect:/admin/content/products";
@@ -87,13 +92,18 @@ public class ContentManagerController {
                                        @RequestParam(defaultValue = "false") Boolean featured,
                                        @RequestParam(required = false) Long categoryId,
                                        @RequestParam(required = false) Long collectionId,
+                                       @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile,
                                        @RequestParam(required = false) String primaryImageUrl,
                                        @RequestParam(required = false) Integer stockQuantity,
                                        RedirectAttributes redirectAttributes) {
         try {
-            contentManagerService.updateProduct(id, name, price, available, featured, categoryId, collectionId, primaryImageUrl, stockQuantity);
+            String finalImageUrl = primaryImageUrl;
+            if (imageFile != null && !imageFile.isEmpty()) {
+                finalImageUrl = handleFileUpload(imageFile);
+            }
+            contentManagerService.updateProduct(id, name, price, available, featured, categoryId, collectionId, finalImageUrl, stockQuantity);
             redirectAttributes.addFlashAttribute("successMessage", "Product updated.");
-        } catch (IllegalArgumentException ex) {
+        } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
         }
         return "redirect:/admin/content/products";
@@ -539,5 +549,22 @@ public class ContentManagerController {
         contentManagerService.deleteMediaAsset(id);
         redirectAttributes.addFlashAttribute("successMessage", "Media asset deleted.");
         return "redirect:/admin/content/media-library";
+    }
+
+    private String handleFileUpload(org.springframework.web.multipart.MultipartFile file) throws IOException {
+        java.nio.file.Path uploadRoot = java.nio.file.Path.of(localUploadDir).toAbsolutePath().normalize();
+        java.nio.file.Files.createDirectories(uploadRoot);
+        String ext = "";
+        String original = file.getOriginalFilename() == null ? "" : file.getOriginalFilename();
+        int dot = original.lastIndexOf('.');
+        if (dot >= 0) {
+            ext = original.substring(dot).toLowerCase(java.util.Locale.ROOT);
+        }
+        String storageKey = java.util.UUID.randomUUID() + ext;
+        java.nio.file.Path target = uploadRoot.resolve(storageKey).normalize();
+        java.nio.file.Files.copy(file.getInputStream(), target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        // Save asset in MediaLibrary for reference
+        contentManagerService.createMediaAsset(storageKey, "/uploads/" + storageKey, file.getContentType(), original, "Product Image", file.getSize());
+        return "/uploads/" + storageKey;
     }
 }

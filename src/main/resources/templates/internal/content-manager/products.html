@@ -26,29 +26,29 @@
 
     <!-- KPI Strip -->
     <div class="admin-kpi-grid" style="grid-template-columns: repeat(4, 1fr);">
-        <div class="admin-kpi">
+        <a class="admin-kpi" th:href="@{/admin/content/products}">
             <div class="admin-kpi__label">Products</div>
             <div class="admin-kpi__value" th:text="${totalProducts}">0</div>
-        </div>
-        <div class="admin-kpi">
+        </a>
+        <a class="admin-kpi" href="#manage-taxonomy-section" onclick="document.getElementById('manage-taxonomy-section').style.display='block'">
             <div class="admin-kpi__label">Categories</div>
             <div class="admin-kpi__value" th:text="${totalCategories}">0</div>
-        </div>
-        <div class="admin-kpi">
+        </a>
+        <a class="admin-kpi" href="#manage-taxonomy-section" onclick="document.getElementById('manage-taxonomy-section').style.display='block'">
             <div class="admin-kpi__label">Collections</div>
             <div class="admin-kpi__value" th:text="${totalCollections}">0</div>
-        </div>
-        <div class="admin-kpi">
+        </a>
+        <a class="admin-kpi" th:href="@{/admin/content/reviews}">
             <div class="admin-kpi__label">Pending Reviews</div>
             <div class="admin-kpi__value" th:text="${pendingReviews}">0</div>
-        </div>
+        </a>
     </div>
 
     <!-- Create Product (hidden) -->
     <div class="admin-card" id="create-product-section" style="display:none; margin-bottom:1.5rem;">
         <div class="admin-card__header"><h3>Create New Product</h3></div>
         <div class="admin-card__body">
-            <form th:action="@{/admin/content/products}" method="post" class="modal-form">
+            <form th:action="@{/admin/content/products}" method="post" enctype="multipart/form-data" class="modal-form">
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">Name</label><input class="form-input" name="name" required /></div>
                     <div class="form-group"><label class="form-label">Slug</label><input class="form-input" name="slug" required /></div>
@@ -61,7 +61,7 @@
                     <div class="form-group"><label class="form-label">Inventory Type</label>
                         <select class="form-select" name="inventoryType"><option th:each="t : ${inventoryTypes}" th:value="${t}" th:text="${t}">BATCH</option></select>
                     </div>
-                    <div class="form-group"><label class="form-label">Primary Image URL</label><input class="form-input" name="primaryImageUrl" placeholder="https://..." /></div>
+                    <div class="form-group"><label class="form-label">Product Image</label><input class="form-input" type="file" name="imageFile" accept="image/*" /></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">Category</label>
@@ -224,11 +224,11 @@
                     <!-- Inline Edit Row -->
                     <tr th:each="i : ${items}" th:id="'edit-prod-' + ${i.id}" style="display:none; background:rgba(0,162,89,0.03);">
                         <td colspan="8">
-                            <form th:action="@{|/admin/content/products/${i.id}/update|}" method="post" style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:flex-end; padding:0.5rem 0;">
+                            <form th:action="@{|/admin/content/products/${i.id}/update|}" method="post" enctype="multipart/form-data" style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:flex-end; padding:0.5rem 0;">
                                 <div class="form-group" style="margin:0;flex:1;min-width:140px;"><label class="form-label">Name</label><input class="form-input" name="name" th:value="${i.name}" required /></div>
                                 <div class="form-group" style="margin:0;min-width:90px;"><label class="form-label">Price</label><input class="form-input" type="number" step="0.01" name="price" th:value="${i.price}" required /></div>
                                 <div class="form-group" style="margin:0;min-width:80px;"><label class="form-label">Stock</label><input class="form-input" type="number" name="stockQuantity" th:value="${i.stockQuantity}" /></div>
-                                <div class="form-group" style="margin:0;min-width:180px;"><label class="form-label">Image URL</label><input class="form-input" name="primaryImageUrl" th:value="${i.primaryImageUrl}" /></div>
+                                <div class="form-group" style="margin:0;min-width:180px;"><label class="form-label">Upload New Image</label><input class="form-input" type="file" name="imageFile" accept="image/*" /><input type="hidden" name="primaryImageUrl" th:value="${i.primaryImageUrl}" /></div>
                                 <div class="form-group" style="margin:0;min-width:120px;"><label class="form-label">Category</label>
                                     <select class="form-select" name="categoryId"><option value="">None</option><option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}" th:selected="${i.category != null && c.id == i.category.id}">Cat</option></select>
                                 </div>

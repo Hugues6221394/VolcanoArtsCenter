@@ -29,33 +29,19 @@
 
                 <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 1rem;" th:text="${successMessage}"></div>
 
-                <form th:if="${isAuthenticated}" th:action="@{|/art-store/${product.slug}/order|}" method="post" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-bottom: 1rem;">
-                    <h3 style="margin-bottom:1rem;">Reserve / Order</h3>
-                    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" name="recipientName" required/></div>
-                    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="recipientEmail" required/></div>
-                    <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="recipientPhone"/></div>
-                    <div class="form-group"><label class="form-label">Address</label><input class="form-input" name="addressLine1" required/></div>
-                    <div class="form-group"><label class="form-label">City</label><input class="form-input" name="city" required/></div>
-                    <div class="form-group"><label class="form-label">Country</label><input class="form-input" name="country" required/></div>
-                    <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" name="quantity" type="number" min="1" value="1"/></div>
-                    <div class="form-group">
-                        <label class="form-label">Payment Method</label>
-                        <select class="form-select" name="paymentMethod" required>
-                            <option value="STRIPE_CARD">Card (Stripe)</option>
-                            <option value="MTN_MOMO">MTN Mobile Money</option>
-                            <option value="AIRTEL_MONEY">Airtel Money</option>
-                            <option value="BANK_TRANSFER">Bank Transfer</option>
-                            <option value="OFFLINE_CASH">Offline / Cash</option>
-                        </select>
+                <form th:action="@{/cart/add}" method="post" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom: 1rem; background: var(--color-surface);">
+                    <h3 style="margin-bottom:1rem;">Reserve / Order Online</h3>
+                    <p style="color: var(--color-gray-500); margin-bottom: 1.5rem;">Add this artwork to your cart to check out. Shipping will be coordinated directly.</p>
+                    <div style="display: flex; gap: 1rem; align-items: flex-end;">
+                        <div class="form-group" style="margin:0; width: 100px;">
+                            <label class="form-label">Quantity</label>
+                            <input class="form-input" name="quantity" type="number" min="1" value="1"/>
+                        </div>
+                        <input type="hidden" name="productId" th:value="${product.id}" />
+                        <button class="btn btn--primary" type="submit" style="flex: 1;">Add to Cart</button>
+                        <a th:href="@{/cart}" class="btn btn--outline">View Cart</a>
                     </div>
-                    <input class="form-input" name="captchaToken" placeholder="Captcha token" />
-                    <button class="btn btn--primary" type="submit">Submit Order Request</button>
                 </form>
-                <div th:if="${!isAuthenticated}" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-bottom: 1rem;">
-                    <h3 style="margin-bottom:.5rem;">Purchase requires account</h3>
-                    <p class="text-muted" style="margin-bottom:.8rem;">Register or sign in as a registered client to buy this artwork.</p>
-                    <a class="btn btn--primary btn--sm" th:href="@{/login}">Sign in to Purchase</a>
-                </div>
 
                 <div style="display:flex; gap:.5rem; margin-bottom:1rem;">
                     <form th:if="${isAuthenticated}" th:action="@{|/art-store/${product.slug}/save|}" method="post">

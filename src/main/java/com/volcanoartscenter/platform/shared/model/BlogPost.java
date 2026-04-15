@@ -76,7 +76,7 @@ public class BlogPost {
     @Builder.Default
     private Long viewCount = 0L;
 
-    @Column(name = "is_highlighted", nullable = false)
+    @Column(name = "is_highlighted", columnDefinition = "boolean default false")
     @Builder.Default
     private Boolean highlighted = false;
 
