@@ -52,13 +52,15 @@ public class OpsManagerService {
     private final AvailabilityService availabilityService;
     private final ComplianceService complianceService;
     private final IntegrationFacadeService integrationFacadeService;
+    private final com.volcanoartscenter.platform.shared.service.NotificationService notificationService;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
     public long totalBookings() { return bookingRepository.count(); }
     public long totalOrders() { return shippingOrderRepository.count(); }
     public long totalInquiries() { return contactInquiryRepository.count(); }
     public long pendingTalentApplications() {
         return talentApplicationRepository.findAll().stream()
-                .filter(a -> a.getStatus() == TalentApplication.ApplicationStatus.SUBMITTED || a.getStatus() == TalentApplication.ApplicationStatus.UNDER_REVIEW)
+                .filter(a -> a.getStatus() == TalentApplication.ApplicationStatus.PENDING || a.getStatus() == TalentApplication.ApplicationStatus.AWAITING_INFO)
                 .count();
     }
 
@@ -106,9 +108,15 @@ public class OpsManagerService {
             application.setLastNotifiedChannel(notifyChannel.trim().toUpperCase(Locale.ROOT));
             application.setLastNotifiedAt(LocalDateTime.now());
         }
-        sendNotification(notifyChannel, application.getEmail(), application.getPhone(),
-                "Talent application update",
-                "Your application status is now " + status + ".");
+
+        // Domain Event decoupling for approvals
+        if (status == TalentApplication.ApplicationStatus.APPROVED) {
+            eventPublisher.publishEvent(new com.volcanoartscenter.platform.shared.event.TalentApplicationApprovedEvent(this, application));
+        } else {
+            sendNotification(notifyChannel, application.getEmail(), application.getPhone(),
+                    "Talent application update",
+                    "Your application status is now " + status + ".");
+        }
         return application;
     }
 
@@ -346,9 +354,12 @@ public class OpsManagerService {
     private void sendNotification(String channel, String email, String phone, String subject, String body) {
         String normalizedChannel = normalize(channel);
         if ("EMAIL".equals(normalizedChannel) && email != null && !email.isBlank()) {
-            integrationFacadeService.sendEmail(email.trim().toLowerCase(Locale.ROOT), subject, body);
+            notificationService.sendEmailAsync(email.trim().toLowerCase(Locale.ROOT), subject, body);
         } else if ("WHATSAPP".equals(normalizedChannel) && phone != null && !phone.isBlank()) {
-            integrationFacadeService.sendWhatsApp(phone, subject, body);
+            notificationService.sendWhatsAppAsync(phone, subject, body);
+        } else if ("BOTH".equals(normalizedChannel)) {
+            if (email != null && !email.isBlank()) notificationService.sendEmailAsync(email.trim().toLowerCase(Locale.ROOT), subject, body);
+            if (phone != null && !phone.isBlank()) notificationService.sendWhatsAppAsync(phone, subject, body);
         }
     }
 

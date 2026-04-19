@@ -97,7 +97,7 @@ public class TalentApplicantService {
                 .availabilityDetails(availabilityDetails)
                 .accessibilityNeeds(accessibilityNeeds)
                 .preferredContactChannel(normalizeChannel(preferredContactChannel))
-                .status(TalentApplication.ApplicationStatus.SUBMITTED)
+                .status(TalentApplication.ApplicationStatus.PENDING)
                 .build();
         TalentApplication saved = talentApplicationRepository.save(application);
         complianceService.recordConsent(contactEmail, "TALENT_APPLICATION_CONSENT", true, "talent-application-form");
@@ -113,8 +113,8 @@ public class TalentApplicantService {
         if (application.getUser() == null || user == null || !application.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("Application ownership mismatch.");
         }
-        if (application.getStatus() != TalentApplication.ApplicationStatus.SUBMITTED
-                && application.getStatus() != TalentApplication.ApplicationStatus.UNDER_REVIEW) {
+        if (application.getStatus() != TalentApplication.ApplicationStatus.PENDING
+                && application.getStatus() != TalentApplication.ApplicationStatus.AWAITING_INFO) {
             throw new IllegalStateException("This application can no longer be edited.");
         }
         application.setAgeRange(ageRange);

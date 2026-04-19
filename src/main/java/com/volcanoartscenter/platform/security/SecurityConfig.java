@@ -32,7 +32,7 @@ public class SecurityConfig {
                     "/tour-operators/request", "/tour-operators/register",
                     "/talent/register",
                     "/css/**", "/js/**", "/images/**", "/fonts/**",
-                    "/api/public/**"
+                    "/api/public/**", "/api/v1/webhooks/**"
                 ).permitAll()
 
                 // Internal role-based access
@@ -82,7 +82,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean

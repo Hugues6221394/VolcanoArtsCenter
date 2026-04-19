@@ -129,7 +129,7 @@
                                         <td th:text="${app.talentArea}">AREA</td>
                                         <td><span class="chip" th:data-status="${app.status}" th:text="${app.status}">SUBMITTED</span></td>
                                         <td>
-                                            <button th:if="${app.status == T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).SUBMITTED or app.status == T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).UNDER_REVIEW}" class="btn btn--outline btn--xs" th:onclick="'document.getElementById(\'edit-app-' + ${app.id} + '\').style.display=document.getElementById(\'edit-app-' + ${app.id} + '\').style.display===\'none\'?\'table-row\' : \'none\''">Edit</button>
+                                            <button th:if="${app.status == T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).PENDING or app.status == T(com.volcanoartscenter.platform.shared.model.TalentApplication.ApplicationStatus).AWAITING_INFO}" class="btn btn--outline btn--xs" th:onclick="'document.getElementById(\'edit-app-' + ${app.id} + '\').style.display=document.getElementById(\'edit-app-' + ${app.id} + '\').style.display===\'none\'?\'table-row\' : \'none\''">Edit</button>
                                         </td>
                                     </tr>
                                     <!-- Edit Drawer -->

@@ -46,9 +46,22 @@ public class Product {
     @Builder.Default
     private Integer stockQuantity = 1;
 
+    @Column(name = "reserved_quantity")
+    @Builder.Default
+    private Integer reservedQuantity = 0;
+
+    @Column(name = "reserved_until")
+    private LocalDateTime reservedUntil;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean available = true;
+
+    // Artwork lifecycle status
+    @Enumerated(EnumType.STRING)
+    @Column(name = "artwork_status", nullable = false, length = 20)
+    @Builder.Default
+    private ArtworkStatus artworkStatus = ArtworkStatus.PUBLISHED;
 
     @Column(name = "featured")
     @Builder.Default
@@ -121,6 +134,9 @@ public class Product {
     }
 
     public boolean isInStock() {
+        if (artworkStatus != ArtworkStatus.PUBLISHED) {
+            return false;
+        }
         if (inventoryType == InventoryType.UNIQUE) {
             return available;
         }
@@ -130,5 +146,12 @@ public class Product {
     public enum InventoryType {
         UNIQUE,   // One-of-a-kind artwork
         BATCH     // Handcrafts with multiple units
+    }
+
+    public enum ArtworkStatus {
+        DRAFT,       // Not yet visible on public catalog
+        PUBLISHED,   // Live and available for purchase
+        SOLD,        // Sold out (unique pieces)
+        ARCHIVED     // Removed from catalog but preserved for order history
     }
 }

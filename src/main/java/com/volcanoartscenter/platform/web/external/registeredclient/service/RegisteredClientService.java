@@ -4,6 +4,7 @@ import com.volcanoartscenter.platform.shared.model.*;
 import com.volcanoartscenter.platform.shared.repository.*;
 import com.volcanoartscenter.platform.shared.service.AvailabilityService;
 import com.volcanoartscenter.platform.shared.service.ComplianceService;
+import com.volcanoartscenter.platform.shared.service.NotificationService;
 import com.volcanoartscenter.platform.shared.service.integration.IntegrationFacadeService;
 import com.volcanoartscenter.platform.shared.service.integration.PaymentGatewayService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class RegisteredClientService {
     private final AvailabilityService availabilityService;
     private final ComplianceService complianceService;
     private final IntegrationFacadeService integrationFacadeService;
+    private final NotificationService notificationService;
 
     public List<Product> listProducts(String category, String q, BigDecimal minPrice, BigDecimal maxPrice) {
         return productRepository.searchCatalog(category, q, minPrice, maxPrice,
@@ -65,13 +67,26 @@ public class RegisteredClientService {
     public void submitProductReview(Product product, User user, String reviewerName, String reviewerEmail, String reviewerCountry,
                                     Integer rating, String comment) {
         int normalized = Math.max(1, Math.min(5, rating));
-        if (user != null && reviewRepository.findByUserAndProductId(user, product.getId()).isPresent()) {
+
+        // Guard: must be authenticated
+        if (user == null) {
+            throw new IllegalStateException("You must be logged in to leave a review.");
+        }
+
+        // Guard: must have purchased and received this product (DELIVERED status)
+        if (!shippingOrderRepository.hasDeliveredProduct(user.getId(), product.getId())) {
+            throw new IllegalStateException("You can only review products you have purchased and received.");
+        }
+
+        // Guard: one review per user per product
+        if (reviewRepository.findByUserAndProductId(user, product.getId()).isPresent()) {
             throw new IllegalStateException("You already reviewed this product.");
         }
+
         reviewRepository.save(Review.builder()
-                .reviewerName(user == null ? reviewerName : user.getFullName())
-                .reviewerEmail(user == null ? reviewerEmail : user.getEmail())
-                .reviewerCountry(user == null ? reviewerCountry : user.getCountry())
+                .reviewerName(user.getFullName())
+                .reviewerEmail(user.getEmail())
+                .reviewerCountry(user.getCountry())
                 .user(user)
                 .rating(normalized)
                 .comment(comment)
@@ -84,13 +99,26 @@ public class RegisteredClientService {
     public void submitExperienceReview(Experience experience, User user, String reviewerName, String reviewerEmail, String reviewerCountry,
                                        Integer rating, String comment) {
         int normalized = Math.max(1, Math.min(5, rating));
-        if (user != null && reviewRepository.findByUserAndExperienceId(user, experience.getId()).isPresent()) {
+
+        // Guard: must be authenticated
+        if (user == null) {
+            throw new IllegalStateException("You must be logged in to leave a review.");
+        }
+
+        // Guard: must have completed this experience (COMPLETED booking)
+        if (!bookingRepository.hasCompletedBooking(user.getId(), experience.getId())) {
+            throw new IllegalStateException("You can only review experiences you have completed.");
+        }
+
+        // Guard: one review per user per experience
+        if (reviewRepository.findByUserAndExperienceId(user, experience.getId()).isPresent()) {
             throw new IllegalStateException("You already reviewed this experience.");
         }
+
         reviewRepository.save(Review.builder()
-                .reviewerName(user == null ? reviewerName : user.getFullName())
-                .reviewerEmail(user == null ? reviewerEmail : user.getEmail())
-                .reviewerCountry(user == null ? reviewerCountry : user.getCountry())
+                .reviewerName(user.getFullName())
+                .reviewerEmail(user.getEmail())
+                .reviewerCountry(user.getCountry())
                 .user(user)
                 .rating(normalized)
                 .comment(comment)
@@ -100,14 +128,13 @@ public class RegisteredClientService {
                 .build());
     }
 
-    public ShippingOrder createShippingOrder(Product product, User user, String recipientName, String recipientEmail, String recipientPhone,
+    public ShippingOrder createShippingOrderFromCart(Cart cart, User user, String recipientName, String recipientEmail, String recipientPhone,
                                              String addressLine1, String addressLine2, String city, String state,
-                                             String postalCode, String country, Integer quantity, String paymentMethod) {
-        int qty = Math.max(1, quantity);
-        BigDecimal productTotal = product.getPrice().multiply(BigDecimal.valueOf(qty));
-        BigDecimal shipping = integrationFacadeService.estimateShipping("Rwanda".equalsIgnoreCase(country) ? "LOCAL" : "FEDEX",
-                country, product.getWeightKg() == null ? new BigDecimal("1.0") : product.getWeightKg());
-        BigDecimal total = productTotal.add(shipping);
+                                             String postalCode, String country, String paymentMethod) {
+
+        BigDecimal productTotal = BigDecimal.ZERO;
+        BigDecimal totalWeight = BigDecimal.ZERO;
+        java.util.List<OrderItem> items = new java.util.ArrayList<>();
 
         ShippingOrder order = ShippingOrder.builder()
                 .orderReference("SHIP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT))
@@ -121,17 +148,42 @@ public class RegisteredClientService {
                 .state(state)
                 .postalCode(postalCode)
                 .country(country)
-                .product(product)
-                .quantity(qty)
                 .carrier("Rwanda".equalsIgnoreCase(country) ? ShippingOrder.ShippingCarrier.LOCAL : ShippingOrder.ShippingCarrier.FEDEX)
-                .productTotal(productTotal)
-                .shippingCost(shipping)
-                .totalAmount(total)
                 .currency("USD")
                 .paymentMethod(paymentMethod)
                 .paymentStatus(ShippingOrder.PaymentStatus.UNPAID)
                 .status(ShippingOrder.OrderStatus.PENDING)
                 .build();
+
+        for (CartItem ci : cart.getItems()) {
+            Product p = ci.getProduct();
+            int qty = Math.max(1, ci.getQuantity());
+            productTotal = productTotal.add(p.getPrice().multiply(BigDecimal.valueOf(qty)));
+            totalWeight = totalWeight.add((p.getWeightKg() == null ? new BigDecimal("1.0") : p.getWeightKg()).multiply(BigDecimal.valueOf(qty)));
+            
+            OrderItem item = OrderItem.builder()
+               .order(order)
+               .product(p)
+               .quantity(qty)
+               .priceAtPurchase(p.getPrice())
+               .productName(p.getName())
+               .productImageUrl(p.getPrimaryImageUrl())
+               .build();
+            items.add(item);
+        }
+        
+        order.setOrderItems(items);
+        order.setProductTotal(productTotal);
+        
+        // For backwards compatibility until old features fully replaced
+        if (!items.isEmpty()) {
+            order.setProduct(items.getFirst().getProduct());
+            order.setQuantity(items.getFirst().getQuantity());
+        }
+
+        BigDecimal shipping = integrationFacadeService.estimateShipping("Rwanda".equalsIgnoreCase(country) ? "LOCAL" : "FEDEX", country, totalWeight);
+        order.setShippingCost(shipping);
+        order.setTotalAmount(productTotal.add(shipping));
 
         ShippingOrder saved = shippingOrderRepository.save(order);
         PaymentGatewayService.PaymentResult payment = integrationFacadeService.initializePayment(
@@ -144,7 +196,7 @@ public class RegisteredClientService {
             saved.setTrackingNumber(integrationFacadeService.createShipment("FEDEX", saved.getOrderReference()));
         }
         shippingOrderRepository.save(saved);
-        integrationFacadeService.sendEmail(recipientEmail, "Order received: " + saved.getOrderReference(),
+        notificationService.sendEmailAsync(recipientEmail, "Order received: " + saved.getOrderReference(),
                 "Your order has been received and is being processed.");
         return saved;
     }
@@ -296,7 +348,7 @@ public class RegisteredClientService {
                 .motivation(motivation)
                 .availabilityDetails(availabilityDetails)
                 .accessibilityNeeds(accessibilityNeeds)
-                .status(TalentApplication.ApplicationStatus.SUBMITTED)
+                .status(TalentApplication.ApplicationStatus.PENDING)
                 .build();
         TalentApplication saved = talentApplicationRepository.save(application);
         complianceService.recordConsent(email, "TALENT_APPLICATION_CONSENT", true, "talent-application-form");

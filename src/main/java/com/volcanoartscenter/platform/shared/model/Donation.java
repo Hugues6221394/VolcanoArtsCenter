@@ -29,6 +29,10 @@ public class Donation {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "campaign_id")
+    private DonationCampaign campaign;
+
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
 

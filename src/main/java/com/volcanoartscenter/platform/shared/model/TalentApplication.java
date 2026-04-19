@@ -37,6 +37,10 @@ public class TalentApplication {
     @JoinColumn(name = "user_id")
     private User user;
 
+    // Human-readable reference number (e.g. "VAC-2026-00142")
+    @Column(name = "reference_number", unique = true, length = 30)
+    private String referenceNumber;
+
     // Category of applicant
     @Enumerated(EnumType.STRING)
     @Column(name = "applicant_category", nullable = false, length = 30)
@@ -65,10 +69,17 @@ public class TalentApplication {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private ApplicationStatus status = ApplicationStatus.SUBMITTED;
+    private ApplicationStatus status = ApplicationStatus.PENDING;
 
     @Column(name = "admin_notes", columnDefinition = "TEXT")
     private String adminNotes;
+
+    // Feedback shown to the applicant on rejection or info request
+    @Column(name = "feedback_to_applicant", columnDefinition = "TEXT")
+    private String feedbackToApplicant;
+
+    @Column(name = "reviewed_by")
+    private Long reviewedBy;
 
     @Column(name = "preferred_contact_channel", length = 20)
     private String preferredContactChannel;
@@ -89,7 +100,13 @@ public class TalentApplication {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        // Auto-generate reference number
+        if (referenceNumber == null) {
+            referenceNumber = "VAC-" + java.time.Year.now().getValue() + "-"
+                    + String.format("%05d", System.nanoTime() % 100000);
+        }
     }
+
 
     public enum ApplicantCategory {
         YOUTH,
@@ -103,6 +120,7 @@ public class TalentApplication {
     public enum TalentArea {
         TRADITIONAL_DANCE,
         STORYTELLING,
+        CULTURAL_PERFORMANCE,
         MUSIC,
         VISUAL_ARTS,
         CRAFTS,
@@ -110,9 +128,10 @@ public class TalentApplication {
     }
 
     public enum ApplicationStatus {
-        SUBMITTED,
-        UNDER_REVIEW,
-        ACCEPTED,
-        DECLINED
+        PENDING,          // Submitted, awaiting review
+        APPROVED,         // Accepted into the talent program
+        REJECTED,         // Declined with feedback
+        AWAITING_INFO,    // Staff requested additional information
+        ARCHIVED          // Closed / no further action
     }
 }

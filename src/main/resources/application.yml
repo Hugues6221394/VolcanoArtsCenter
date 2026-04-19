@@ -41,6 +41,14 @@ spring:
       max-file-size: 10MB
       max-request-size: 50MB
 
+# ── AWS S3 (Phase 4 Media) ──
+aws:
+  s3:
+    region: ${AWS_REGION:us-east-1}
+    bucket-name: ${AWS_S3_BUCKET:volcano-arts-media}
+    access-key: ${AWS_ACCESS_KEY:mock_access_key}
+    secret-key: ${AWS_SECRET_KEY:mock_secret_key}
+
 # ── Server ──
 server:
   port: 8080

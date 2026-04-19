@@ -97,55 +97,7 @@ public class RegisteredClientController {
         return "redirect:/art-store/" + slug;
     }
 
-    @PostMapping("/art-store/{slug}/order")
-    public String placeShippingOrder(@PathVariable String slug,
-                                     @RequestParam String recipientName,
-                                     @RequestParam String recipientEmail,
-                                     @RequestParam(required = false) String recipientPhone,
-                                     @RequestParam String addressLine1,
-                                     @RequestParam(required = false) String addressLine2,
-                                     @RequestParam String city,
-                                     @RequestParam(required = false) String state,
-                                     @RequestParam(required = false) String postalCode,
-                                     @RequestParam String country,
-                                     @RequestParam(defaultValue = "1") Integer quantity,
-                                     @RequestParam String paymentMethod,
-                                     @RequestParam(required = false) String captchaToken,
-                                     Authentication authentication,
-                                     RedirectAttributes redirectAttributes) {
-        if (!isAuthenticated(authentication)) {
-            redirectAttributes.addFlashAttribute("successMessage", "Please register or sign in to purchase artworks.");
-            return "redirect:/login";
-        }
-        if (!captchaService.verify(captchaToken)) {
-            redirectAttributes.addFlashAttribute("successMessage", "Captcha validation failed.");
-            return "redirect:/art-store/" + slug;
-        }
-        Product product = registeredClientService.findProduct(slug).orElse(null);
-        if (product == null) {
-            return "redirect:/art-store";
-        }
-        User user = currentUser(authentication).orElse(null);
 
-        ShippingOrder order = registeredClientService.createShippingOrder(
-                product,
-                user,
-                user == null ? recipientName : user.getFullName(),
-                user == null ? recipientEmail : user.getEmail(),
-                user == null ? recipientPhone : user.getPhone(),
-                addressLine1,
-                addressLine2,
-                city,
-                state,
-                postalCode,
-                country,
-                quantity,
-                paymentMethod
-        );
-        redirectAttributes.addFlashAttribute("successMessage",
-                "Order received. Reference: " + order.getOrderReference() + ". Our team will contact you with payment/shipping details.");
-        return "redirect:/art-store/" + slug;
-    }
 
     @GetMapping("/experiences")
     public String experiences(Model model) {

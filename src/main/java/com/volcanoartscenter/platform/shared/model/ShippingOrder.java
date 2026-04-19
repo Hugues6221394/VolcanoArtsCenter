@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "shipping_orders")
@@ -60,6 +62,11 @@ public class ShippingOrder {
     @Column(nullable = false)
     @Builder.Default
     private Integer quantity = 1;
+
+    // Multi-item order support (new spec)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     // Carrier
     @Enumerated(EnumType.STRING)

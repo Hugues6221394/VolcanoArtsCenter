@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,10 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, Long> {
     Optional<BlogPost> findBySlugAndPublishedTrue(String slug);
     Optional<BlogPost> findBySlug(String slug);
     boolean existsBySlug(String slug);
+
+    /** Used by BlogSchedulerService to auto-publish posts at their scheduled time. */
+    List<BlogPost> findByPublishedFalseAndPublishedAtNotNullAndPublishedAtBefore(LocalDateTime cutoff);
+
     @Query("""
             SELECT p FROM BlogPost p
             WHERE (:q IS NULL OR :q = '' OR
