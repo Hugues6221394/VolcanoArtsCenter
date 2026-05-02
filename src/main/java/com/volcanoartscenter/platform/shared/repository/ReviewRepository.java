@@ -2,7 +2,10 @@ package com.volcanoartscenter.platform.shared.repository;
 
 import com.volcanoartscenter.platform.shared.model.Review;
 import com.volcanoartscenter.platform.shared.model.User;
+<<<<<<< HEAD
 import org.springframework.data.jpa.repository.EntityGraph;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,6 +15,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findTop6ByApprovedTrueOrderByCreatedAtDesc();
     List<Review> findByProductIdAndApprovedTrueOrderByCreatedAtDesc(Long productId);
     List<Review> findByExperienceIdAndApprovedTrueOrderByCreatedAtDesc(Long experienceId);
+<<<<<<< HEAD
 
     @EntityGraph(attributePaths = {"product", "experience", "user"})
     List<Review> findTop200ByOrderByCreatedAtDesc();
@@ -19,6 +23,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @EntityGraph(attributePaths = {"product", "experience"})
     List<Review> findByUserOrderByCreatedAtDesc(User user);
 
+=======
+    List<Review> findTop200ByOrderByCreatedAtDesc();
+    List<Review> findByUserOrderByCreatedAtDesc(User user);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     Optional<Review> findByUserAndProductId(User user, Long productId);
     Optional<Review> findByUserAndExperienceId(User user, Long experienceId);
 }

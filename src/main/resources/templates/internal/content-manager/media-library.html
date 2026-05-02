@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/admin-base}">
@@ -426,5 +427,71 @@
         });
     </script>
 </th:block>
+=======
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin-base}">
+<head><title>Media Library</title></head>
+<body>
+<th:block layout:fragment="breadcrumb"><a th:href="@{/admin/dashboard}">Admin</a><span class="sep">›</span><span>Media Library</span></th:block>
+<main layout:fragment="content">
+    <div class="admin-page-header">
+        <div class="admin-page-header__info"><h1>Media Library</h1><p>Upload, organize, and manage media assets.</p></div>
+        <div class="admin-page-header__actions">
+            <button class="btn btn--primary btn--sm" onclick="document.getElementById('upload-section').style.display=document.getElementById('upload-section').style.display==='none'?'block':'none'">+ Upload Media</button>
+            <button class="btn btn--outline btn--sm" onclick="document.getElementById('url-section').style.display=document.getElementById('url-section').style.display==='none'?'block':'none'">+ Add by URL</button>
+        </div>
+    </div>
+    <!-- Upload Form -->
+    <div class="admin-card" id="upload-section" style="display:none;margin-bottom:1rem;">
+        <div class="admin-card__header"><h3>Upload File</h3></div>
+        <div class="admin-card__body">
+            <form th:action="@{/admin/content/media-library/upload}" method="post" enctype="multipart/form-data" class="modal-form">
+                <div class="form-row"><div class="form-group"><label class="form-label">File</label><input class="form-input" type="file" name="file" required /></div><div class="form-group"><label class="form-label">Title</label><input class="form-input" name="title" /></div></div>
+                <div class="form-row--full"><div class="form-group"><label class="form-label">Alt Text</label><input class="form-input" name="altText" /></div></div>
+                <div class="form-actions"><button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('upload-section').style.display='none'">Cancel</button><button type="submit" class="btn btn--primary btn--sm">Upload</button></div>
+            </form>
+        </div>
+    </div>
+    <!-- URL Form -->
+    <div class="admin-card" id="url-section" style="display:none;margin-bottom:1rem;">
+        <div class="admin-card__header"><h3>Add Media by URL</h3></div>
+        <div class="admin-card__body">
+            <form th:action="@{/admin/content/media-library}" method="post" class="modal-form">
+                <div class="form-row"><div class="form-group"><label class="form-label">Storage Key</label><input class="form-input" name="storageKey" required /></div><div class="form-group"><label class="form-label">Public URL</label><input class="form-input" name="publicUrl" required /></div></div>
+                <div class="form-row"><div class="form-group"><label class="form-label">Content Type</label><input class="form-input" name="contentType" placeholder="image/jpeg" /></div><div class="form-group"><label class="form-label">Title</label><input class="form-input" name="title" /></div></div>
+                <div class="form-row"><div class="form-group"><label class="form-label">Alt Text</label><input class="form-input" name="altText" /></div><div class="form-group"><label class="form-label">File Size (bytes)</label><input class="form-input" type="number" name="fileSizeBytes" /></div></div>
+                <div class="form-actions"><button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('url-section').style.display='none'">Cancel</button><button type="submit" class="btn btn--primary btn--sm">Save</button></div>
+            </form>
+        </div>
+    </div>
+    <!-- Filter -->
+    <div class="admin-card" style="margin-bottom:1rem;">
+        <div class="admin-card__body" style="padding:.75rem 1rem;">
+            <form method="get" th:action="@{/admin/content/media-library}" style="display:flex;gap:.5rem;align-items:center;">
+                <input class="form-input" name="q" placeholder="Search titles..." th:value="${q}" style="flex:1;" />
+                <select class="form-select" name="contentType" style="min-width:130px;"><option value="">All types</option><option value="image" th:selected="${contentType == 'image'}">Images</option><option value="video" th:selected="${contentType == 'video'}">Videos</option></select>
+                <button class="btn btn--outline btn--sm" type="submit">Filter</button>
+            </form>
+        </div>
+    </div>
+    <!-- Media Table -->
+    <div class="admin-card">
+        <div class="admin-card__header"><h3>All Media</h3><span class="chip chip--info" th:text="${#lists.size(items)} + ' assets'">0</span></div>
+        <div class="admin-card__body--flush"><div class="admin-table-wrap">
+            <table class="admin-table"><thead><tr><th>Preview</th><th>Title</th><th>Type</th><th>URL</th><th>Size</th><th>Actions</th></tr></thead>
+            <tbody>
+            <tr th:each="m : ${items}">
+                <td><img th:if="${m.contentType != null && m.contentType.startsWith('image')}" th:src="${m.publicUrl}" alt="" style="width:50px;height:50px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid rgba(255,255,255,.08);" /><span th:unless="${m.contentType != null && m.contentType.startsWith('image')}">📎</span></td>
+                <td class="cell-primary" th:text="${m.title ?: m.storageKey}">Asset</td>
+                <td><span class="chip" th:text="${m.contentType ?: 'unknown'}">type</span></td>
+                <td class="cell-mono" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" th:text="${m.publicUrl}">url</td>
+                <td th:text="${m.fileSizeBytes != null ? (m.fileSizeBytes / 1024) + ' KB' : '-'}">-</td>
+                <td><form th:action="@{|/admin/content/media-library/${m.id}/delete|}" method="post" style="display:inline;"><button class="btn btn--ghost btn--xs" type="submit" onclick="return confirm('Delete?')">Delete</button></form></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}"><td colspan="6" class="admin-empty"><div class="admin-empty__icon">🖼️</div><div class="admin-empty__text">No media assets yet</div></td></tr>
+            </tbody></table>
+        </div></div>
+    </div>
+</main>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 </body>
 </html>

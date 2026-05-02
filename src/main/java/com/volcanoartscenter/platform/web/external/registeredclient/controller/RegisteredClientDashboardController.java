@@ -23,7 +23,11 @@ public class RegisteredClientDashboardController {
         if (user == null) {
             return "redirect:/login";
         }
+<<<<<<< HEAD
         model.addAttribute("currentPage", "client-dashboard");
+=======
+        model.addAttribute("currentPage", "art-store");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("pageTitle", "Registered Client Dashboard");
         model.addAttribute("userEmail", user.getEmail());
         model.addAttribute("user", user);

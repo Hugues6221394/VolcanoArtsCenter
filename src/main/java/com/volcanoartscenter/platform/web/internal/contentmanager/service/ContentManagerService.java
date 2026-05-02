@@ -23,10 +23,13 @@ import com.volcanoartscenter.platform.web.internal.superadmin.service.SuperAdmin
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+<<<<<<< HEAD
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import java.util.Locale;
 import java.util.Optional;
 
@@ -58,12 +61,17 @@ public class ContentManagerService {
     public java.util.List<Product> listProducts(Boolean available, Boolean featured, Long categoryId, Long collectionId, String q) {
         return productRepository.searchForCms(available, featured, categoryId, collectionId, q);
     }
+<<<<<<< HEAD
     public Product createProduct(String name, String slug, BigDecimal price, Long categoryId, Long collectionId,
                                  String primaryImageUrl, List<String> additionalImages, Integer stockQuantity,
                                  Product.InventoryType inventoryType, String shortDescription, String description,
                                  BigDecimal compareAtPrice, Product.ArtworkStatus artworkStatus, String artistName,
                                  String artistStory, String dimensions, String medium, BigDecimal weightKg,
                                  Boolean shippable, String shippingNote, Boolean available, Boolean featured) {
+=======
+    public Product createProduct(String name, String slug, java.math.BigDecimal price, Long categoryId, Long collectionId,
+                                 String primaryImageUrl, Integer stockQuantity, Product.InventoryType inventoryType) {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Product name is required");
         }
@@ -77,6 +85,7 @@ public class ContentManagerService {
         if (productRepository.existsBySlug(normalizedSlug)) {
             throw new IllegalArgumentException("Product slug already exists");
         }
+<<<<<<< HEAD
         validateProductNumbers(price, compareAtPrice, weightKg);
         ProductCategory category = categoryId == null ? null : productCategoryRepository.findById(categoryId).orElse(null);
         ProductCollection collection = collectionId == null ? null : productCollectionRepository.findById(collectionId).orElse(null);
@@ -99,6 +108,28 @@ public class ContentManagerService {
                                  BigDecimal compareAtPrice, Product.ArtworkStatus artworkStatus, String artistName,
                                  String artistStory, String dimensions, String medium, BigDecimal weightKg,
                                  Boolean shippable, String shippingNote, Boolean available, Boolean featured) {
+=======
+        ProductCategory category = categoryId == null ? null : productCategoryRepository.findById(categoryId).orElse(null);
+        ProductCollection collection = collectionId == null ? null : productCollectionRepository.findById(collectionId).orElse(null);
+        Product product = Product.builder()
+                .name(name)
+                .slug(normalizedSlug)
+                .description("New product")
+                .shortDescription("New product")
+                .price(price)
+                .category(category)
+                .collection(collection)
+                .primaryImageUrl(primaryImageUrl)
+                .stockQuantity(stockQuantity == null ? 1 : Math.max(0, stockQuantity))
+                .inventoryType(inventoryType == null ? Product.InventoryType.BATCH : inventoryType)
+                .available(true)
+                .featured(false)
+                .build();
+        return productRepository.save(product);
+    }
+    public Product updateProduct(Long id, java.lang.String name, java.math.BigDecimal price, java.lang.Boolean available, java.lang.Boolean featured,
+                                 Long categoryId, Long collectionId, String primaryImageUrl, Integer stockQuantity) {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         Product product = productRepository.findById(id).orElseThrow();
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Product name is required");
@@ -106,6 +137,7 @@ public class ContentManagerService {
         if (price == null || price.signum() < 0) {
             throw new IllegalArgumentException("Price must be zero or positive");
         }
+<<<<<<< HEAD
         validateProductNumbers(price, compareAtPrice, weightKg);
         ProductCategory category = categoryId == null ? null : productCategoryRepository.findById(categoryId).orElse(null);
         ProductCollection collection = collectionId == null ? null : productCollectionRepository.findById(collectionId).orElse(null);
@@ -114,6 +146,20 @@ public class ContentManagerService {
         applyProductContent(product, primaryImageUrl, additionalImages, stockQuantity, inventoryType, shortDescription,
                 description, compareAtPrice, artworkStatus, artistName, artistStory, dimensions, medium, weightKg,
                 shippable, shippingNote, available, featured, category, collection);
+=======
+        ProductCategory category = categoryId == null ? null : productCategoryRepository.findById(categoryId).orElse(null);
+        ProductCollection collection = collectionId == null ? null : productCollectionRepository.findById(collectionId).orElse(null);
+        product.setName(name);
+        product.setPrice(price);
+        product.setAvailable(Boolean.TRUE.equals(available));
+        product.setFeatured(Boolean.TRUE.equals(featured));
+        product.setCategory(category);
+        product.setCollection(collection);
+        product.setPrimaryImageUrl(primaryImageUrl);
+        if (stockQuantity != null) {
+            product.setStockQuantity(Math.max(0, stockQuantity));
+        }
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return productRepository.save(product);
     }
 
@@ -274,7 +320,11 @@ public class ContentManagerService {
     }
     public void deleteBlogPost(Long id) { superAdminService.deleteBlogPost(id); }
 
+<<<<<<< HEAD
     public List<Review> listReviews() { return reviewRepository.findTop200ByOrderByCreatedAtDesc(); }
+=======
+    public Object listReviews() { return reviewRepository.findTop200ByOrderByCreatedAtDesc(); }
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     public Review approveReview(Long id, Boolean approved, Boolean featured) {
         Review review = reviewRepository.findById(id).orElseThrow();
         review.setApproved(Boolean.TRUE.equals(approved));
@@ -290,6 +340,7 @@ public class ContentManagerService {
         return experienceRepository.searchForCms(active, q);
     }
 
+<<<<<<< HEAD
     public Experience createExperience(String title, String slug, String shortDescription, String description,
                                        String location, java.math.BigDecimal pricePerPerson, java.math.BigDecimal groupPrice,
                                        String priceNote, Experience.ExperienceType experienceType,
@@ -298,6 +349,12 @@ public class ContentManagerService {
                                        String whatsIncluded, String whatToBring, String primaryImageUrl,
                                        List<String> additionalImages, Boolean availableDaily, String availableDays,
                                        Boolean active, Boolean featured, Long primaryMediaId) {
+=======
+    public Experience createExperience(String title, String slug, String shortDescription, String location,
+                                       java.math.BigDecimal pricePerPerson, Experience.ExperienceType experienceType,
+                                       Experience.BookingType bookingType, Integer minGroupSize, Integer maxGroupSize,
+                                       Boolean active, Boolean featured, String primaryImageUrl, Long primaryMediaId) {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Experience title is required");
         }
@@ -308,6 +365,7 @@ public class ContentManagerService {
         if (experienceRepository.existsBySlug(normalizedSlug)) {
             throw new IllegalArgumentException("Experience slug already exists");
         }
+<<<<<<< HEAD
         validateExperienceNumbers(pricePerPerson, groupPrice, durationHours);
         Experience entity = Experience.builder()
                 .title(title.trim())
@@ -338,6 +396,48 @@ public class ContentManagerService {
                 experienceType, bookingType, minGroupSize, maxGroupSize, durationHours, meetingPoint,
                 languagesOffered, whatsIncluded, whatToBring, primaryImageUrl, additionalImages, availableDaily,
                 availableDays, active, featured, primaryMediaId);
+=======
+        Experience entity = Experience.builder()
+                .title(title)
+                .slug(normalizedSlug)
+                .description(shortDescription == null ? "" : shortDescription)
+                .shortDescription(shortDescription)
+                .location(location)
+                .pricePerPerson(pricePerPerson)
+                .experienceType(experienceType == null ? Experience.ExperienceType.CULTURAL : experienceType)
+                .bookingType(bookingType == null ? Experience.BookingType.INQUIRY : bookingType)
+                .minGroupSize(minGroupSize == null ? 1 : Math.max(1, minGroupSize))
+                .maxGroupSize(maxGroupSize == null ? 15 : Math.max(1, maxGroupSize))
+                .active(Boolean.TRUE.equals(active))
+                .featured(Boolean.TRUE.equals(featured))
+                .primaryImageUrl(primaryImageUrl)
+                .primaryMediaId(primaryMediaId)
+                .build();
+        return experienceRepository.save(entity);
+    }
+
+    public Experience updateExperience(Long id, String title, String shortDescription, String location,
+                                       java.math.BigDecimal pricePerPerson, Experience.ExperienceType experienceType,
+                                       Experience.BookingType bookingType, Integer minGroupSize, Integer maxGroupSize,
+                                       Boolean active, Boolean featured, String primaryImageUrl, Long primaryMediaId) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Experience title is required");
+        }
+        Experience entity = experienceRepository.findById(id).orElseThrow();
+        entity.setTitle(title);
+        entity.setDescription(shortDescription == null ? "" : shortDescription);
+        entity.setShortDescription(shortDescription);
+        entity.setLocation(location);
+        entity.setPricePerPerson(pricePerPerson);
+        entity.setExperienceType(experienceType);
+        entity.setBookingType(bookingType);
+        entity.setMinGroupSize(minGroupSize == null ? 1 : Math.max(1, minGroupSize));
+        entity.setMaxGroupSize(maxGroupSize == null ? 15 : Math.max(1, maxGroupSize));
+        entity.setActive(Boolean.TRUE.equals(active));
+        entity.setFeatured(Boolean.TRUE.equals(featured));
+        entity.setPrimaryImageUrl(primaryImageUrl);
+        entity.setPrimaryMediaId(primaryMediaId);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return experienceRepository.save(entity);
     }
 
@@ -468,6 +568,7 @@ public class ContentManagerService {
     public Optional<MediaAsset> findMediaAsset(Long id) {
         return mediaAssetRepository.findById(id);
     }
+<<<<<<< HEAD
 
     private void applyProductContent(Product product, String primaryImageUrl, List<String> additionalImages,
                                      Integer stockQuantity, Product.InventoryType inventoryType, String shortDescription,
@@ -585,4 +686,6 @@ public class ContentManagerService {
         String normalized = value.trim();
         return normalized.isEmpty() ? null : normalized;
     }
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 }

@@ -78,7 +78,14 @@
 
                 <li th:if="${navContext.tourOperator}"><a th:href="@{/tour-operators/portal}">Operator Portal</a></li>
                 <li th:if="${navContext.talentApplicant}"><a th:href="@{/talent/dashboard}">My Dashboard</a></li>
+<<<<<<< HEAD
                 <li th:if="${navContext.registeredClient}"><a th:href="@{/cart}" th:classappend="${#strings.equals(currentPage, 'cart')} ? 'active'">Cart</a></li>
+=======
+                <li th:if="${navContext.registeredClient}"><a th:href="@{/client/dashboard}">My Dashboard</a></li>
+                <li th:if="${navContext.authenticated}">
+                    <form th:action="@{/logout}" method="post"><button type="submit" class="btn btn--ghost btn--sm">Logout</button></form>
+                </li>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
             </ul>
 
             <div class="nav__cta">
@@ -88,6 +95,7 @@
                 </button>
                 <a th:if="${!navContext.authenticated}" th:href="@{/experiences}" class="btn btn--primary btn--sm">Book Experience</a>
                 <a th:if="${!navContext.authenticated}" th:href="@{/login}" class="btn btn--outline btn--sm" style="margin-left:.5rem;">Login</a>
+<<<<<<< HEAD
                 <div th:if="${navContext.registeredClient}" class="nav__client-utility">
                     <a th:href="@{/client/dashboard}" class="nav__client-pill nav__client-pill--strong" th:classappend="${#strings.equals(currentPage, 'client-dashboard')} ? ' nav__client-pill--active'">Client Home</a>
                     <a th:href="@{/cart}" class="nav__client-pill" th:classappend="${#strings.equals(currentPage, 'cart')} ? ' nav__client-pill--active'">Cart</a>
@@ -97,6 +105,10 @@
                 </div>
                 <a th:if="${navContext.authenticated and !navContext.registeredClient}" th:href="${navContext.dashboardUrl}" class="btn btn--primary btn--sm" th:text="${navContext.roleLabel + ' Home'}">Dashboard</a>
                 <form th:if="${navContext.authenticated and !navContext.registeredClient}" th:action="@{/logout}" method="post" style="display:inline-block;">
+=======
+                <a th:if="${navContext.authenticated}" th:href="${navContext.dashboardUrl}" class="btn btn--primary btn--sm" th:text="${navContext.roleLabel + ' Home'}">Dashboard</a>
+                <form th:if="${navContext.authenticated}" th:action="@{/logout}" method="post" style="display:inline-block;">
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                     <button type="submit" class="btn btn--outline btn--sm" style="margin-left:.5rem;">Logout</button>
                 </form>
             </div>

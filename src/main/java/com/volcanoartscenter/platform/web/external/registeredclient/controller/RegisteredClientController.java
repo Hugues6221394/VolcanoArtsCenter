@@ -27,8 +27,11 @@ public class RegisteredClientController {
                            @RequestParam(required = false) BigDecimal minPrice,
                            @RequestParam(required = false) BigDecimal maxPrice,
                            Model model) {
+<<<<<<< HEAD
         User user = currentUser(authentication).orElse(null);
         boolean isAuthenticated = authentication != null && authentication.isAuthenticated() && authentication.getName() != null && !"anonymousUser".equals(authentication.getName());
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("currentPage", "art-store");
         model.addAttribute("pageTitle", "Art Store — Volcano Arts Center");
         model.addAttribute("products", registeredClientService.listProducts(category, q, minPrice, maxPrice));
@@ -70,17 +73,25 @@ public class RegisteredClientController {
         model.addAttribute("pageTitle", product.getName() + " — Volcano Arts Center");
         model.addAttribute("product", product);
         model.addAttribute("reviews", registeredClientService.productReviews(product.getId()));
+<<<<<<< HEAD
         model.addAttribute("isAuthenticated", isAuthenticated);
         model.addAttribute("canSubmitReview", registeredClientService.canSubmitProductReview(product, user));
         model.addAttribute("reviewStatusMessage", registeredClientService.productReviewStatus(product, user));
         model.addAttribute("reviewerDisplayName", user != null ? user.getFullName() : null);
         model.addAttribute("reviewerDisplayEmail", user != null ? user.getEmail() : null);
+=======
+        model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated() && authentication.getName() != null && !"anonymousUser".equals(authentication.getName()));
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "external/registered-client/product-detail";
     }
 
     @PostMapping("/art-store/{slug}/reviews")
     public String submitProductReview(@PathVariable String slug,
+<<<<<<< HEAD
                                       @RequestParam(required = false) String reviewerName,
+=======
+                                      @RequestParam String reviewerName,
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                                       @RequestParam(required = false) String reviewerEmail,
                                       @RequestParam(required = false) String reviewerCountry,
                                       @RequestParam Integer rating,
@@ -89,7 +100,11 @@ public class RegisteredClientController {
                                       Authentication authentication,
                                       RedirectAttributes redirectAttributes) {
         if (!captchaService.verify(captchaToken)) {
+<<<<<<< HEAD
             redirectAttributes.addFlashAttribute("errorMessage", "Captcha validation failed.");
+=======
+            redirectAttributes.addFlashAttribute("successMessage", "Captcha validation failed.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
             return "redirect:/art-store/" + slug;
         }
         Product product = registeredClientService.findProduct(slug).orElse(null);
@@ -98,12 +113,17 @@ public class RegisteredClientController {
         }
 
         User user = currentUser(authentication).orElse(null);
+<<<<<<< HEAD
         try {
             registeredClientService.submitProductReview(product, user, reviewerName, reviewerEmail, reviewerCountry, rating, comment);
             redirectAttributes.addFlashAttribute("successMessage", "Review submitted. It will appear after moderation.");
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
+=======
+        registeredClientService.submitProductReview(product, user, reviewerName, reviewerEmail, reviewerCountry, rating, comment);
+        redirectAttributes.addFlashAttribute("successMessage", "Review submitted. It will appear after moderation.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "redirect:/art-store/" + slug;
     }
 
@@ -111,8 +131,11 @@ public class RegisteredClientController {
 
     @GetMapping("/experiences")
     public String experiences(Model model) {
+<<<<<<< HEAD
         User user = currentUser(authentication).orElse(null);
         boolean isAuthenticated = authentication != null && authentication.isAuthenticated() && authentication.getName() != null && !"anonymousUser".equals(authentication.getName());
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("currentPage", "experiences");
         model.addAttribute("pageTitle", "Experiences — Volcano Arts Center");
         model.addAttribute("experiences", registeredClientService.activeExperiences());
@@ -131,11 +154,15 @@ public class RegisteredClientController {
         model.addAttribute("experience", experience);
         model.addAttribute("reviews", registeredClientService.experienceReviews(experience.getId()));
         model.addAttribute("availabilitySlots", registeredClientService.upcomingSlots(experience.getId()));
+<<<<<<< HEAD
         model.addAttribute("isAuthenticated", isAuthenticated);
         model.addAttribute("canSubmitReview", registeredClientService.canSubmitExperienceReview(experience, user));
         model.addAttribute("reviewStatusMessage", registeredClientService.experienceReviewStatus(experience, user));
         model.addAttribute("reviewerDisplayName", user != null ? user.getFullName() : null);
         model.addAttribute("reviewerDisplayEmail", user != null ? user.getEmail() : null);
+=======
+        model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated() && authentication.getName() != null && !"anonymousUser".equals(authentication.getName()));
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "external/registered-client/experience-detail";
     }
 
@@ -170,6 +197,7 @@ public class RegisteredClientController {
         }
         User user = currentUser(authentication).orElse(null);
 
+<<<<<<< HEAD
         try {
             Booking booking = registeredClientService.createBooking(
                     experience,
@@ -186,12 +214,30 @@ public class RegisteredClientController {
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
         }
+=======
+        Booking booking = registeredClientService.createBooking(
+                experience,
+                user,
+                user == null ? guestName : user.getFullName(),
+                user == null ? guestEmail : user.getEmail(),
+                user == null ? guestPhone : user.getPhone(),
+                user == null ? guestCountry : user.getCountry(),
+                preferredDate, alternativeDate, groupSize, preferredLanguage,
+                paymentMethod, specialRequests, tourOperatorName, tourOperatorEmail
+        );
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Booking request received. Reference: " + booking.getBookingReference() + ".");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "redirect:/experiences/" + slug;
     }
 
     @PostMapping("/experiences/{slug}/reviews")
     public String submitExperienceReview(@PathVariable String slug,
+<<<<<<< HEAD
                                          @RequestParam(required = false) String reviewerName,
+=======
+                                         @RequestParam String reviewerName,
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                                          @RequestParam(required = false) String reviewerEmail,
                                          @RequestParam(required = false) String reviewerCountry,
                                          @RequestParam Integer rating,
@@ -200,7 +246,11 @@ public class RegisteredClientController {
                                          Authentication authentication,
                                          RedirectAttributes redirectAttributes) {
         if (!captchaService.verify(captchaToken)) {
+<<<<<<< HEAD
             redirectAttributes.addFlashAttribute("errorMessage", "Captcha validation failed.");
+=======
+            redirectAttributes.addFlashAttribute("successMessage", "Captcha validation failed.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
             return "redirect:/experiences/" + slug;
         }
         Experience experience = registeredClientService.findExperience(slug).orElse(null);
@@ -208,21 +258,29 @@ public class RegisteredClientController {
             return "redirect:/experiences";
         }
         User user = currentUser(authentication).orElse(null);
+<<<<<<< HEAD
         try {
             registeredClientService.submitExperienceReview(experience, user, reviewerName, reviewerEmail, reviewerCountry, rating, comment);
             redirectAttributes.addFlashAttribute("successMessage", "Review submitted. It will appear after moderation.");
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
+=======
+        registeredClientService.submitExperienceReview(experience, user, reviewerName, reviewerEmail, reviewerCountry, rating, comment);
+        redirectAttributes.addFlashAttribute("successMessage", "Review submitted. It will appear after moderation.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "redirect:/experiences/" + slug;
     }
 
     @GetMapping("/conservation")
     public String conservation(Model model) {
         model.addAttribute("currentPage", "conservation");
+<<<<<<< HEAD
         model.addAttribute("campaigns", registeredClientService.activeDonationCampaigns());
         model.addAttribute("donationPurposes", Donation.DonationPurpose.values());
         model.addAttribute("recurringFrequencies", Donation.RecurringFrequency.values());
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("pageTitle", "Conservation — Volcano Arts Center");
         return "external/registered-client/conservation";
     }
@@ -235,6 +293,7 @@ public class RegisteredClientController {
                          @RequestParam(defaultValue = "USD") String currency,
                          @RequestParam(defaultValue = "GENERAL") Donation.DonationPurpose purpose,
                          @RequestParam(required = false) String message,
+<<<<<<< HEAD
                          @RequestParam(defaultValue = "false") Boolean isRecurring,
                          @RequestParam(required = false) Donation.RecurringFrequency recurringFrequency,
                          @RequestParam(required = false) String paymentMethod,
@@ -256,6 +315,24 @@ public class RegisteredClientController {
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
+=======
+                          @RequestParam(defaultValue = "false") Boolean isRecurring,
+                          @RequestParam(required = false) Donation.RecurringFrequency recurringFrequency,
+                          @RequestParam String paymentMethod,
+                          @RequestParam(required = false) String captchaToken,
+                          Authentication authentication,
+                          RedirectAttributes redirectAttributes) {
+        if (!captchaService.verify(captchaToken)) {
+            redirectAttributes.addFlashAttribute("successMessage", "Captcha validation failed.");
+            return "redirect:/conservation";
+        }
+        User user = currentUser(authentication).orElse(null);
+        Donation donation = registeredClientService.createDonation(
+                user, donorName, donorEmail, donorCountry, amount, currency, purpose, message, isRecurring, recurringFrequency, paymentMethod
+        );
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Thank you for your support. Donation request #" + donation.getId() + " has been recorded.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "redirect:/conservation";
     }
 
@@ -297,7 +374,10 @@ public class RegisteredClientController {
         model.addAttribute("pageTitle", "Talent Program — Volcano Arts Center");
         model.addAttribute("categories", TalentApplication.ApplicantCategory.values());
         model.addAttribute("areas", TalentApplication.TalentArea.values());
+<<<<<<< HEAD
         model.addAttribute("profiles", registeredClientService.publishedTalentProfiles());
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("isAuthenticated", isAuthenticated(authentication));
         model.addAttribute("isTalentApplicant", hasAuthority(authentication, "ROLE_TALENT_APPLICANT"));
         return "external/talent-applicant/talent";

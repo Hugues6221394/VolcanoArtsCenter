@@ -1,7 +1,10 @@
 package com.volcanoartscenter.platform.shared.repository;
 
 import com.volcanoartscenter.platform.shared.model.AvailabilitySlot;
+<<<<<<< HEAD
 import org.springframework.data.jpa.repository.EntityGraph;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -10,6 +13,7 @@ import java.util.Optional;
 
 public interface AvailabilitySlotRepository extends JpaRepository<AvailabilitySlot, Long> {
     Optional<AvailabilitySlot> findByExperienceIdAndSlotDate(Long experienceId, LocalDate slotDate);
+<<<<<<< HEAD
 
     @EntityGraph(attributePaths = {"experience"})
     List<AvailabilitySlot> findByExperienceIdAndSlotDateBetweenOrderBySlotDateAsc(Long experienceId, LocalDate from, LocalDate to);
@@ -26,4 +30,9 @@ public interface AvailabilitySlotRepository extends JpaRepository<AvailabilitySl
     @Override
     @EntityGraph(attributePaths = {"experience"})
     Optional<AvailabilitySlot> findById(Long id);
+=======
+    List<AvailabilitySlot> findByExperienceIdAndSlotDateBetweenOrderBySlotDateAsc(Long experienceId, LocalDate from, LocalDate to);
+    List<AvailabilitySlot> findByAssignedGuideEmailAndSlotDate(String assignedGuideEmail, LocalDate slotDate);
+    List<AvailabilitySlot> findBySlotDateBetweenOrderBySlotDateAsc(LocalDate from, LocalDate to);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 }

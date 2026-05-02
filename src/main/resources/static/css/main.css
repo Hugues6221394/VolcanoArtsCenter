@@ -479,6 +479,7 @@ h4 {
     gap: var(--space-md);
 }
 
+<<<<<<< HEAD
 .nav__client-utility {
     display: inline-flex;
     align-items: center;
@@ -537,6 +538,8 @@ h4 {
     background: rgba(255, 255, 255, 0.06);
 }
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 .theme-toggle {
     display: inline-flex;
     align-items: center;
@@ -3077,4 +3080,8 @@ html[data-theme="light"] .admin-toast {
     background: #ffffff;
     border-color: rgba(0, 80, 40, 0.15);
     color: var(--color-gray-700);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac

@@ -20,8 +20,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @EntityGraph(attributePaths = "category")
     List<Product> findByAvailableTrueAndCategory_SlugOrderByFeaturedDescNameAsc(String slug);
 
+<<<<<<< HEAD
     @EntityGraph(attributePaths = {"category", "collection", "additionalImages"})
     Optional<Product> findBySlugAndAvailableTrueAndArtworkStatus(String slug, Product.ArtworkStatus artworkStatus);
+=======
+    @EntityGraph(attributePaths = "category")
+    Optional<Product> findBySlugAndAvailableTrue(String slug);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 
     @EntityGraph(attributePaths = "category")
     Page<Product> findByAvailableTrue(Pageable pageable);
@@ -33,7 +38,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
             SELECT p FROM Product p
             WHERE p.available = true
+<<<<<<< HEAD
               AND p.artworkStatus = :artworkStatus
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
               AND (:category IS NULL OR p.category.slug = :category)
               AND (:q IS NULL OR :q = '' OR
                    LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%')) OR
@@ -46,12 +54,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                 @Param("q") String q,
                                 @Param("minPrice") java.math.BigDecimal minPrice,
                                 @Param("maxPrice") java.math.BigDecimal maxPrice,
+<<<<<<< HEAD
                                 @Param("artworkStatus") Product.ArtworkStatus artworkStatus,
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                                 Pageable pageable);
 
     boolean existsBySlug(String slug);
 
+<<<<<<< HEAD
     @EntityGraph(attributePaths = {"category", "collection", "additionalImages"})
+=======
+    @EntityGraph(attributePaths = {"category", "collection"})
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     @Query("""
             SELECT p FROM Product p
             WHERE (:available IS NULL OR p.available = :available)

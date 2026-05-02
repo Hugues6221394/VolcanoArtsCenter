@@ -19,7 +19,11 @@
             <div class="grid grid-3">
                 <article class="card" th:each="exp : ${experiences}">
                     <div class="card__image">
+<<<<<<< HEAD
                         <img th:src="${exp.primaryImageUrl != null ? exp.primaryImageUrl : '/images/logo.jpg'}" alt="Experience" onerror="this.onerror=null;this.src='/images/logo.jpg';"/>
+=======
+                        <img th:src="${exp.primaryImageUrl != null ? exp.primaryImageUrl : '/images/logo.jpg'}" alt="Experience"/>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                         <span class="card__badge" th:text="${exp.bookingType}">DIRECT</span>
                     </div>
                     <div class="card__body">
@@ -27,7 +31,11 @@
                         <h3 class="card__title"><a th:href="@{|/experiences/${exp.slug}|}" th:text="${exp.title}">Experience</a></h3>
                         <p class="card__text" th:text="${exp.shortDescription}">Description</p>
                         <div class="card__meta">
+<<<<<<< HEAD
                             <span style="color: var(--color-gray-500);" th:text="${exp.durationHours != null ? exp.durationHours + ' hrs' : 'Flexible duration'}">2.5 hrs</span>
+=======
+                            <span style="color: var(--color-gray-500);" th:text="${exp.durationHours} + ' hrs'">2.5 hrs</span>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                             <a class="btn btn--ghost btn--sm" th:href="@{|/experiences/${exp.slug}|}">View →</a>
                         </div>
                     </div>

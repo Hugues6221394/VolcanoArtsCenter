@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/admin-base}">
@@ -305,6 +306,45 @@
                 </table>
             </div>
         </div>
+=======
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin-base}">
+<head><title>Bookings</title></head>
+<body>
+<th:block layout:fragment="breadcrumb"><a th:href="@{/admin/dashboard}">Admin</a><span class="sep">›</span><span>Bookings</span></th:block>
+<main layout:fragment="content">
+    <div class="admin-page-header">
+        <div class="admin-page-header__info"><h1>Bookings</h1><p>Track and manage all experience bookings and their statuses.</p></div>
+    </div>
+    <div class="admin-kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+        <a class="admin-kpi" th:href="@{/admin/ops/bookings}"><div class="admin-kpi__label">Total Bookings</div><div class="admin-kpi__value" th:text="${totalBookings}">0</div></a>
+        <a class="admin-kpi" th:href="@{/admin/ops/shipping-orders}"><div class="admin-kpi__label">Shipping Orders</div><div class="admin-kpi__value" th:text="${totalOrders}">0</div></a>
+        <a class="admin-kpi" th:href="@{/admin/ops/contact-inquiries}"><div class="admin-kpi__label">Inquiries</div><div class="admin-kpi__value" th:text="${totalInquiries}">0</div></a>
+        <a class="admin-kpi" th:href="@{/admin/ops/talent-applications}"><div class="admin-kpi__label">Pending Talent Apps</div><div class="admin-kpi__value" th:text="${pendingTalentApplications}">0</div></a>
+    </div>
+    <div class="admin-card">
+        <div class="admin-card__header"><h3>All Bookings</h3><span class="chip chip--info" th:text="${#lists.size(items)} + ' total'">0</span></div>
+        <div class="admin-card__body--flush"><div class="admin-table-wrap">
+            <table class="admin-table"><thead><tr><th>Reference</th><th>Guest</th><th>Experience</th><th>Date</th><th>Group</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+            <tr th:each="b : ${items}">
+                <td class="cell-mono" th:text="${b.bookingReference}">BOOK</td>
+                <td><div class="cell-primary" th:text="${b.guestName}">Guest</div><div style="font-size:.72rem;color:var(--color-gray-500);" th:text="${b.guestEmail}">email</div></td>
+                <td th:text="${b.experience != null ? b.experience.title : '-'}">Exp</td>
+                <td th:text="${b.preferredDate}">2026-01-01</td>
+                <td th:text="${b.groupSize}">1</td>
+                <td><span class="chip" th:data-status="${b.status}" th:text="${b.status}">PENDING</span></td>
+                <td>
+                    <form th:action="@{|/admin/ops/bookings/${b.id}/status|}" method="post" style="display:flex;gap:.35rem;align-items:center;">
+                        <select class="form-select" name="status" style="min-width:120px;padding:.4rem;"><option th:each="s : ${T(com.volcanoartscenter.platform.shared.model.Booking.BookingStatus).values()}" th:value="${s}" th:text="${s}" th:selected="${s == b.status}">S</option></select>
+                        <input class="form-input" name="adminNotes" placeholder="Note" style="max-width:130px;padding:.4rem;" />
+                        <button class="btn btn--outline btn--xs" type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}"><td colspan="7" class="admin-empty"><div class="admin-empty__icon">📅</div><div class="admin-empty__text">No bookings yet</div></td></tr>
+            </tbody></table>
+        </div></div>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     </div>
 </main>
 </body>

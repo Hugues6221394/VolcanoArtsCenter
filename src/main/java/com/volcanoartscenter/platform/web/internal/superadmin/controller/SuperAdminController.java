@@ -16,14 +16,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Set;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 
 @Controller
 @RequiredArgsConstructor
 public class SuperAdminController {
 
+<<<<<<< HEAD
     private static final Set<String> INTERNAL_STAFF_ROLES = Set.of("SUPER_ADMIN", "ADMIN", "CONTENT_MANAGER", "OPS_MANAGER");
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     private final SuperAdminService superAdminService;
     private final PasswordEncoder passwordEncoder;
 
@@ -47,6 +53,7 @@ public class SuperAdminController {
 
     // ── Staff & Accounts ──
     @GetMapping("/admin/users")
+<<<<<<< HEAD
     public String usersPage(@RequestParam(defaultValue = "all") String tab, Model model) {
         String normalizedTab = normalizeUsersTab(tab);
         var staffUsers = superAdminService.listInternalStaff();
@@ -64,6 +71,12 @@ public class SuperAdminController {
         });
         model.addAttribute("activeDirectoryTab", normalizedTab);
         model.addAttribute("totalManagedAccounts", allUsers.size());
+=======
+    public String usersPage(Model model) {
+        model.addAttribute("pageTitle", "Staff & Accounts");
+        model.addAttribute("adminPage", "users");
+        model.addAttribute("staffUsers", superAdminService.listInternalStaff());
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("allRoles", superAdminService.listAllRoles());
         return "internal/super-admin/users";
     }
@@ -74,12 +87,16 @@ public class SuperAdminController {
                               @RequestParam String lastName,
                               @RequestParam String password,
                               @RequestParam(name = "roles", required = false) List<String> roles,
+<<<<<<< HEAD
                               @RequestParam(defaultValue = "all") String tab,
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                               Authentication authentication,
                               RedirectAttributes redirectAttributes) {
         try {
             String actor = authentication == null ? "system" : authentication.getName();
             superAdminService.createStaffUser(email, firstName, lastName, passwordEncoder.encode(password), roles, actor);
+<<<<<<< HEAD
             redirectAttributes.addFlashAttribute("successMessage",
                     hasInternalStaffRole(roles)
                             ? "Account created."
@@ -88,6 +105,13 @@ public class SuperAdminController {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
         }
         return "redirect:/admin/users?tab=" + resolveUsersRedirectTab(tab, hasInternalStaffRole(roles));
+=======
+            redirectAttributes.addFlashAttribute("successMessage", "Staff account created.");
+        } catch (IllegalStateException | IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
+        }
+        return "redirect:/admin/users";
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     }
 
     @PostMapping("/admin/users/{id}/update")
@@ -97,24 +121,36 @@ public class SuperAdminController {
                               @RequestParam(required = false) String phone,
                               @RequestParam(required = false) String country,
                               @RequestParam(defaultValue = "false") Boolean enabled,
+<<<<<<< HEAD
                               @RequestParam(defaultValue = "all") String tab,
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                               Authentication authentication,
                               RedirectAttributes redirectAttributes) {
         String actor = authentication == null ? "system" : authentication.getName();
         superAdminService.updateStaffUser(id, firstName, lastName, phone, country, enabled, actor);
+<<<<<<< HEAD
         redirectAttributes.addFlashAttribute("successMessage", "Account updated.");
         return "redirect:/admin/users?tab=" + normalizeUsersTab(tab);
+=======
+        redirectAttributes.addFlashAttribute("successMessage", "Staff account updated.");
+        return "redirect:/admin/users";
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     }
 
     @PostMapping("/admin/users/{id}/roles")
     public String updateStaffRoles(@PathVariable Long id,
                                    @RequestParam(name = "roles") List<String> roles,
+<<<<<<< HEAD
                                    @RequestParam(defaultValue = "all") String tab,
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                                    Authentication authentication,
                                    RedirectAttributes redirectAttributes) {
         try {
             String actor = authentication == null ? "system" : authentication.getName();
             superAdminService.assignRoles(id, roles, actor);
+<<<<<<< HEAD
             String normalizedTab = normalizeUsersTab(tab);
             if (hasInternalStaffRole(roles)) {
                 redirectAttributes.addFlashAttribute("successMessage", "Roles updated.");
@@ -139,6 +175,21 @@ public class SuperAdminController {
         superAdminService.deactivateStaff(id, actor);
         redirectAttributes.addFlashAttribute("successMessage", "Account deactivated.");
         return "redirect:/admin/users?tab=" + normalizeUsersTab(tab);
+=======
+            redirectAttributes.addFlashAttribute("successMessage", "Roles updated.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
+        }
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/admin/users/{id}/deactivate")
+    public String deactivateStaff(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
+        String actor = authentication == null ? "system" : authentication.getName();
+        superAdminService.deactivateStaff(id, actor);
+        redirectAttributes.addFlashAttribute("successMessage", "Staff account deactivated.");
+        return "redirect:/admin/users";
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     }
 
     // ── Platform Settings ──
@@ -238,6 +289,7 @@ public class SuperAdminController {
     public ResponseEntity<?> exportAllData() {
         return ResponseEntity.ok(superAdminService.exportAllDataSnapshot());
     }
+<<<<<<< HEAD
 
     private boolean hasInternalStaffRole(List<String> roles) {
         if (roles == null || roles.isEmpty()) {
@@ -263,4 +315,6 @@ public class SuperAdminController {
         }
         return hasInternalStaffRole ? "staff" : "external";
     }
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 }

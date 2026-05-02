@@ -17,6 +17,7 @@
     <section class="section">
         <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem;">
             <div>
+<<<<<<< HEAD
                 <img th:src="${experience.primaryImageUrl != null ? experience.primaryImageUrl : '/images/logo.jpg'}" alt="Experience image" style="width:100%; border-radius: var(--radius-lg); border:1px solid rgba(255,255,255,.08)" onerror="this.onerror=null;this.src='/images/logo.jpg';"/>
                 <div th:if="${!#lists.isEmpty(experience.additionalImages)}" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-top: 0.75rem;">
                     <div th:each="imageUrl : ${experience.additionalImages}" style="border-radius: var(--radius-md); border:1px solid rgba(255,255,255,.08); overflow:hidden; background:rgba(255,255,255,.03); min-height:120px;">
@@ -42,17 +43,34 @@
                 </p>
                 <p th:if="${experience.bookingType.name() == 'INQUIRY'}" style="color: var(--color-gray-500);">Request-only or tailored schedule.</p>
                 <div style="margin:.8rem 0 1.1rem;">
+=======
+                <img th:src="${experience.primaryImageUrl != null ? experience.primaryImageUrl : '/images/logo.jpg'}" alt="Experience image" style="width:100%; border-radius: var(--radius-lg); border:1px solid rgba(255,255,255,.08)"/>
+                <p style="margin-top:1rem; color:var(--color-gray-300);" th:text="${experience.description}">Description</p>
+            </div>
+            <div>
+                <p><strong>Booking Type:</strong> <span th:text="${experience.bookingType}">DIRECT</span></p>
+                <p><strong>Price per person:</strong> $<span th:text="${experience.pricePerPerson != null ? #numbers.formatDecimal(experience.pricePerPerson,1,'COMMA',2,'POINT') : 'On request'}">0.00</span></p>
+                <p><strong>Group size:</strong> <span th:text="${experience.minGroupSize}">1</span> - <span th:text="${experience.maxGroupSize}">15</span></p>
+                <p><strong>Languages:</strong> <span th:text="${experience.languagesOffered}">English, French</span></p>
+                <p><strong>Availability:</strong> <span th:text="${experience.bookingType.name() == 'INQUIRY' ? 'Request-only or tailored schedule' : 'Direct booking with date availability checks'}">Availability</span></p>
+                <div style="margin:.8rem 0;">
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                     <strong>Upcoming Calendar (30 days):</strong>
                     <div th:if="${#lists.isEmpty(availabilitySlots)}" class="text-muted">No slots currently published.</div>
                     <ul th:if="${!#lists.isEmpty(availabilitySlots)}" style="margin-top:.5rem; display:grid; gap:.35rem;">
                         <li th:each="s : ${availabilitySlots}">
                             <span th:text="${#temporals.format(s.slotDate,'yyyy-MM-dd')}">2026-01-01</span>
+<<<<<<< HEAD
                             - <span th:text="${s.status}">AVAILABLE</span>
+=======
+                            — <span th:text="${s.status}">AVAILABLE</span>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                             (<span th:text="${s.bookedCount}">0</span>/<span th:text="${s.maxCapacity}">15</span>)
                         </li>
                     </ul>
                 </div>
 
+<<<<<<< HEAD
                 <div th:if="${experience.whatsIncluded != null}" style="margin-bottom:1rem;">
                     <h3 style="margin-bottom:0.5rem;">What's Included</h3>
                     <p style="color:var(--color-gray-300);" th:text="${experience.whatsIncluded}">Included details</p>
@@ -65,6 +83,9 @@
 
                 <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin: 1rem 0;" th:text="${successMessage}"></div>
                 <div th:if="${errorMessage}" style="background: rgba(183,28,28,0.16); border: 1px solid rgba(229,115,115,0.35); border-radius: var(--radius-md); color: #FFCDD2; padding: 1rem; margin: 1rem 0;" th:text="${errorMessage}"></div>
+=======
+                <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin: 1rem 0;" th:text="${successMessage}"></div>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 
                 <form th:if="${isAuthenticated}" th:action="@{|/experiences/${experience.slug}/book|}" method="post" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-top:1rem;">
                     <h3 style="margin-bottom:1rem;">Book / Inquire</h3>
@@ -77,12 +98,21 @@
                     <div class="form-group">
                         <label class="form-label">Payment Method</label>
                         <select class="form-select" name="paymentMethod">
+<<<<<<< HEAD
                             <option value="">Confirm Payment Later</option>
                             <option value="STRIPE_CARD">Card (Stripe)</option>
                             <option value="MTN_MOMO">MTN Mobile Money</option>
                             <option value="AIRTEL_MONEY">Airtel Money</option>
                         </select>
                         <p class="text-muted" style="margin-top:.4rem;">Recommended for testing: leave this on <strong>Confirm Payment Later</strong> so the booking request is recorded without live payment setup.</p>
+=======
+                            <option value="STRIPE_CARD">Card (Stripe)</option>
+                            <option value="MTN_MOMO">MTN Mobile Money</option>
+                            <option value="AIRTEL_MONEY">Airtel Money</option>
+                            <option value="BANK_TRANSFER">Bank Transfer</option>
+                            <option value="OFFLINE_INVOICE">Invoice / Offline</option>
+                        </select>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                     </div>
                     <div class="form-group"><label class="form-label">Special Requests</label><textarea class="form-textarea" name="specialRequests"></textarea></div>
                     <input class="form-input" name="captchaToken" placeholder="Captcha token" />
@@ -93,6 +123,7 @@
                     <p class="text-muted" style="margin-bottom:.8rem;">Sign in as a registered client to book or submit a custom inquiry.</p>
                     <a class="btn btn--primary btn--sm" th:href="@{/login}">Sign in to Continue</a>
                 </div>
+<<<<<<< HEAD
 
                 <div style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1.25rem; margin-top:1rem; background:rgba(255,255,255,.02);">
                     <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; margin-bottom:1rem;">
@@ -171,6 +202,17 @@
                         <p style="margin:0; color:var(--color-gray-300);" th:text="${review.comment}">Review comment</p>
                     </article>
                 </div>
+=======
+                <form th:if="${isAuthenticated}" th:action="@{|/experiences/${experience.slug}/reviews|}" method="post" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-top:1rem;">
+                    <h3 style="margin-bottom:1rem;">Leave a Review</h3>
+                    <div class="form-group"><label class="form-label">Name</label><input class="form-input" name="reviewerName" required/></div>
+                    <div class="form-group"><label class="form-label">Rating (1-5)</label><input class="form-input" type="number" min="1" max="5" name="rating" required/></div>
+                    <div class="form-group"><label class="form-label">Comment</label><textarea class="form-textarea" name="comment" required></textarea></div>
+                    <input class="form-input" name="captchaToken" placeholder="Captcha token" />
+                    <button class="btn btn--outline" type="submit">Submit Review</button>
+                </form>
+                <p th:if="${!isAuthenticated}" class="text-muted" style="margin-top:.6rem;">Sign in to leave reviews.</p>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
             </div>
         </div>
     </section>

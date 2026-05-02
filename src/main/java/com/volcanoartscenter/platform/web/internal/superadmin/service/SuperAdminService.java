@@ -33,8 +33,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SuperAdminService {
 
+<<<<<<< HEAD
     private static final Set<String> INTERNAL_STAFF_ROLES = Set.of("SUPER_ADMIN", "ADMIN", "CONTENT_MANAGER", "OPS_MANAGER");
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final ExperienceRepository experienceRepository;
@@ -92,6 +95,7 @@ public class SuperAdminService {
                 .sorted(Comparator.comparing(User::getEmail))
                 .toList();
     }
+<<<<<<< HEAD
 
     public List<User> listExternalAccounts() {
         return userRepository.findAll().stream()
@@ -101,6 +105,8 @@ public class SuperAdminService {
                 .toList();
     }
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     public List<User> listAllUsers() {
         return userRepository.findAll().stream().sorted(Comparator.comparing(User::getEmail)).toList();
     }

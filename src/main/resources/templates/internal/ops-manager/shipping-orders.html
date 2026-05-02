@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/admin-base}">
@@ -408,6 +409,39 @@
                 </article>
             </div>
         </div>
+=======
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin-base}">
+<head><title>Shipping Orders</title></head>
+<body>
+<th:block layout:fragment="breadcrumb"><a th:href="@{/admin/dashboard}">Admin</a><span class="sep">›</span><span>Shipping Orders</span></th:block>
+<main layout:fragment="content">
+    <div class="admin-page-header">
+        <div class="admin-page-header__info"><h1>Shipping Orders</h1><p>Track order fulfillment, update statuses, and manage tracking numbers.</p></div>
+    </div>
+    <div class="admin-card">
+        <div class="admin-card__header"><h3>All Orders</h3><span class="chip chip--info" th:text="${#lists.size(items)} + ' orders'">0</span></div>
+        <div class="admin-card__body--flush"><div class="admin-table-wrap">
+            <table class="admin-table"><thead><tr><th>Reference</th><th>Recipient</th><th>Status</th><th>Payment</th><th>Tracking</th><th>Actions</th></tr></thead>
+            <tbody>
+            <tr th:each="o : ${items}">
+                <td class="cell-mono" th:text="${o.orderReference}">ORDER</td>
+                <td><div class="cell-primary" th:text="${o.recipientName}">Name</div><div style="font-size:.72rem;color:var(--color-gray-500);" th:text="${o.recipientEmail}">email</div></td>
+                <td><span class="chip" th:data-status="${o.status}" th:text="${o.status}">PENDING</span></td>
+                <td><span class="chip" th:data-status="${o.paymentStatus}" th:text="${o.paymentStatus}">UNPAID</span></td>
+                <td class="cell-mono" th:text="${o.trackingNumber ?: '-'}">-</td>
+                <td>
+                    <form th:action="@{|/admin/ops/shipping-orders/${o.id}/status|}" method="post" style="display:flex;gap:.35rem;align-items:center;">
+                        <select class="form-select" name="status" style="min-width:110px;padding:.4rem;"><option th:each="s : ${T(com.volcanoartscenter.platform.shared.model.ShippingOrder.OrderStatus).values()}" th:value="${s}" th:text="${s}" th:selected="${s == o.status}">S</option></select>
+                        <input class="form-input" name="trackingNumber" placeholder="Tracking #" style="max-width:120px;padding:.4rem;" th:value="${o.trackingNumber}" />
+                        <input class="form-input" name="adminNotes" placeholder="Note" style="max-width:110px;padding:.4rem;" />
+                        <button class="btn btn--outline btn--xs" type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}"><td colspan="6" class="admin-empty"><div class="admin-empty__icon">📦</div><div class="admin-empty__text">No shipping orders</div></td></tr>
+            </tbody></table>
+        </div></div>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     </div>
 </main>
 </body>

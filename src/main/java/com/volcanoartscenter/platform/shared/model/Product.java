@@ -5,7 +5,10 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Collections;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import java.util.List;
 
 @Entity
@@ -144,12 +147,15 @@ public class Product {
         return stockQuantity != null && stockQuantity > 0;
     }
 
+<<<<<<< HEAD
     @Transient
     public String getAdditionalImagesText() {
         List<String> images = additionalImages == null ? Collections.emptyList() : additionalImages;
         return String.join(System.lineSeparator(), images);
     }
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     public enum InventoryType {
         UNIQUE,   // One-of-a-kind artwork
         BATCH     // Handcrafts with multiple units

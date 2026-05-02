@@ -3,7 +3,10 @@ package com.volcanoartscenter.platform.web.internal.contentmanager.controller;
 import com.volcanoartscenter.platform.shared.model.BlogPost;
 import com.volcanoartscenter.platform.shared.model.Experience;
 import com.volcanoartscenter.platform.shared.model.Product;
+<<<<<<< HEAD
 import com.volcanoartscenter.platform.shared.model.Review;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import com.volcanoartscenter.platform.shared.model.TalentApplication;
 import com.volcanoartscenter.platform.web.internal.contentmanager.service.ContentManagerService;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +25,12 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import java.util.Locale;
 import java.util.UUID;
 
@@ -49,7 +55,10 @@ public class ContentManagerController {
         model.addAttribute("categories", contentManagerService.listCategories());
         model.addAttribute("collections", contentManagerService.listCollections());
         model.addAttribute("inventoryTypes", Product.InventoryType.values());
+<<<<<<< HEAD
         model.addAttribute("artworkStatuses", Product.ArtworkStatus.values());
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("available", available);
         model.addAttribute("featured", featured);
         model.addAttribute("categoryId", categoryId);
@@ -69,6 +78,7 @@ public class ContentManagerController {
     public String createContentProduct(@RequestParam String name,
                                        @RequestParam String slug,
                                        @RequestParam BigDecimal price,
+<<<<<<< HEAD
                                        @RequestParam(required = false) String shortDescription,
                                        @RequestParam(required = false) String description,
                                        @RequestParam(required = false) BigDecimal compareAtPrice,
@@ -103,6 +113,21 @@ public class ContentManagerController {
             contentManagerService.createProduct(name, slug, price, categoryId, collectionId, finalImageUrl, additionalImages,
                     stockQuantity, inventoryType, shortDescription, description, compareAtPrice, artworkStatus,
                     artistName, artistStory, dimensions, medium, weightKg, shippable, shippingNote, available, featured);
+=======
+                                       @RequestParam(required = false) Long categoryId,
+                                       @RequestParam(required = false) Long collectionId,
+                                       @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile,
+                                       @RequestParam(required = false) String primaryImageUrl,
+                                       @RequestParam(defaultValue = "1") Integer stockQuantity,
+                                       @RequestParam(defaultValue = "BATCH") Product.InventoryType inventoryType,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            String finalImageUrl = primaryImageUrl;
+            if (imageFile != null && !imageFile.isEmpty()) {
+                finalImageUrl = handleFileUpload(imageFile);
+            }
+            contentManagerService.createProduct(name, slug, price, categoryId, collectionId, finalImageUrl, stockQuantity, inventoryType);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
             redirectAttributes.addFlashAttribute("successMessage", "Product created.");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
@@ -114,6 +139,7 @@ public class ContentManagerController {
     public String updateContentProduct(@PathVariable Long id,
                                        @RequestParam String name,
                                        @RequestParam BigDecimal price,
+<<<<<<< HEAD
                                        @RequestParam(required = false) String shortDescription,
                                        @RequestParam(required = false) String description,
                                        @RequestParam(required = false) BigDecimal compareAtPrice,
@@ -148,6 +174,22 @@ public class ContentManagerController {
             contentManagerService.updateProduct(id, name, price, categoryId, collectionId, finalImageUrl, additionalImages,
                     stockQuantity, inventoryType, shortDescription, description, compareAtPrice, artworkStatus,
                     artistName, artistStory, dimensions, medium, weightKg, shippable, shippingNote, available, featured);
+=======
+                                       @RequestParam(defaultValue = "false") Boolean available,
+                                       @RequestParam(defaultValue = "false") Boolean featured,
+                                       @RequestParam(required = false) Long categoryId,
+                                       @RequestParam(required = false) Long collectionId,
+                                       @RequestParam(value = "imageFile", required = false) org.springframework.web.multipart.MultipartFile imageFile,
+                                       @RequestParam(required = false) String primaryImageUrl,
+                                       @RequestParam(required = false) Integer stockQuantity,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            String finalImageUrl = primaryImageUrl;
+            if (imageFile != null && !imageFile.isEmpty()) {
+                finalImageUrl = handleFileUpload(imageFile);
+            }
+            contentManagerService.updateProduct(id, name, price, available, featured, categoryId, collectionId, finalImageUrl, stockQuantity);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
             redirectAttributes.addFlashAttribute("successMessage", "Product updated.");
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
@@ -334,6 +376,7 @@ public class ContentManagerController {
 
     @GetMapping("/admin/content/reviews")
     public String contentReviews(Model model) {
+<<<<<<< HEAD
         List<Review> items = contentManagerService.listReviews();
         model.addAttribute("adminPage", "reviews");
         model.addAttribute("pageTitle", "Reviews");
@@ -341,6 +384,11 @@ public class ContentManagerController {
         model.addAttribute("pendingCount", items.stream().filter(r -> !Boolean.TRUE.equals(r.getApproved())).count());
         model.addAttribute("approvedCount", items.stream().filter(r -> Boolean.TRUE.equals(r.getApproved())).count());
         model.addAttribute("featuredCount", items.stream().filter(r -> Boolean.TRUE.equals(r.getFeatured())).count());
+=======
+        model.addAttribute("adminPage", "reviews");
+        model.addAttribute("pageTitle", "Reviews");
+        model.addAttribute("items", contentManagerService.listReviews());
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "internal/content-manager/reviews";
     }
 
@@ -380,6 +428,7 @@ public class ContentManagerController {
     public String createExperience(@RequestParam String title,
                                    @RequestParam String slug,
                                    @RequestParam(required = false) String shortDescription,
+<<<<<<< HEAD
                                    @RequestParam(required = false) String description,
                                    @RequestParam(required = false) String location,
                                    @RequestParam(required = false) BigDecimal pricePerPerson,
@@ -419,6 +468,24 @@ public class ContentManagerController {
                     availableDays, active, featured, primaryMediaId);
             redirectAttributes.addFlashAttribute("successMessage", "Experience created.");
         } catch (Exception ex) {
+=======
+                                   @RequestParam(required = false) String location,
+                                   @RequestParam(required = false) BigDecimal pricePerPerson,
+                                   @RequestParam Experience.ExperienceType experienceType,
+                                   @RequestParam Experience.BookingType bookingType,
+                                    @RequestParam(defaultValue = "1") Integer minGroupSize,
+                                    @RequestParam(defaultValue = "15") Integer maxGroupSize,
+                                    @RequestParam(defaultValue = "true") Boolean active,
+                                    @RequestParam(defaultValue = "false") Boolean featured,
+                                    @RequestParam(required = false) String primaryImageUrl,
+                                    @RequestParam(required = false) Long primaryMediaId,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            contentManagerService.createExperience(title, slug, shortDescription, location, pricePerPerson, experienceType, bookingType,
+                    minGroupSize, maxGroupSize, active, featured, primaryImageUrl, primaryMediaId);
+            redirectAttributes.addFlashAttribute("successMessage", "Experience created.");
+        } catch (IllegalArgumentException ex) {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
         }
         return "redirect:/admin/content/experiences";
@@ -428,6 +495,7 @@ public class ContentManagerController {
     public String updateExperience(@PathVariable Long id,
                                    @RequestParam String title,
                                    @RequestParam(required = false) String shortDescription,
+<<<<<<< HEAD
                                    @RequestParam(required = false) String description,
                                    @RequestParam(required = false) String location,
                                    @RequestParam(required = false) BigDecimal pricePerPerson,
@@ -469,6 +537,22 @@ public class ContentManagerController {
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("successMessage", ex.getMessage());
         }
+=======
+                                   @RequestParam(required = false) String location,
+                                   @RequestParam(required = false) BigDecimal pricePerPerson,
+                                   @RequestParam Experience.ExperienceType experienceType,
+                                   @RequestParam Experience.BookingType bookingType,
+                                   @RequestParam(defaultValue = "1") Integer minGroupSize,
+                                    @RequestParam(defaultValue = "15") Integer maxGroupSize,
+                                    @RequestParam(defaultValue = "false") Boolean active,
+                                    @RequestParam(defaultValue = "false") Boolean featured,
+                                    @RequestParam(required = false) String primaryImageUrl,
+                                    @RequestParam(required = false) Long primaryMediaId,
+                                    RedirectAttributes redirectAttributes) {
+        contentManagerService.updateExperience(id, title, shortDescription, location, pricePerPerson, experienceType, bookingType,
+                minGroupSize, maxGroupSize, active, featured, primaryImageUrl, primaryMediaId);
+        redirectAttributes.addFlashAttribute("successMessage", "Experience updated.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "redirect:/admin/content/experiences";
     }
 
@@ -651,7 +735,11 @@ public class ContentManagerController {
         return "redirect:/admin/content/media-library";
     }
 
+<<<<<<< HEAD
     private String handleFileUpload(org.springframework.web.multipart.MultipartFile file, String assetLabel) throws IOException {
+=======
+    private String handleFileUpload(org.springframework.web.multipart.MultipartFile file) throws IOException {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         java.nio.file.Path uploadRoot = java.nio.file.Path.of(localUploadDir).toAbsolutePath().normalize();
         java.nio.file.Files.createDirectories(uploadRoot);
         String ext = "";
@@ -664,6 +752,7 @@ public class ContentManagerController {
         java.nio.file.Path target = uploadRoot.resolve(storageKey).normalize();
         java.nio.file.Files.copy(file.getInputStream(), target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         // Save asset in MediaLibrary for reference
+<<<<<<< HEAD
         contentManagerService.createMediaAsset(storageKey, "/uploads/" + storageKey, file.getContentType(), original,
                 assetLabel == null || assetLabel.isBlank() ? "Uploaded Image" : assetLabel, file.getSize());
         return "/uploads/" + storageKey;
@@ -701,4 +790,9 @@ public class ContentManagerController {
         }
         return new ArrayList<>(imageUrls);
     }
+=======
+        contentManagerService.createMediaAsset(storageKey, "/uploads/" + storageKey, file.getContentType(), original, "Product Image", file.getSize());
+        return "/uploads/" + storageKey;
+    }
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 }

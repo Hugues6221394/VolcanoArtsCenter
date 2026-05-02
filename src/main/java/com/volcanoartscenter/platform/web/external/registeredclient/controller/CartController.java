@@ -103,7 +103,11 @@ public class CartController {
                                @RequestParam(required = false) String state,
                                @RequestParam(required = false) String postalCode,
                                @RequestParam String country,
+<<<<<<< HEAD
                                @RequestParam(required = false) String paymentMethod,
+=======
+                               @RequestParam String paymentMethod,
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                                @RequestParam(required = false) String captchaToken,
                                HttpSession session,
                                Authentication authentication,
@@ -128,6 +132,7 @@ public class CartController {
             return "redirect:/login";
         }
 
+<<<<<<< HEAD
         try {
             registeredClientService.createShippingOrderFromCart(
                     cart,
@@ -147,6 +152,22 @@ public class CartController {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return "redirect:/cart";
         }
+=======
+        registeredClientService.createShippingOrderFromCart(
+                cart,
+                user,
+                recipientName,
+                recipientEmail,
+                recipientPhone,
+                addressLine1,
+                addressLine2,
+                city,
+                state,
+                postalCode,
+                country,
+                paymentMethod
+        );
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 
         cartService.clearCart(user, anonSessionId);
         redirectAttributes.addFlashAttribute("successMessage", "Cart Checkout successful. Our team will contact you with details soon.");

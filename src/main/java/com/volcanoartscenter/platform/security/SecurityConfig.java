@@ -31,7 +31,11 @@ public class SecurityConfig {
                     "/blog/**", "/contact",
                     "/tour-operators/request", "/tour-operators/register",
                     "/talent/register",
+<<<<<<< HEAD
                     "/css/**", "/js/**", "/images/**", "/fonts/**", "/uploads/**",
+=======
+                    "/css/**", "/js/**", "/images/**", "/fonts/**",
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                     "/api/public/**", "/api/v1/webhooks/**"
                 ).permitAll()
 

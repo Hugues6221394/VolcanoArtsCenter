@@ -68,6 +68,7 @@ public class AvailabilityService {
         availabilitySlotRepository.save(slot);
     }
 
+<<<<<<< HEAD
     public void releaseBookingFromSlot(Experience experience, LocalDate date, int groupSize) {
         if (experience == null || date == null) {
             return;
@@ -98,6 +99,8 @@ public class AvailabilityService {
         availabilitySlotRepository.save(slot);
     }
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     public void recalculateStatus(AvailabilitySlot slot) {
         if (slot.getStatus() == AvailabilitySlot.SlotStatus.REQUEST_ONLY) {
             return;
@@ -123,6 +126,7 @@ public class AvailabilityService {
         while (!cursor.isAfter(to)) {
             getOrCreateSlot(experience, cursor);
             AvailabilitySlot slot = availabilitySlotRepository.findByExperienceIdAndSlotDate(experience.getId(), cursor).orElseThrow();
+<<<<<<< HEAD
             boolean isBlackout = blackoutDateRepository.findByExperienceIdAndDateValue(experience.getId(), cursor).isPresent();
             if (isBlackout) {
                 slot.setStatus(AvailabilitySlot.SlotStatus.FULLY_BOOKED);
@@ -137,6 +141,9 @@ public class AvailabilityService {
                 }
                 availabilitySlotRepository.save(slot);
             } else if (slot.getMaxCapacity() == null || slot.getMaxCapacity() < 1) {
+=======
+            if (slot.getMaxCapacity() == null || slot.getMaxCapacity() < 1) {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                 slot.setMaxCapacity(Math.max(1, defaultCapacity));
                 availabilitySlotRepository.save(slot);
             }

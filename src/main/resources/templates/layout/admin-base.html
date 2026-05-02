@@ -319,6 +319,7 @@
             showToast(/*[[${successMessage}]]*/ '', 'success');
         });
     </script>
+<<<<<<< HEAD
     <script th:if="${errorMessage}" th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
             showToast(/*[[${errorMessage}]]*/ '', 'error');
@@ -328,3 +329,9 @@
 </body>
 
 </html>
+=======
+    <th:block layout:fragment="scripts"></th:block>
+</body>
+
+</html>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac

@@ -28,7 +28,10 @@ public class RegisteredClientService {
     private final ExperienceRepository experienceRepository;
     private final BookingRepository bookingRepository;
     private final DonationRepository donationRepository;
+<<<<<<< HEAD
     private final DonationCampaignRepository donationCampaignRepository;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     private final TalentApplicationRepository talentApplicationRepository;
     private final BlogPostRepository blogPostRepository;
     private final ShippingOrderRepository shippingOrderRepository;
@@ -36,7 +39,10 @@ public class RegisteredClientService {
     private final TourOperatorRequestRepository tourOperatorRequestRepository;
     private final SavedItemRepository savedItemRepository;
     private final AvailabilitySlotRepository availabilitySlotRepository;
+<<<<<<< HEAD
     private final TalentProfileRepository talentProfileRepository;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     private final UserRepository userRepository;
     private final AvailabilityService availabilityService;
     private final ComplianceService complianceService;
@@ -45,14 +51,21 @@ public class RegisteredClientService {
 
     public List<Product> listProducts(String category, String q, BigDecimal minPrice, BigDecimal maxPrice) {
         return productRepository.searchCatalog(category, q, minPrice, maxPrice,
+<<<<<<< HEAD
                         Product.ArtworkStatus.PUBLISHED,
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                         org.springframework.data.domain.PageRequest.of(0, 100))
                 .getContent();
     }
 
     public org.springframework.data.domain.Page<Product> listProductsPage(String category, String q, BigDecimal minPrice, BigDecimal maxPrice, int page, int size) {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(Math.max(0, page), Math.max(1, size));
+<<<<<<< HEAD
         return productRepository.searchCatalog(category, q, minPrice, maxPrice, Product.ArtworkStatus.PUBLISHED, pageable);
+=======
+        return productRepository.searchCatalog(category, q, minPrice, maxPrice, pageable);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     }
 
     public List<ProductCategory> activeCategories() {
@@ -60,6 +73,7 @@ public class RegisteredClientService {
     }
 
     public Optional<Product> findProduct(String slug) {
+<<<<<<< HEAD
         return productRepository.findBySlugAndAvailableTrueAndArtworkStatus(slug, Product.ArtworkStatus.PUBLISHED);
     }
 
@@ -69,12 +83,16 @@ public class RegisteredClientService {
 
     public List<DonationCampaign> activeDonationCampaigns() {
         return donationCampaignRepository.findByActiveTrueOrderByNameAsc();
+=======
+        return productRepository.findBySlugAndAvailableTrue(slug);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     }
 
     public List<Review> productReviews(Long productId) {
         return reviewRepository.findByProductIdAndApprovedTrueOrderByCreatedAtDesc(productId);
     }
 
+<<<<<<< HEAD
     public boolean canSubmitProductReview(Product product, User user) {
         return user != null
                 && shippingOrderRepository.hasDeliveredProduct(user.getId(), product.getId())
@@ -94,6 +112,8 @@ public class RegisteredClientService {
         return "Your account is eligible to submit a verified review for this artwork.";
     }
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     public void submitProductReview(Product product, User user, String reviewerName, String reviewerEmail, String reviewerCountry,
                                     Integer rating, String comment) {
         int normalized = Math.max(1, Math.min(5, rating));
@@ -158,6 +178,7 @@ public class RegisteredClientService {
                 .build());
     }
 
+<<<<<<< HEAD
     public boolean canSubmitExperienceReview(Experience experience, User user) {
         return user != null
                 && bookingRepository.hasCompletedBooking(user.getId(), experience.getId())
@@ -202,6 +223,11 @@ public class RegisteredClientService {
 
         String normalizedRecipientEmail = recipientEmail.trim().toLowerCase(Locale.ROOT);
         String normalizedPaymentMethod = normalizePaymentMethod(paymentMethod);
+=======
+    public ShippingOrder createShippingOrderFromCart(Cart cart, User user, String recipientName, String recipientEmail, String recipientPhone,
+                                             String addressLine1, String addressLine2, String city, String state,
+                                             String postalCode, String country, String paymentMethod) {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 
         BigDecimal productTotal = BigDecimal.ZERO;
         BigDecimal totalWeight = BigDecimal.ZERO;
@@ -210,6 +236,7 @@ public class RegisteredClientService {
         ShippingOrder order = ShippingOrder.builder()
                 .orderReference("SHIP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT))
                 .user(user)
+<<<<<<< HEAD
                 .recipientName(recipientName.trim())
                 .recipientEmail(normalizedRecipientEmail)
                 .recipientPhone(recipientPhone)
@@ -222,6 +249,20 @@ public class RegisteredClientService {
                 .carrier("Rwanda".equalsIgnoreCase(country) ? ShippingOrder.ShippingCarrier.LOCAL : ShippingOrder.ShippingCarrier.FEDEX)
                 .currency("USD")
                 .paymentMethod(normalizedPaymentMethod)
+=======
+                .recipientName(recipientName)
+                .recipientEmail(recipientEmail)
+                .recipientPhone(recipientPhone)
+                .addressLine1(addressLine1)
+                .addressLine2(addressLine2)
+                .city(city)
+                .state(state)
+                .postalCode(postalCode)
+                .country(country)
+                .carrier("Rwanda".equalsIgnoreCase(country) ? ShippingOrder.ShippingCarrier.LOCAL : ShippingOrder.ShippingCarrier.FEDEX)
+                .currency("USD")
+                .paymentMethod(paymentMethod)
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                 .paymentStatus(ShippingOrder.PaymentStatus.UNPAID)
                 .status(ShippingOrder.OrderStatus.PENDING)
                 .build();
@@ -257,6 +298,7 @@ public class RegisteredClientService {
         order.setTotalAmount(productTotal.add(shipping));
 
         ShippingOrder saved = shippingOrderRepository.save(order);
+<<<<<<< HEAD
         complianceService.recordConsent(normalizedRecipientEmail, "ORDER_TERMS", true, "cart-checkout-form");
         complianceService.audit(normalizedRecipientEmail, "ORDER_CREATED", "ShippingOrder", saved.getId(),
                 "Reference=" + saved.getOrderReference() + ", items=" + items.size() + ", total=" + saved.getTotalAmount());
@@ -290,6 +332,20 @@ public class RegisteredClientService {
         } catch (RuntimeException ex) {
             complianceService.audit(normalizedRecipientEmail, "ORDER_EMAIL_FAILED", "ShippingOrder", saved.getId(), ex.getMessage());
         }
+=======
+        PaymentGatewayService.PaymentResult payment = integrationFacadeService.initializePayment(
+                paymentMethod, saved.getOrderReference(), saved.getTotalAmount(), saved.getCurrency(),
+                java.util.Map.of("email", recipientEmail)
+        );
+        saved.setPaymentTransactionId(payment.externalReference());
+        saved.setPaymentStatus(payment.success() ? ShippingOrder.PaymentStatus.PAID : ShippingOrder.PaymentStatus.UNPAID);
+        if (!"Rwanda".equalsIgnoreCase(country)) {
+            saved.setTrackingNumber(integrationFacadeService.createShipment("FEDEX", saved.getOrderReference()));
+        }
+        shippingOrderRepository.save(saved);
+        notificationService.sendEmailAsync(recipientEmail, "Order received: " + saved.getOrderReference(),
+                "Your order has been received and is being processed.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return saved;
     }
 
@@ -314,6 +370,7 @@ public class RegisteredClientService {
         return availabilitySlotRepository.findByExperienceIdAndSlotDateBetweenOrderBySlotDateAsc(experienceId, from, to);
     }
 
+<<<<<<< HEAD
     @Transactional
     public Booking createBooking(Experience experience, User user, String guestName, String guestEmail, String guestPhone, String guestCountry,
                                  LocalDate preferredDate, LocalDate alternativeDate, Integer groupSize, String preferredLanguage,
@@ -333,10 +390,17 @@ public class RegisteredClientService {
         int safeGroupSize = Math.max(1, groupSize);
         String normalizedGuestEmail = guestEmail.trim().toLowerCase(Locale.ROOT);
         String normalizedPaymentMethod = normalizePaymentMethod(paymentMethod);
+=======
+    public Booking createBooking(Experience experience, User user, String guestName, String guestEmail, String guestPhone, String guestCountry,
+                                 LocalDate preferredDate, LocalDate alternativeDate, Integer groupSize, String preferredLanguage,
+                                 String paymentMethod, String specialRequests, String tourOperatorName, String tourOperatorEmail) {
+        int safeGroupSize = Math.max(1, groupSize);
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         BigDecimal totalPrice = experience.getPricePerPerson() == null
                 ? null
                 : experience.getPricePerPerson().multiply(BigDecimal.valueOf(safeGroupSize));
 
+<<<<<<< HEAD
         availabilityService.applyBookingToSlot(experience, preferredDate, safeGroupSize);
 
         Booking booking = Booking.builder()
@@ -344,6 +408,13 @@ public class RegisteredClientService {
                 .user(user)
                 .guestName(guestName.trim())
                 .guestEmail(normalizedGuestEmail)
+=======
+        Booking booking = Booking.builder()
+                .bookingReference("BOOK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT))
+                .user(user)
+                .guestName(guestName)
+                .guestEmail(guestEmail)
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                 .guestPhone(guestPhone)
                 .guestCountry(guestCountry)
                 .experience(experience)
@@ -354,12 +425,17 @@ public class RegisteredClientService {
                 .specialRequests(specialRequests)
                 .tourOperatorName(tourOperatorName)
                 .tourOperatorEmail(tourOperatorEmail)
+<<<<<<< HEAD
                 .paymentMethod(normalizedPaymentMethod)
+=======
+                .paymentMethod(paymentMethod)
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                 .paymentStatus(Booking.PaymentStatus.UNPAID)
                 .status(Booking.BookingStatus.PENDING)
                 .totalPrice(totalPrice)
                 .build();
         Booking saved = bookingRepository.save(booking);
+<<<<<<< HEAD
         complianceService.recordConsent(normalizedGuestEmail, "BOOKING_TERMS", true, "experience-booking-form");
         complianceService.audit(normalizedGuestEmail, "BOOKING_CREATED", "Booking", saved.getId(),
                 "Experience=" + experience.getSlug() + ", groupSize=" + safeGroupSize + ", date=" + preferredDate);
@@ -384,11 +460,28 @@ public class RegisteredClientService {
         } catch (RuntimeException ex) {
             complianceService.audit(normalizedGuestEmail, "BOOKING_EMAIL_FAILED", "Booking", saved.getId(), ex.getMessage());
         }
+=======
+        complianceService.recordConsent(guestEmail, "BOOKING_TERMS", true, "experience-booking-form");
+        complianceService.audit(guestEmail, "BOOKING_CREATED", "Booking", saved.getId(),
+                "Experience=" + experience.getSlug() + ", groupSize=" + safeGroupSize + ", date=" + preferredDate);
+        availabilityService.applyBookingToSlot(experience, preferredDate, safeGroupSize);
+        if (paymentMethod != null && !paymentMethod.isBlank()) {
+            PaymentGatewayService.PaymentResult payment = integrationFacadeService.initializePayment(
+                    paymentMethod, saved.getBookingReference(), saved.getTotalPrice() == null ? BigDecimal.ZERO : saved.getTotalPrice(), "USD",
+                    java.util.Map.of("email", guestEmail)
+            );
+            saved.setPaymentStatus(payment.success() ? Booking.PaymentStatus.PAID : Booking.PaymentStatus.UNPAID);
+            bookingRepository.save(saved);
+        }
+        integrationFacadeService.sendEmail(guestEmail, "Booking request received: " + saved.getBookingReference(),
+                "Thank you for your booking request. Our operations team will confirm shortly.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return saved;
     }
 
     public Donation createDonation(User user, String donorName, String donorEmail, String donorCountry, BigDecimal amount, String currency,
                                    Donation.DonationPurpose purpose, String message, Boolean isRecurring,
+<<<<<<< HEAD
                                    Donation.RecurringFrequency recurringFrequency, String paymentMethod, Long campaignId) {
         if (donorName == null || donorName.isBlank()) {
             throw new IllegalArgumentException("Donor name is required.");
@@ -402,24 +495,37 @@ public class RegisteredClientService {
 
         String normalizedPaymentMethod = paymentMethod == null ? "" : paymentMethod.trim().toUpperCase(Locale.ROOT);
         DonationCampaign campaign = campaignId == null ? null : donationCampaignRepository.findById(campaignId).orElse(null);
+=======
+                                   Donation.RecurringFrequency recurringFrequency, String paymentMethod) {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         Donation donation = Donation.builder()
                 .donorName(user == null ? donorName : user.getFullName())
                 .donorEmail(user == null ? donorEmail : user.getEmail())
                 .donorCountry(user == null ? donorCountry : user.getCountry())
                 .user(user)
+<<<<<<< HEAD
                 .campaign(campaign)
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                 .amount(amount.max(new BigDecimal("1.00")))
                 .currency(currency)
                 .purpose(purpose)
                 .message(message)
+<<<<<<< HEAD
                 .isRecurring(Boolean.TRUE.equals(isRecurring))
                 .recurringFrequency(Boolean.TRUE.equals(isRecurring) ? recurringFrequency : null)
                 .paymentMethod(normalizedPaymentMethod.isBlank() ? "PAY_LATER" : normalizedPaymentMethod)
+=======
+                .isRecurring(isRecurring)
+                .recurringFrequency(isRecurring ? recurringFrequency : null)
+                .paymentMethod(paymentMethod)
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                 .status(Donation.DonationStatus.PENDING)
                 .build();
         Donation saved = donationRepository.save(donation);
         complianceService.recordConsent(donorEmail, "DONATION_TERMS", true, "conservation-donation-form");
         complianceService.audit(donorEmail, "DONATION_CREATED", "Donation", saved.getId(),
+<<<<<<< HEAD
                 "Purpose=" + purpose + ", amount=" + saved.getAmount() + " " + saved.getCurrency()
                         + (campaign != null ? ", campaign=" + campaign.getName() : ""));
 
@@ -441,6 +547,17 @@ public class RegisteredClientService {
         } catch (RuntimeException ex) {
             complianceService.audit(donorEmail, "DONATION_EMAIL_FAILED", "Donation", saved.getId(), ex.getMessage());
         }
+=======
+                "Purpose=" + purpose + ", amount=" + saved.getAmount() + " " + saved.getCurrency());
+        PaymentGatewayService.PaymentResult payment = integrationFacadeService.initializePayment(
+                paymentMethod, "DON-" + saved.getId(), saved.getAmount(), saved.getCurrency(),
+                java.util.Map.of("email", donorEmail)
+        );
+        saved.setTransactionId(payment.externalReference());
+        saved.setStatus(payment.success() ? Donation.DonationStatus.COMPLETED : Donation.DonationStatus.PENDING);
+        donationRepository.save(saved);
+        integrationFacadeService.sendEmail(donorEmail, "Donation received", "Thank you for supporting Volcano Arts Center.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return saved;
     }
 
@@ -475,6 +592,7 @@ public class RegisteredClientService {
         return savedItemRepository.findByUserOrderByCreatedAtDesc(user);
     }
 
+<<<<<<< HEAD
     private String normalizePaymentMethod(String paymentMethod) {
         if (paymentMethod == null || paymentMethod.isBlank()) {
             return null;
@@ -482,6 +600,8 @@ public class RegisteredClientService {
         return paymentMethod.trim().toUpperCase(Locale.ROOT);
     }
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     public TalentApplication createTalentApplication(String fullName, String email, String phone, String ageRange, String gender,
                                                      String location, TalentApplication.ApplicantCategory applicantCategory,
                                                      TalentApplication.TalentArea talentArea, String experienceDescription,

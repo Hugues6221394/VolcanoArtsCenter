@@ -73,6 +73,7 @@ public class OpsManagerService {
     @Transactional
     public Booking updateBookingStatus(Long id, Booking.BookingStatus status, String adminNotes, String notifyChannel, String actorEmail) {
         Booking booking = bookingRepository.findById(id).orElseThrow();
+<<<<<<< HEAD
         Booking.BookingStatus previousStatus = booking.getStatus();
         boolean wasCapacityHolding = previousStatus != Booking.BookingStatus.CANCELLED;
         boolean shouldHoldCapacity = status != Booking.BookingStatus.CANCELLED;
@@ -94,6 +95,11 @@ public class OpsManagerService {
         booking.setStatus(status);
         booking.setAdminNotes(adminNotes);
         if ((status == Booking.BookingStatus.CONFIRMED || status == Booking.BookingStatus.COMPLETED) && booking.getConfirmedAt() == null) {
+=======
+        booking.setStatus(status);
+        booking.setAdminNotes(adminNotes);
+        if (status == Booking.BookingStatus.CONFIRMED && booking.getConfirmedAt() == null) {
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
             booking.setConfirmedAt(LocalDateTime.now());
         }
         complianceService.audit(actorEmail, "OPS_BOOKING_UPDATED", "Booking", id, "Status=" + status + ", notes=" + adminNotes);
@@ -234,7 +240,11 @@ public class OpsManagerService {
     }
 
     public List<BlackoutDate> listBlackoutDates() {
+<<<<<<< HEAD
         return blackoutDateRepository.findAllByOrderByDateValueAsc();
+=======
+        return blackoutDateRepository.findAll();
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     }
 
     public List<BlackoutDate> listBlackoutDates(Long experienceId) {

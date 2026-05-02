@@ -20,7 +20,10 @@
     <section class="section" style="padding-top: 0;">
         <div class="container">
             <div th:if="${successMessage}" style="background: rgba(46,125,50,0.1); border: 1px solid rgba(46,125,50,0.3); color: #2e7d32; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem;" th:text="${successMessage}"></div>
+<<<<<<< HEAD
             <div th:if="${errorMessage}" style="background: rgba(198,40,40,0.12); border: 1px solid rgba(198,40,40,0.28); color: #ef9a9a; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 2rem;" th:text="${errorMessage}"></div>
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 
             <div th:if="${#maps.isEmpty(cartItems)}" style="text-align: center; padding: 4rem 1rem; background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
@@ -87,6 +90,7 @@
                             <div class="form-group" style="margin-top: 0.5rem;">
                                 <label class="form-label">Payment Method</label>
                                 <select class="form-select" name="paymentMethod">
+<<<<<<< HEAD
                                     <option value="">Confirm Payment Later</option>
                                     <option value="STRIPE_CARD">Credit Card (Stripe)</option>
                                     <option value="MTN_MOMO">MTN MoMo</option>
@@ -95,6 +99,11 @@
                                 <div style="margin-top: 0.45rem; color: var(--color-gray-500); font-size: 0.82rem; line-height: 1.45;">
                                     Use <strong>Confirm Payment Later</strong> for safe local workflow testing. Live payment options require working provider configuration.
                                 </div>
+=======
+                                    <option value="STRIPE">Credit Card (Stripe)</option>
+                                    <option value="BANK_TRANSFER">Bank Transfer</option>
+                                </select>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
                             </div>
 
                             <input type="hidden" name="captchaToken" value="skip_for_now" />

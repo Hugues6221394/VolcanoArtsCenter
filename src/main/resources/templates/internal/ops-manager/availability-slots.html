@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/admin-base}">
@@ -540,6 +541,102 @@
                 </table>
             </div>
         </div>
+=======
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin-base}">
+<head><title>Availability Slots</title></head>
+<body>
+<th:block layout:fragment="breadcrumb"><a th:href="@{/admin/dashboard}">Admin</a><span class="sep">›</span><span>Availability</span></th:block>
+<main layout:fragment="content">
+    <div class="admin-page-header">
+        <div class="admin-page-header__info"><h1>Availability Slots</h1><p>Manage experience availability, generate slots, and assign guides.</p></div>
+        <div class="admin-page-header__actions">
+            <button class="btn btn--primary btn--sm" onclick="document.getElementById('gen-section').style.display=document.getElementById('gen-section').style.display==='none'?'block':'none'">Generate Slots</button>
+            <button class="btn btn--outline btn--sm" onclick="document.getElementById('blackout-section').style.display=document.getElementById('blackout-section').style.display==='none'?'block':'none'">Add Blackout</button>
+        </div>
+    </div>
+    <!-- Generate Slots -->
+    <div class="admin-card" id="gen-section" style="display:none;margin-bottom:1rem;">
+        <div class="admin-card__header"><h3>Generate Availability</h3></div>
+        <div class="admin-card__body">
+            <form th:action="@{/admin/ops/availability-slots/generate}" method="post" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;">
+                <div class="form-group" style="margin:0;"><label class="form-label">Experience</label><select class="form-select" name="experienceId" required><option th:each="e : ${experiences}" th:value="${e.id}" th:text="${e.title}">Exp</option></select></div>
+                <div class="form-group" style="margin:0;"><label class="form-label">From</label><input class="form-input" type="date" name="fromDate" required /></div>
+                <div class="form-group" style="margin:0;"><label class="form-label">To</label><input class="form-input" type="date" name="toDate" required /></div>
+                <div class="form-group" style="margin:0;"><label class="form-label">Capacity</label><input class="form-input" type="number" name="capacity" value="15" style="max-width:80px;" /></div>
+                <button class="btn btn--primary btn--sm" type="submit">Generate</button>
+            </form>
+        </div>
+    </div>
+    <!-- Add Blackout -->
+    <div class="admin-card" id="blackout-section" style="display:none;margin-bottom:1rem;">
+        <div class="admin-card__header"><h3>Add Blackout Date</h3></div>
+        <div class="admin-card__body">
+            <form th:action="@{/admin/ops/availability-slots/blackout}" method="post" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;">
+                <div class="form-group" style="margin:0;"><label class="form-label">Experience</label><select class="form-select" name="experienceId" required><option th:each="e : ${experiences}" th:value="${e.id}" th:text="${e.title}">Exp</option></select></div>
+                <div class="form-group" style="margin:0;"><label class="form-label">Date</label><input class="form-input" type="date" name="date" required /></div>
+                <div class="form-group" style="margin:0;"><label class="form-label">Reason</label><input class="form-input" name="reason" placeholder="Optional" /></div>
+                <button class="btn btn--primary btn--sm" type="submit">Add Blackout</button>
+            </form>
+        </div>
+    </div>
+    <!-- Blackouts Table -->
+    <div th:if="${!#lists.isEmpty(blackouts)}" class="admin-card" style="margin-bottom:1rem;">
+        <div class="admin-card__header"><h3>Active Blackout Dates</h3></div>
+        <div class="admin-card__body--flush"><div class="admin-table-wrap">
+            <table class="admin-table"><thead><tr><th>Experience</th><th>Date</th><th>Reason</th><th>Action</th></tr></thead>
+            <tbody>
+            <tr th:each="bd : ${blackouts}">
+                <td th:text="${bd.experience != null ? bd.experience.title : '-'}">Exp</td>
+                <td th:text="${bd.blackoutDate}">2026-01-01</td>
+                <td th:text="${bd.reason ?: '-'}">-</td>
+                <td><form th:action="@{|/admin/ops/availability-slots/blackout/${bd.id}/delete|}" method="post"><button class="btn btn--ghost btn--xs" type="submit">Remove</button></form></td>
+            </tr>
+            </tbody></table>
+        </div></div>
+    </div>
+    <!-- Filter -->
+    <div class="admin-card" style="margin-bottom:1rem;">
+        <div class="admin-card__body" style="padding:.75rem 1rem;">
+            <form method="get" th:action="@{/admin/ops/availability-slots}" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+                <input class="form-input" type="date" name="fromDate" th:value="${fromDate}" style="min-width:140px;" />
+                <input class="form-input" type="date" name="toDate" th:value="${toDate}" style="min-width:140px;" />
+                <select class="form-select" name="experienceId" style="min-width:160px;"><option value="">All experiences</option><option th:each="e : ${experiences}" th:value="${e.id}" th:text="${e.title}" th:selected="${experienceId != null && experienceId == e.id}">Exp</option></select>
+                <button class="btn btn--outline btn--sm" type="submit">Filter</button>
+                <a class="btn btn--ghost btn--sm" th:href="@{/admin/ops/availability-slots}">Clear</a>
+            </form>
+        </div>
+    </div>
+    <!-- Slots Table -->
+    <div class="admin-card">
+        <div class="admin-card__header"><h3>Availability Slots</h3><span class="chip chip--info" th:text="${#lists.size(items)} + ' slots'">0</span></div>
+        <div class="admin-card__body--flush"><div class="admin-table-wrap">
+            <table class="admin-table"><thead><tr><th>Experience</th><th>Date</th><th>Capacity</th><th>Booked</th><th>Guide</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+            <tr th:each="s : ${items}">
+                <td class="cell-primary" th:text="${s.experience != null ? s.experience.title : '-'}">Exp</td>
+                <td th:text="${s.slotDate}">2026-01-01</td>
+                <td th:text="${s.maxCapacity}">15</td>
+                <td th:text="${s.bookedCount}">0</td>
+                <td th:text="${s.assignedGuideName ?: '-'}">-</td>
+                <td><span class="chip" th:data-status="${s.status}" th:text="${s.status}">OPEN</span></td>
+                <td>
+                    <div style="display:grid;gap:.3rem;">
+                        <form th:action="@{|/admin/ops/availability-slots/${s.id}/update|}" method="post" style="display:flex;gap:.3rem;align-items:center;">
+                            <select class="form-select" name="status" style="padding:.35rem;min-width:90px;"><option th:each="st : ${T(com.volcanoartscenter.platform.shared.model.AvailabilitySlot.SlotStatus).values()}" th:value="${st}" th:text="${st}" th:selected="${st == s.status}">S</option></select>
+                            <input class="form-input" type="number" name="maxCapacity" th:value="${s.maxCapacity}" style="max-width:60px;padding:.35rem;" />
+                            <button class="btn btn--outline btn--xs" type="submit">Update</button>
+                        </form>
+                        <form th:action="@{|/admin/ops/availability-slots/${s.id}/assign-guide|}" method="post" style="display:flex;gap:.3rem;align-items:center;">
+                            <select class="form-select" name="guideEmail" style="padding:.35rem;min-width:130px;"><option value="">Unassign</option><option th:each="g : ${guides}" th:value="${g.email}" th:text="${g.fullName}" th:selected="${g.email == s.assignedGuideEmail}">Guide</option></select>
+                            <button class="btn btn--outline btn--xs" type="submit">Assign</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}"><td colspan="7" class="admin-empty"><div class="admin-empty__icon">🕐</div><div class="admin-empty__text">No availability slots. Generate some above.</div></td></tr>
+            </tbody></table>
+        </div></div>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     </div>
 </main>
 </body>

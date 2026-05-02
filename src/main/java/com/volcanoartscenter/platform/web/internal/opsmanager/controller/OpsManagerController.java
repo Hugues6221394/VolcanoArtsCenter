@@ -5,7 +5,10 @@ import com.volcanoartscenter.platform.shared.model.ContactInquiry;
 import com.volcanoartscenter.platform.shared.model.ShippingOrder;
 import com.volcanoartscenter.platform.shared.model.TalentApplication;
 import com.volcanoartscenter.platform.shared.model.TourOperatorRequest;
+<<<<<<< HEAD
 import com.volcanoartscenter.platform.shared.model.AvailabilitySlot;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import com.volcanoartscenter.platform.web.internal.opsmanager.service.OpsManagerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,13 +31,17 @@ public class OpsManagerController {
 
     @GetMapping("/admin/ops/bookings")
     public String opsBookings(Model model) {
+<<<<<<< HEAD
         var bookings = opsManagerService.listBookings();
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("adminPage", "bookings");
         model.addAttribute("pageTitle", "Bookings");
         model.addAttribute("totalBookings", opsManagerService.totalBookings());
         model.addAttribute("totalOrders", opsManagerService.totalOrders());
         model.addAttribute("totalInquiries", opsManagerService.totalInquiries());
         model.addAttribute("pendingTalentApplications", opsManagerService.pendingTalentApplications());
+<<<<<<< HEAD
         model.addAttribute("pendingBookingsCount", bookings.stream().filter(b -> b.getStatus() == Booking.BookingStatus.PENDING).count());
         model.addAttribute("confirmedBookingsCount", bookings.stream().filter(b -> b.getStatus() == Booking.BookingStatus.CONFIRMED).count());
         model.addAttribute("completedBookingsCount", bookings.stream().filter(b -> b.getStatus() == Booking.BookingStatus.COMPLETED).count());
@@ -45,6 +52,9 @@ public class OpsManagerController {
                 Booking::getId,
                 booking -> booking.getExperience() == null || booking.getExperience().getTitle() == null ? "-" : booking.getExperience().getTitle()
         )));
+=======
+        model.addAttribute("items", opsManagerService.listBookings());
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "internal/ops-manager/bookings";
     }
 
@@ -65,6 +75,7 @@ public class OpsManagerController {
     }
     @GetMapping("/admin/ops/shipping-orders")
     public String opsShippingOrders(Model model) {
+<<<<<<< HEAD
         var orders = opsManagerService.listShippingOrders();
         model.addAttribute("adminPage", "shipping-orders");
         model.addAttribute("pageTitle", "Shipping Orders");
@@ -74,6 +85,12 @@ public class OpsManagerController {
         model.addAttribute("shippedOrdersCount", orders.stream().filter(o -> o.getStatus() == ShippingOrder.OrderStatus.SHIPPED || o.getStatus() == ShippingOrder.OrderStatus.IN_TRANSIT).count());
         model.addAttribute("deliveredOrdersCount", orders.stream().filter(o -> o.getStatus() == ShippingOrder.OrderStatus.DELIVERED).count());
         model.addAttribute("unpaidOrdersCount", orders.stream().filter(o -> o.getPaymentStatus() != ShippingOrder.PaymentStatus.PAID).count());
+=======
+        model.addAttribute("adminPage", "shipping-orders");
+        model.addAttribute("pageTitle", "Shipping Orders");
+        model.addAttribute("items", opsManagerService.listShippingOrders());
+        model.addAttribute("clientProfiles", opsManagerService.listClientProfiles());
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "internal/ops-manager/shipping-orders";
     }
 
@@ -99,6 +116,7 @@ public class OpsManagerController {
                                        @RequestParam(required = false) Long experienceId,
                                        Model model) {
         var items = opsManagerService.listAvailabilitySlots(fromDate, toDate, experienceId);
+<<<<<<< HEAD
         var blackouts = opsManagerService.listBlackoutDates(experienceId);
         var experiences = opsManagerService.listExperiences();
         String selectedExperienceLabel = experiences.stream()
@@ -131,6 +149,14 @@ public class OpsManagerController {
                 com.volcanoartscenter.platform.shared.model.BlackoutDate::getId,
                 blackout -> blackout.getExperience() == null || blackout.getExperience().getTitle() == null ? "-" : blackout.getExperience().getTitle()
         )));
+=======
+        model.addAttribute("adminPage", "availability-slots");
+        model.addAttribute("pageTitle", "Availability Slots");
+        model.addAttribute("items", items);
+        model.addAttribute("experiences", opsManagerService.listExperiences());
+        model.addAttribute("blackouts", opsManagerService.listBlackoutDates(experienceId));
+        model.addAttribute("guides", opsManagerService.listGuideUsers());
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         model.addAttribute("slotBookingsById", items.stream().collect(java.util.stream.Collectors.toMap(
                 com.volcanoartscenter.platform.shared.model.AvailabilitySlot::getId,
                 slot -> opsManagerService.bookingsForSlot(
@@ -205,12 +231,17 @@ public class OpsManagerController {
                                          Authentication authentication,
                                          RedirectAttributes redirectAttributes) {
         String actor = authentication == null ? "system" : authentication.getName();
+<<<<<<< HEAD
         try {
             opsManagerService.updateBookingStatus(id, status, adminNotes, notifyChannel, actor);
             redirectAttributes.addFlashAttribute("successMessage", "Booking status updated.");
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
+=======
+        opsManagerService.updateBookingStatus(id, status, adminNotes, notifyChannel, actor);
+        redirectAttributes.addFlashAttribute("successMessage", "Booking status updated.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "redirect:/admin/ops/bookings";
     }
 
@@ -251,12 +282,17 @@ public class OpsManagerController {
                                                Authentication authentication,
                                                RedirectAttributes redirectAttributes) {
         String actor = authentication == null ? "system" : authentication.getName();
+<<<<<<< HEAD
         try {
             opsManagerService.updateShippingOrderStatus(id, status, trackingNumber, adminNotes, notifyChannel, actor);
             redirectAttributes.addFlashAttribute("successMessage", "Shipping order updated.");
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
+=======
+        opsManagerService.updateShippingOrderStatus(id, status, trackingNumber, adminNotes, notifyChannel, actor);
+        redirectAttributes.addFlashAttribute("successMessage", "Shipping order updated.");
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
         return "redirect:/admin/ops/shipping-orders";
     }
 

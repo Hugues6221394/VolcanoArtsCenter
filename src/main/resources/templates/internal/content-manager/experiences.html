@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/admin-base}">
@@ -574,6 +575,65 @@
                 </table>
             </div>
         </div>
+=======
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/admin-base}">
+<head><title>Experiences</title></head>
+<body>
+<th:block layout:fragment="breadcrumb"><a th:href="@{/admin/dashboard}">Admin</a><span class="sep">›</span><span>Experiences</span></th:block>
+<main layout:fragment="content">
+    <div class="admin-page-header">
+        <div class="admin-page-header__info"><h1>Experiences</h1><p>Manage tourism experiences, cultural tours, and workshops.</p></div>
+        <div class="admin-page-header__actions">
+            <button class="btn btn--primary btn--sm" onclick="document.getElementById('create-exp').style.display=document.getElementById('create-exp').style.display==='none'?'block':'none'">+ Add Experience</button>
+        </div>
+    </div>
+    <div class="admin-card" id="create-exp" style="display:none; margin-bottom:1.5rem;">
+        <div class="admin-card__header"><h3>Create Experience</h3></div>
+        <div class="admin-card__body">
+            <form th:action="@{/admin/content/experiences}" method="post" class="modal-form">
+                <div class="form-row"><div class="form-group"><label class="form-label">Title</label><input class="form-input" name="title" required /></div><div class="form-group"><label class="form-label">Slug</label><input class="form-input" name="slug" required /></div></div>
+                <div class="form-row"><div class="form-group"><label class="form-label">Type</label><select class="form-select" name="experienceType"><option th:each="t : ${types}" th:value="${t}" th:text="${t}">TYPE</option></select></div><div class="form-group"><label class="form-label">Booking Type</label><select class="form-select" name="bookingType"><option th:each="t : ${bookingTypes}" th:value="${t}" th:text="${t}">TYPE</option></select></div></div>
+                <div class="form-row"><div class="form-group"><label class="form-label">Price / Person</label><input class="form-input" type="number" step="0.01" name="pricePerPerson" /></div><div class="form-group"><label class="form-label">Location</label><input class="form-input" name="location" /></div></div>
+                <div class="form-row"><div class="form-group"><label class="form-label">Min Group</label><input class="form-input" type="number" name="minGroupSize" value="1" /></div><div class="form-group"><label class="form-label">Max Group</label><input class="form-input" type="number" name="maxGroupSize" value="15" /></div></div>
+                <div class="form-row"><div class="form-group"><label class="form-label">Image URL</label><input class="form-input" name="primaryImageUrl" /></div><div class="form-group"><label class="form-label">Description</label><input class="form-input" name="shortDescription" /></div></div>
+                <div style="display:flex;gap:1rem;"><label><input type="checkbox" name="active" checked /> Active</label><label><input type="checkbox" name="featured" /> Featured</label></div>
+                <div class="form-actions"><button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('create-exp').style.display='none'">Cancel</button><button type="submit" class="btn btn--primary btn--sm">Create</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="admin-card">
+        <div class="admin-card__header"><h3>All Experiences</h3><span class="chip chip--info" th:text="${#lists.size(items)} + ' total'">0</span></div>
+        <div class="admin-card__body--flush"><div class="admin-table-wrap">
+            <table class="admin-table"><thead><tr><th>Experience</th><th>Type</th><th>Booking</th><th>Price</th><th>Group</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+            <tr th:each="i : ${items}">
+                <td><div class="cell-primary" th:text="${i.title}">Title</div><div style="font-size:.72rem;color:var(--color-gray-500);" th:text="${i.location}">Location</div></td>
+                <td><span class="chip" th:text="${i.experienceType}">TYPE</span></td>
+                <td th:text="${i.bookingType}">INSTANT</td>
+                <td style="font-weight:600;" th:text="${i.pricePerPerson != null ? '$' + i.pricePerPerson : 'Free'}">$0</td>
+                <td th:text="${i.minGroupSize + '-' + i.maxGroupSize}">1-15</td>
+                <td><span class="chip" th:data-status="${i.active ? 'ACTIVE' : 'DISABLED'}" th:text="${i.active ? 'Active' : 'Inactive'}">Active</span><span th:if="${i.featured}" class="chip chip--warning" style="margin-left:.25rem;">Featured</span></td>
+                <td><div style="display:flex;gap:.35rem;"><button class="btn btn--outline btn--xs" th:onclick="'document.getElementById(\'edit-exp-'+${i.id}+'\').style.display=document.getElementById(\'edit-exp-'+${i.id}+'\').style.display===\'none\'?\'table-row\':\'none\''">Edit</button><form th:action="@{|/admin/content/experiences/${i.id}/delete|}" method="post" style="display:inline;"><button class="btn btn--ghost btn--xs" type="submit" onclick="return confirm('Delete?')">Delete</button></form></div></td>
+            </tr>
+            <tr th:each="i : ${items}" th:id="'edit-exp-'+${i.id}" style="display:none;background:rgba(0,162,89,.03);">
+                <td colspan="7"><form th:action="@{|/admin/content/experiences/${i.id}/update|}" method="post" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;padding:.5rem 0;">
+                    <div class="form-group" style="margin:0;flex:1;min-width:140px;"><label class="form-label">Title</label><input class="form-input" name="title" th:value="${i.title}" required /></div>
+                    <div class="form-group" style="margin:0;min-width:100px;"><label class="form-label">Price</label><input class="form-input" type="number" step="0.01" name="pricePerPerson" th:value="${i.pricePerPerson}" /></div>
+                    <div class="form-group" style="margin:0;min-width:100px;"><label class="form-label">Location</label><input class="form-input" name="location" th:value="${i.location}" /></div>
+                    <div class="form-group" style="margin:0;min-width:100px;"><label class="form-label">Description</label><input class="form-input" name="shortDescription" th:value="${i.shortDescription}" /></div>
+                    <div class="form-group" style="margin:0;min-width:110px;"><label class="form-label">Type</label><select class="form-select" name="experienceType"><option th:each="t : ${types}" th:value="${t}" th:text="${t}" th:selected="${t == i.experienceType}">T</option></select></div>
+                    <div class="form-group" style="margin:0;min-width:110px;"><label class="form-label">Booking</label><select class="form-select" name="bookingType"><option th:each="t : ${bookingTypes}" th:value="${t}" th:text="${t}" th:selected="${t == i.bookingType}">T</option></select></div>
+                    <div class="form-group" style="margin:0;min-width:70px;"><label class="form-label">Min</label><input class="form-input" type="number" name="minGroupSize" th:value="${i.minGroupSize}" /></div>
+                    <div class="form-group" style="margin:0;min-width:70px;"><label class="form-label">Max</label><input class="form-input" type="number" name="maxGroupSize" th:value="${i.maxGroupSize}" /></div>
+                    <label style="font-size:.8rem;"><input type="checkbox" name="active" th:checked="${i.active}" /> active</label>
+                    <label style="font-size:.8rem;"><input type="checkbox" name="featured" th:checked="${i.featured}" /> feat</label>
+                    <button class="btn btn--primary btn--xs" type="submit">Save</button>
+                </form></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(items)}"><td colspan="7" class="admin-empty"><div class="admin-empty__icon">🏔️</div><div class="admin-empty__text">No experiences yet</div></td></tr>
+            </tbody></table>
+        </div></div>
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     </div>
 </main>
 </body>

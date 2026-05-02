@@ -1,11 +1,14 @@
 package com.volcanoartscenter.platform.web;
 
+<<<<<<< HEAD
 import com.volcanoartscenter.platform.shared.model.AvailabilitySlot;
 import com.volcanoartscenter.platform.shared.model.BlackoutDate;
 import com.volcanoartscenter.platform.shared.model.Experience;
 import com.volcanoartscenter.platform.shared.repository.AvailabilitySlotRepository;
 import com.volcanoartscenter.platform.shared.repository.BlackoutDateRepository;
 import com.volcanoartscenter.platform.shared.repository.ExperienceRepository;
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,11 +17,15 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+<<<<<<< HEAD
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+=======
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +37,7 @@ class SecurityAndRoleRoutesTest {
     @Autowired
     private MockMvc mockMvc;
 
+<<<<<<< HEAD
     @Autowired
     private ExperienceRepository experienceRepository;
 
@@ -39,6 +47,8 @@ class SecurityAndRoleRoutesTest {
     @Autowired
     private BlackoutDateRepository blackoutDateRepository;
 
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
     @Test
     void clientRoutesRequireRegisteredClientRole() throws Exception {
         mockMvc.perform(get("/client/dashboard"))
@@ -60,6 +70,7 @@ class SecurityAndRoleRoutesTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("operator@user").roles("TOUR_OPERATOR")))
                 .andExpect(status().isForbidden());
     }
+<<<<<<< HEAD
 
     @Test
     void availabilitySlotsPageRendersRowsForOpsManagers() throws Exception {
@@ -101,4 +112,6 @@ class SecurityAndRoleRoutesTest {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Availability Test Experience")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Private hire")));
     }
+=======
+>>>>>>> f8e8bc756db02040ef57e12be3260849005b05ac
 }
