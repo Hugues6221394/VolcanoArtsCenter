@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Product</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb">
+                <a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><a th:href="@{/art-store}">Art Store</a><span class="breadcrumb__separator">/</span><span th:text="${product.name}">Product</span>
+            </div>
+            <span class="section-label">Product</span>
+            <h1 th:text="${product.name}">Product</h1>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+                <img th:src="${product.primaryImageUrl != null ? product.primaryImageUrl : '/images/logo.jpg'}" alt="Product image" style="width:100%; border-radius: var(--radius-lg); border:1px solid rgba(255,255,255,.08); margin-bottom:1rem;" onerror="this.onerror=null;this.src='/images/logo.jpg';"/>
+                <div th:if="${!#lists.isEmpty(product.additionalImages)}" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem;">
+                    <div th:each="imageUrl : ${product.additionalImages}" style="border-radius: var(--radius-md); border:1px solid rgba(255,255,255,.08); overflow:hidden; background:rgba(255,255,255,.03); min-height:120px;">
+                        <img th:src="${imageUrl}" alt="Additional artwork image" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none';" style="width:100%; height:120px; object-fit:cover; display:block;" />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p th:if="${product.shortDescription != null}" style="color:var(--color-gray-200); margin-bottom:0.75rem; font-size:1.05rem;" th:text="${product.shortDescription}">Short description</p>
+                <p style="color:var(--color-gray-300); margin-bottom:1rem;" th:text="${product.description}">Description</p>
+                <p style="margin-bottom:.6rem;"><strong>Type:</strong> <span th:text="${product.inventoryType}">UNIQUE</span></p>
+                <p style="margin-bottom:.6rem;">
+                    <strong>Price:</strong>
+                    $<span th:text="${#numbers.formatDecimal(product.price,1,'COMMA',2,'POINT')}">0.00</span>
+                    <span th:if="${product.compareAtPrice != null}" style="margin-left:0.5rem; color:var(--color-gray-500); text-decoration:line-through;">
+                        $<span th:text="${#numbers.formatDecimal(product.compareAtPrice,1,'COMMA',2,'POINT')}">0.00</span>
+                    </span>
+                </p>
+                <p th:if="${product.artistName != null}" style="margin-bottom:.6rem;"><strong>Artist:</strong> <span th:text="${product.artistName}">Artist</span></p>
+                <p th:if="${product.medium != null}" style="margin-bottom:.6rem;"><strong>Medium:</strong> <span th:text="${product.medium}">Medium</span></p>
+                <p th:if="${product.dimensions != null}" style="margin-bottom:.6rem;"><strong>Dimensions:</strong> <span th:text="${product.dimensions}">Dimensions</span></p>
+                <p th:if="${product.weightKg != null}" style="margin-bottom:.6rem;"><strong>Weight:</strong> <span th:text="${product.weightKg}">0</span> kg</p>
+                <p style="margin-bottom:.6rem;"><strong>Artwork Status:</strong> <span th:text="${product.artworkStatus}">PUBLISHED</span></p>
+                <p style="margin-bottom:1.5rem;">
+                    <strong>Shipping:</strong>
+                    <span th:text="${product.shippable ? 'Shippable item' : 'Pickup or special arrangement only'}">Shippable item</span>
+                    <span th:if="${product.shippingNote != null}" th:text="' - ' + ${product.shippingNote}">Shipping note</span>
+                </p>
+
+                <div th:if="${product.artistStory != null}" style="margin-bottom:1.5rem;">
+                    <h3 style="margin-bottom:0.5rem;">Artist Story</h3>
+                    <p style="color:var(--color-gray-300);" th:text="${product.artistStory}">Artist story</p>
+                </div>
+
+                <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 1rem;" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" style="background: rgba(183,28,28,0.16); border: 1px solid rgba(229,115,115,0.35); border-radius: var(--radius-md); color: #FFCDD2; padding: 1rem; margin-bottom: 1rem;" th:text="${errorMessage}"></div>
+
+                <form th:action="@{/cart/add}" method="post" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom: 1rem; background: var(--color-surface);">
+                    <h3 style="margin-bottom:1rem;">Reserve / Order Online</h3>
+                    <p style="color: var(--color-gray-500); margin-bottom: 1.5rem;">Add this artwork to your cart to check out. Shipping will be coordinated directly.</p>
+                    <div style="display: flex; gap: 1rem; align-items: flex-end;">
+                        <div class="form-group" style="margin:0; width: 100px;">
+                            <label class="form-label">Quantity</label>
+                            <input class="form-input" name="quantity" type="number" min="1" value="1"/>
+                        </div>
+                        <input type="hidden" name="productId" th:value="${product.id}" />
+                        <button class="btn btn--primary" type="submit" style="flex: 1;">Add to Cart</button>
+                        <a th:href="@{/cart}" class="btn btn--outline">View Cart</a>
+                    </div>
+                </form>
+
+                <div style="display:flex; gap:.5rem; margin-bottom:1rem;">
+                    <form th:if="${isAuthenticated}" th:action="@{|/art-store/${product.slug}/save|}" method="post">
+                        <button class="btn btn--outline btn--sm" type="submit">Save Item</button>
+                    </form>
+                    <form th:if="${isAuthenticated}" th:action="@{|/art-store/${product.slug}/unsave|}" method="post">
+                        <button class="btn btn--ghost btn--sm" type="submit">Remove Saved</button>
+                    </form>
+                </div>
+
+                <div style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1.25rem; background:rgba(255,255,255,.02);">
+                    <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; margin-bottom:1rem;">
+                        <div>
+                            <h3 style="margin-bottom:.35rem;">Verified Review</h3>
+                            <p style="color:var(--color-gray-500); margin:0;">Reviews are tied to delivered orders so buyers can leave verified feedback.</p>
+                        </div>
+                        <span class="chip chip--info" th:text="${#lists.size(reviews)} + ' approved'">0 approved</span>
+                    </div>
+
+                    <div th:if="${isAuthenticated and canSubmitReview}" style="margin-bottom:1rem; padding:0.85rem 1rem; border-radius:var(--radius-md); border:1px solid rgba(46,125,50,0.35); background:rgba(46,125,50,0.12); color:#C8E6C9;">
+                        <strong th:text="${reviewerDisplayName}">Reviewer</strong>
+                        <span th:if="${reviewerDisplayEmail != null}" th:text="' · ' + ${reviewerDisplayEmail}">reviewer@example.com</span>
+                        <div style="margin-top:.4rem; color:#A5D6A7;" th:text="${reviewStatusMessage}">Your account is eligible to submit a verified review for this artwork.</div>
+                    </div>
+                    <div th:if="${isAuthenticated and !canSubmitReview}" style="margin-bottom:1rem; padding:0.85rem 1rem; border-radius:var(--radius-md); border:1px solid rgba(255,193,7,0.35); background:rgba(255,193,7,0.12); color:#FFE082;" th:text="${reviewStatusMessage}">
+                        Review access unlocks after one of your orders for this artwork is delivered.
+                    </div>
+
+                    <form th:if="${isAuthenticated and canSubmitReview}" th:action="@{|/art-store/${product.slug}/reviews|}" method="post">
+                        <div class="form-group">
+                            <label class="form-label">Rating</label>
+                            <select class="form-select" name="rating" required>
+                                <option value="">Choose a rating</option>
+                                <option value="5">5 / 5</option>
+                                <option value="4">4 / 5</option>
+                                <option value="3">3 / 5</option>
+                                <option value="2">2 / 5</option>
+                                <option value="1">1 / 5</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Comment</label>
+                            <textarea class="form-textarea" name="comment" rows="4" required placeholder="Share what arrived well, what stood out, and whether the artwork matched expectations."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Captcha Token</label>
+                            <input class="form-input" name="captchaToken" placeholder="Enter captcha token if enabled" />
+                        </div>
+                        <button class="btn btn--outline" type="submit">Submit Verified Review</button>
+                    </form>
+
+                    <p th:if="${!isAuthenticated}" class="text-muted" style="margin:0;">Sign in as a registered client to submit verified reviews for delivered orders.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top:0;">
+        <div class="container">
+            <div style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-xl); padding:1.5rem; background:rgba(255,255,255,.02);">
+                <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; margin-bottom:1.25rem;">
+                    <div>
+                        <span class="section-label">Buyer Feedback</span>
+                        <h2 style="margin:.35rem 0 0;">Approved Reviews</h2>
+                    </div>
+                    <span class="chip chip--info" th:text="${#lists.size(reviews)} + ' visible'">0 visible</span>
+                </div>
+
+                <div th:if="${#lists.isEmpty(reviews)}" style="padding:1.25rem; border-radius:var(--radius-lg); border:1px dashed rgba(255,255,255,.12); color:var(--color-gray-500);">
+                    No approved reviews are visible for this artwork yet.
+                </div>
+
+                <div th:if="${!#lists.isEmpty(reviews)}" style="display:grid; gap:1rem;">
+                    <article th:each="review : ${reviews}" style="padding:1.1rem 1.15rem; border-radius:var(--radius-lg); border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);">
+                        <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; margin-bottom:.6rem;">
+                            <div>
+                                <h3 style="margin:0;" th:text="${review.reviewerName}">Reviewer</h3>
+                                <p style="margin:.25rem 0 0; color:var(--color-gray-500);" th:text="${review.reviewerCountry != null ? review.reviewerCountry : 'Verified buyer'}">Verified buyer</p>
+                            </div>
+                            <div style="text-align:right;">
+                                <div class="chip chip--success" th:text="${review.rating} + ' / 5'">5 / 5</div>
+                                <p style="margin:.45rem 0 0; color:var(--color-gray-500);" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">2026-04-30</p>
+                            </div>
+                        </div>
+                        <p style="margin:0; color:var(--color-gray-300);" th:text="${review.comment}">Review comment</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

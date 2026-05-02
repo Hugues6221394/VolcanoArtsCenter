@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Talent Program</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header" style="padding-top: 6rem; padding-bottom: 4rem;">
+        <div class="page-header__decor"></div>
+        <div class="container" style="text-align: center; max-width: 860px;">
+            <div class="breadcrumb" style="justify-content: center;">
+                <a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Talent Program</span>
+            </div>
+            <span class="section-label">Creative Empowerment</span>
+            <h1 style="font-size: 3.35rem; line-height: 1.08; margin-bottom: 1.5rem;">Join Our <span style="color: var(--color-primary);">Talent Program</span></h1>
+            <p class="section-subtitle" style="margin: 0 auto; font-size: 1.2rem;">
+                We empower youth, women, the elderly, and marginalized groups around Volcanoes National Park by preserving and celebrating Rwandan cultural heritage while turning talent into visible opportunity.
+            </p>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-end; margin-bottom:1.5rem; flex-wrap:wrap;">
+                <div>
+                    <h2 style="margin:0; font-family: var(--font-heading);">Featured Talent Profiles</h2>
+                </div>
+                <div class="chip chip--info" th:text="${#lists.size(profiles)} + ' published profiles'">0 published profiles</div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(profiles)}" style="padding:2rem; border-radius:var(--radius-lg); border:1px dashed var(--color-border); color:var(--color-gray-500); text-align:center;">
+                No featured talent profiles are published yet.
+            </div>
+
+            <div th:if="${!#lists.isEmpty(profiles)}" class="grid grid-3" style="gap:1.5rem;">
+                <article th:each="profile : ${profiles}" style="background: var(--color-surface); border:1px solid var(--color-border); border-radius: var(--radius-lg); overflow:hidden; display:flex; flex-direction:column;">
+                    <div style="aspect-ratio: 16 / 12; background: rgba(255,255,255,.03);">
+                        <img th:if="${profile.primaryImageUrl != null and !#strings.isEmpty(profile.primaryImageUrl)}" th:src="${profile.primaryImageUrl}" alt="" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; this.parentElement.querySelector('.talent-fallback').style.display='flex';" />
+                        <div class="talent-fallback" th:style="${profile.primaryImageUrl != null and !#strings.isEmpty(profile.primaryImageUrl)} ? 'display:none;height:100%;align-items:center;justify-content:center;font-size:2rem;color:var(--color-gray-500);' : 'display:flex;height:100%;align-items:center;justify-content:center;font-size:2rem;color:var(--color-gray-500);'">TALENT</div>
+                    </div>
+                    <div style="padding:1.35rem; display:flex; flex-direction:column; gap:.85rem; flex:1;">
+                        <div style="display:flex; justify-content:space-between; gap:.75rem; align-items:flex-start;">
+                            <div>
+                                <h3 style="margin:0; font-family: var(--font-heading);" th:text="${profile.displayName}">Talent Name</h3>
+                                <p style="margin:.35rem 0 0; color:var(--color-gray-500);" th:text="${profile.headline != null and !#strings.isEmpty(profile.headline) ? profile.headline : 'Featured program participant'}">Headline</p>
+                            </div>
+                            <span class="chip chip--primary" th:text="${profile.category}">YOUTH</span>
+                        </div>
+                        <p style="margin:0; color:var(--color-gray-300); line-height:1.7;" th:text="${profile.story != null and !#strings.isEmpty(profile.story) ? profile.story : 'Story coming soon.'}">Story</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: rgba(0,0,0,0.2); border-top: 1px solid var(--color-border);">
+        <div class="container" style="max-width: 860px;">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h2 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 1rem;">Submit Your Application</h2>
+                <p style="color: var(--color-gray-400);">Tell us about yourself and what you want to learn or showcase. Our team reviews applications weekly.</p>
+            </div>
+
+            <div th:if="${successMessage}" style="background: rgba(46,125,50,0.1); border: 1px solid rgba(46,125,50,0.3); border-radius: var(--radius-md); color: #81c784; padding: 1.5rem; margin-bottom: 2rem; text-align: center; font-weight: 500;" th:text="${successMessage}"></div>
+
+            <div th:unless="${isAuthenticated && isTalentApplicant}" style="background: var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:3rem 2rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔐</div>
+                <h3 style="margin-bottom:1rem; font-family: var(--font-heading);">Account Required</h3>
+                <p class="text-muted" style="margin-bottom:2rem; max-width: 400px; margin-left: auto; margin-right: auto;">To protect your data and allow you to track your application status securely, please create an applicant profile or sign in.</p>
+                <div style="display:flex; gap:1rem; justify-content: center; flex-wrap:wrap;">
+                    <a class="btn btn--primary" th:href="@{/talent/register}">Register as Applicant</a>
+                    <a class="btn btn--outline" th:href="@{/login}">Applicant Login</a>
+                </div>
+            </div>
+
+            <form th:if="${isAuthenticated && isTalentApplicant}" th:action="@{/talent/apply}" method="post" style="background: var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:2.5rem; box-shadow: var(--shadow-md);">
+                <div class="grid grid-2" style="gap: 1.5rem;">
+                    <div class="form-group" style="margin:0;"><label class="form-label" style="color: var(--color-gray-300);">Full Name</label><input class="form-input" name="fullName" required/></div>
+                    <div class="form-group" style="margin:0;"><label class="form-label" style="color: var(--color-gray-300);">Email</label><input class="form-input" name="email" type="email"/></div>
+                    <div class="form-group" style="margin:0;"><label class="form-label" style="color: var(--color-gray-300);">Phone Number</label><input class="form-input" name="phone"/></div>
+                    <div class="form-group" style="margin:0;"><label class="form-label" style="color: var(--color-gray-300);">Location / Village</label><input class="form-input" name="location"/></div>
+
+                    <div class="form-group" style="margin:0;">
+                        <label class="form-label" style="color: var(--color-gray-300);">Applicant Category</label>
+                        <select class="form-select" name="applicantCategory" required>
+                            <option value="">Select category...</option>
+                            <option th:each="c : ${categories}" th:value="${c.name()}" th:text="${#strings.replace(c.name(),'_',' ')}">YOUTH</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin:0;">
+                        <label class="form-label" style="color: var(--color-gray-300);">Talent Area</label>
+                        <select class="form-select" name="talentArea" required>
+                            <option value="">Select talent...</option>
+                            <option th:each="a : ${areas}" th:value="${a.name()}" th:text="${#strings.replace(a.name(),'_',' ')}">TRADITIONAL_DANCE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label class="form-label" style="color: var(--color-gray-300);">Experience / Current Skills</label>
+                    <textarea class="form-textarea" name="experienceDescription" rows="4" placeholder="Briefly describe what you know or currently do..."></textarea>
+                </div>
+
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label class="form-label" style="color: var(--color-gray-300);">Motivation</label>
+                    <textarea class="form-textarea" name="motivation" rows="3" placeholder="Why do you want to join?"></textarea>
+                </div>
+
+                <input type="hidden" name="captchaToken" value="skip_for_now" />
+
+                <div style="margin-top: 2.5rem; text-align: right;">
+                    <button class="btn btn--primary" type="submit" style="padding-left: 2rem; padding-right: 2rem;">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+</body>
+</html>

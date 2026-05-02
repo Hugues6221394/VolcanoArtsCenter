@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Admin Login</title>
+</head>
+
+<body>
+<main layout:fragment="content">
+    <section class="section" style="min-height: 100vh; display: flex; align-items: center;">
+        <div class="container" style="max-width: 440px;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="font-size: var(--fs-h2);">Admin Login</h1>
+                <p class="text-muted" style="margin-top: 0.5rem;">Volcano Arts Center Dashboard</p>
+            </div>
+
+            <div th:if="${param.error}" style="background: rgba(198,40,40,0.15); border: 1px solid rgba(198,40,40,0.3); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem; color: #ef9a9a; font-size: 0.9rem; text-align: center;">
+                Invalid email or password. Please try again.
+            </div>
+
+            <div th:if="${param.logout}" style="background: rgba(46,125,50,0.15); border: 1px solid rgba(46,125,50,0.3); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem; color: #a5d6a7; font-size: 0.9rem; text-align: center;">
+                You have been logged out successfully.
+            </div>
+
+            <form th:action="@{/login}" method="post" style="background: var(--gradient-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg); padding: 2rem;">
+                <div class="form-group">
+                    <label class="form-label" for="username">Email</label>
+                    <input class="form-input" type="text" id="username" name="username" placeholder="admin@volcanoartscenter.rw" required autofocus />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-input" type="password" id="password" name="password" placeholder="Enter your password" required />
+                </div>
+
+                <button type="submit" class="btn btn--primary" style="width: 100%; margin-top: 0.5rem;">Sign In</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1.5rem;">
+                <a th:href="@{/}" style="font-size: 0.9rem;">← Back to Website</a>
+            </p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

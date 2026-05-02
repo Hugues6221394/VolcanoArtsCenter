@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Experience Rwanda Through Arts, Culture, and People</title>
+</head>
+
+<body>
+<main layout:fragment="content">
+
+    <!-- ═══════════════════════════════════════
+         HERO SECTION
+         ═══════════════════════════════════════ -->
+    <section class="hero" id="hero">
+        <div class="hero__bg">
+            <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1800&q=80" alt="Volcano landscape in Rwanda" loading="eager" />
+        </div>
+        <div class="hero__overlay"></div>
+        <div class="hero__decor"></div>
+
+        <div class="container">
+            <div class="hero__content">
+                <div class="hero__tagline">Art &amp; Community Based Tourism</div>
+
+                <h1 class="hero__title">
+                    Experience Rwanda Through
+                    <span class="highlight">Arts, Culture,</span>
+                    and People
+                </h1>
+
+                <p class="hero__desc">
+                    Where Art Tells Stories and Communities Bring Them to Life.
+                    Discover authentic cultural experiences, original Rwandan artworks,
+                    and community-powered tourism near Volcanoes National Park.
+                </p>
+
+                <div class="hero__actions">
+                    <a th:href="@{/experiences}" class="btn btn--primary btn--lg">Explore Experiences</a>
+                    <a th:href="@{/art-store}" class="btn btn--outline btn--lg">Visit Art Store</a>
+                    <a th:href="@{/login}" class="btn btn--outline btn--lg">Role Login</a>
+                </div>
+
+                <div class="hero__stats">
+                    <div class="hero__stat">
+                        <div class="hero__stat-value" data-count="14" data-suffix="+">0+</div>
+                        <div class="hero__stat-label">Years of Impact</div>
+                    </div>
+                    <div class="hero__stat">
+                        <div class="hero__stat-value" data-count="5000" data-suffix="+">0+</div>
+                        <div class="hero__stat-label">Artworks &amp; Crafts</div>
+                    </div>
+                    <div class="hero__stat">
+                        <div class="hero__stat-value" data-count="7">0</div>
+                        <div class="hero__stat-label">Departments</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section--elevated" id="musanze-media">
+        <div class="container">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+                <div>
+                    <span class="section-label">Musanze Visual Journey</span>
+                    <h2 class="text-kigali-luxe">Volcanoes, Gorillas, and Living Culture</h2>
+                    <p class="section-subtitle" style="margin-top:.5rem; max-width:760px;">
+                        Explore the energy of Musanze through cinematic imagery and immersive footage inspired by Rwanda’s volcanic landscapes and mountain gorillas.
+                    </p>
+                </div>
+            </div>
+            <div class="media-grid">
+                <article class="media-card media-card--feature animate-on-scroll" data-parallax="0.05">
+                    <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1700&q=80" alt="Volcano chain above Musanze in Rwanda" loading="lazy" />
+                    <div class="media-card__caption">
+                        <h3>Volcanoes National Park Horizon</h3>
+                        <p>Dramatic volcanic peaks framing Northern Rwanda’s iconic landscape.</p>
+                    </div>
+                </article>
+                <article class="media-card animate-on-scroll stagger-1" data-parallax="0.08">
+                    <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1100&q=80" alt="Rwandan cultural attire and community storytelling" loading="lazy" />
+                    <div class="media-card__caption">
+                        <h3>Community and Heritage</h3>
+                        <p>Authentic cultural identity powered by local people.</p>
+                    </div>
+                </article>
+                <article class="media-card animate-on-scroll stagger-2" data-parallax="0.10">
+                    <img src="https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?auto=format&fit=crop&w=1100&q=80" alt="Mountain gorilla close-up in forest habitat" loading="lazy" />
+                    <div class="media-card__caption">
+                        <h3>Mountain Gorilla Presence</h3>
+                        <p>Conservation-driven tourism rooted in respect and protection.</p>
+                    </div>
+                </article>
+                <article class="media-card animate-on-scroll stagger-3" data-parallax="0.06">
+                    <img src="https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?auto=format&fit=crop&w=1100&q=80" alt="Misty highland valleys near volcanoes" loading="lazy" />
+                    <div class="media-card__caption">
+                        <h3>Misty Highlands</h3>
+                        <p>Fresh air, green valleys, and panoramic volcanic ridges.</p>
+                    </div>
+                </article>
+            </div>
+            <div class="video-embed-card animate-on-scroll">
+                <div class="video-embed-card__content">
+                    <span class="section-label">Immersive Video</span>
+                    <h3 class="text-kigali-luxe">Experience Rwanda in Motion</h3>
+                    <p>Watch a curated showcase of Rwanda’s landscapes, wildlife, and culture to feel the destination before arrival.</p>
+                </div>
+                <div class="video-embed-card__frame">
+                    <div class="video-grid">
+                        <div class="video-mini">
+                            <iframe src="https://www.youtube.com/embed/rf2V7yn3gqQ" title="Rwanda volcanoes and nature showcase" loading="lazy" allowfullscreen></iframe>
+                            <span>Volcanoes & Highlands</span>
+                        </div>
+                        <div class="video-mini">
+                            <iframe src="https://www.youtube.com/embed/MQf0k9VxkY4" title="Rwanda gorilla conservation showcase" loading="lazy" allowfullscreen></iframe>
+                            <span>Gorilla Conservation Journey</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="image-strip animate-on-scroll">
+                <img src="https://images.unsplash.com/photo-1508264165352-258db2ebd59b?auto=format&fit=crop&w=1100&q=80" alt="Volcanic mountain trail in Rwanda" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?auto=format&fit=crop&w=1100&q=80" alt="Mountain gorilla in forest" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1567593810070-7a3d471af022?auto=format&fit=crop&w=1100&q=80" alt="Foggy tropical highlands" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1100&q=80" alt="African landscape golden light" loading="lazy" />
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         ABOUT / MISSION SECTION
+         ═══════════════════════════════════════ -->
+    <section class="section section--dark" id="mission">
+        <div class="container">
+            <div class="animate-on-scroll" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+                <div>
+                    <span class="section-label">Our Mission</span>
+                    <h2>Empowering Communities Through Tourism &amp; Creativity</h2>
+                    <p style="color: var(--color-gray-400); margin-top: 1.5rem; line-height: 1.8;">
+                        Volcano Arts Center Inc is a cultural and creative hub located near the iconic
+                        Volcanoes National Park, built on the belief that tourism can be both enriching
+                        for visitors and transformative for local communities.
+                    </p>
+                    <p style="color: var(--color-gray-400); margin-top: 1rem; line-height: 1.8;">
+                        We operate at the intersection of art, culture, and community-based tourism,
+                        creating experiences that are authentic, immersive, and socially impactful.
+                        Our mission is to empower women and youth with sustainable creative skills
+                        through art and tourism.
+                    </p>
+                    <a th:href="@{/about}" class="btn btn--primary" style="margin-top: 2rem;">
+                        Learn Our Story →
+                    </a>
+                </div>
+                <div style="position: relative;">
+                    <div style="aspect-ratio: 4/5; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.06);">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-primary-dark), var(--color-dark)); display: flex; align-items: center; justify-content: center; position: relative;">
+                            <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=900&q=80" alt="Rwandan women in cultural dress" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.38;" loading="lazy" />
+                            <div style="text-align: center; padding: 2rem;">
+                                <div style="font-size: 4rem; margin-bottom: 1rem;">🎨</div>
+                                <p style="font-family: var(--font-display); font-size: 1.5rem; font-style: italic; color: var(--color-primary-light);">
+                                    "Where Art Tells Stories"
+                                </p>
+                                <p style="color: var(--color-gray-400); margin-top: 0.5rem; font-size: 0.9rem;">Since 2012 · Musanze, Rwanda</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         DEPARTMENTS SECTION
+         ═══════════════════════════════════════ -->
+    <section class="section" id="departments">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 3rem;">
+                <span class="section-label" style="justify-content: center;">What We Do</span>
+                <h2>Our Departments</h2>
+                <p class="section-subtitle centered" style="margin-top: 1rem;">
+                    Seven interconnected departments working together to deliver authentic cultural
+                    experiences and empower communities.
+                </p>
+            </div>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                <!-- Arts & Cultural Center -->
+                <div class="dept-card animate-on-scroll stagger-1">
+                    <div class="dept-card__icon">🎭</div>
+                    <h3 class="dept-card__title">Arts &amp; Cultural Center</h3>
+                    <p class="dept-card__text">
+                        The creative heart of our company. Showcasing, curating, and promoting
+                        Rwandan art and culture through exhibitions and cultural experiences.
+                    </p>
+                    <a th:href="@{/art-store}" class="dept-card__link">Explore Gallery →</a>
+                </div>
+
+                <!-- Community-Based Tourism -->
+                <div class="dept-card animate-on-scroll stagger-2">
+                    <div class="dept-card__icon">🌍</div>
+                    <h3 class="dept-card__title">Community-Based Tourism</h3>
+                    <p class="dept-card__text">
+                        Authentic cultural tourism experiences — village walks, biking, traditional
+                        weddings, and cultural tours near Volcanoes National Park.
+                    </p>
+                    <a th:href="@{/experiences}" class="dept-card__link">View Experiences →</a>
+                </div>
+
+                <!-- Conservation -->
+                <div class="dept-card animate-on-scroll stagger-3">
+                    <div class="dept-card__icon">🌱</div>
+                    <h3 class="dept-card__title">Environmental Conservation</h3>
+                    <p class="dept-card__text">
+                        Promoting sustainability through environmental awareness, community engagement,
+                        tree planting, and eco-friendly tourism practices.
+                    </p>
+                    <a th:href="@{/conservation}" class="dept-card__link">Our Initiatives →</a>
+                </div>
+
+                <!-- Talent Development -->
+                <div class="dept-card animate-on-scroll stagger-1">
+                    <div class="dept-card__icon">💃</div>
+                    <h3 class="dept-card__title">Talent Development</h3>
+                    <p class="dept-card__text">
+                        Training and empowering youth, single mothers, persons with disabilities,
+                        and elders through traditional dance and cultural performance.
+                    </p>
+                    <a th:href="@{/talent}" class="dept-card__link">Meet Our Talent →</a>
+                </div>
+
+                <!-- Tour Operations -->
+                <div class="dept-card animate-on-scroll stagger-2">
+                    <div class="dept-card__icon">🧭</div>
+                    <h3 class="dept-card__title">Tour Operations</h3>
+                    <p class="dept-card__text">
+                        Seamless visitor logistics, tour coordination, and experience planning.
+                        Integrating our offerings into broader tourism itineraries.
+                    </p>
+                    <a th:href="@{/experiences}" class="dept-card__link">Plan Your Visit →</a>
+                </div>
+
+                <!-- Partnerships -->
+                <div class="dept-card animate-on-scroll stagger-3">
+                    <div class="dept-card__icon">🤝</div>
+                    <h3 class="dept-card__title">Partnerships &amp; Growth</h3>
+                    <p class="dept-card__text">
+                        Building relationships with tour companies, hotels, NGOs, and cultural
+                        institutions to expand our impact globally.
+                    </p>
+                    <a th:href="@{/contact}" class="dept-card__link">Partner With Us →</a>
+                </div>
+
+                <!-- Artisan Empowerment -->
+                <div class="dept-card animate-on-scroll stagger-1">
+                    <div class="dept-card__icon">✋</div>
+                    <h3 class="dept-card__title">Artisan Empowerment</h3>
+                    <p class="dept-card__text">
+                        Supporting local artisans and craftspeople with training, income opportunities,
+                        and access to markets through fair-trade practices.
+                    </p>
+                    <a th:href="@{/art-store}" class="dept-card__link">Shop Handcrafts →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         IMPACT NUMBERS
+         ═══════════════════════════════════════ -->
+    <section class="section section--elevated" id="impact">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 2rem;">
+                <span class="section-label" style="justify-content: center;">Our Impact</span>
+                <h2>Making a Difference Since 2012</h2>
+            </div>
+            <div class="impact-bar">
+                <div class="impact-item animate-on-scroll stagger-1">
+                    <div class="impact-item__value" data-count="500" data-suffix="+">0+</div>
+                    <div class="impact-item__label">Community Members Empowered</div>
+                </div>
+                <div class="impact-item animate-on-scroll stagger-2">
+                    <div class="impact-item__value" data-count="5000" data-suffix="+">0+</div>
+                    <div class="impact-item__label">Artworks &amp; Crafts</div>
+                </div>
+                <div class="impact-item animate-on-scroll stagger-3">
+                    <div class="impact-item__value" data-count="15">0</div>
+                    <div class="impact-item__label">Cultural Experiences</div>
+                </div>
+                <div class="impact-item animate-on-scroll stagger-4">
+                    <div class="impact-item__value" data-count="14" data-suffix="+">0+</div>
+                    <div class="impact-item__label">Years Serving Rwanda</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         FEATURED EXPERIENCES
+         ═══════════════════════════════════════ -->
+    <section class="section" id="featured-experiences">
+        <div class="container">
+            <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <span class="section-label">Cultural Journeys</span>
+                    <h2>Featured Experiences</h2>
+                    <p class="section-subtitle" style="margin-top: 0.5rem;">
+                        Step into real Rwandan community life through immersive, meaningful encounters.
+                    </p>
+                </div>
+                <a th:href="@{/experiences}" class="btn btn--outline">View All Experiences →</a>
+            </div>
+
+            <div class="grid grid-3">
+                <!-- Experience 1 -->
+                <div class="card animate-on-scroll stagger-1">
+                    <div class="card__image">
+                        <img src="https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=1200&q=80" alt="Traditional dance performance" loading="lazy" />
+                        <span class="card__badge">Cultural</span>
+                    </div>
+                    <div class="card__body">
+                        <span class="card__category">Performance &amp; Dance</span>
+                        <h3 class="card__title"><a th:href="@{/experiences}">Traditional Dance Experience</a></h3>
+                        <p class="card__text">Enjoy authentic traditional dance performances followed by interactive sessions where you learn basic steps and cultural meanings.</p>
+                        <div class="card__meta">
+                            <span style="color: var(--color-gray-500);">⏱ 2-3 hours</span>
+                            <a th:href="@{/experiences}" class="btn btn--ghost btn--sm">Learn More →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience 2 -->
+                <div class="card animate-on-scroll stagger-2">
+                    <div class="card__image">
+                        <img src="https://images.unsplash.com/photo-1576485290814-1c72aa4bbb8e?auto=format&fit=crop&w=1200&q=80" alt="Community village pathway" loading="lazy" />
+                        <span class="card__badge">Village</span>
+                    </div>
+                    <div class="card__body">
+                        <span class="card__category">Community Immersion</span>
+                        <h3 class="card__title"><a th:href="@{/experiences}">Village Walk Experience</a></h3>
+                        <p class="card__text">Guided walks through local villages exploring homes, daily life, and community traditions while interacting with residents.</p>
+                        <div class="card__meta">
+                            <span style="color: var(--color-gray-500);">⏱ 3-4 hours</span>
+                            <a th:href="@{/experiences}" class="btn btn--ghost btn--sm">Learn More →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience 3 -->
+                <div class="card animate-on-scroll stagger-3">
+                    <div class="card__image">
+                        <img src="https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=1200&q=80" alt="African artisan crafts and art" loading="lazy" />
+                        <span class="card__badge">Creative</span>
+                    </div>
+                    <div class="card__body">
+                        <span class="card__category">Art &amp; Craft</span>
+                        <h3 class="card__title"><a th:href="@{/experiences}">Art &amp; Creative Experience</a></h3>
+                        <p class="card__text">Explore local artistic expression including handmade crafts and visual arts. Observe creative processes and learn the stories behind each artwork.</p>
+                        <div class="card__meta">
+                            <span style="color: var(--color-gray-500);">⏱ 2-3 hours</span>
+                            <a th:href="@{/experiences}" class="btn btn--ghost btn--sm">Learn More →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         CTA SECTION
+         ═══════════════════════════════════════ -->
+    <section class="cta-section section--elevated" id="cta">
+        <div class="container animate-on-scroll">
+            <span class="section-label" style="justify-content: center;">Start Your Journey</span>
+            <h2>Ready to Experience<br>Authentic Rwanda?</h2>
+            <p>
+                Whether you're planning a cultural adventure, looking for original Rwandan art,
+                or want to partner with us — we'd love to connect with you.
+            </p>
+            <div class="btn-group">
+                <a th:href="@{/experiences}" class="btn btn--primary btn--lg">Book an Experience</a>
+                <a th:href="@{/contact}" class="btn btn--outline btn--lg">Get In Touch</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

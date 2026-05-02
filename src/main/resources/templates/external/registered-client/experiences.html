@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Experiences</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb"><a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Experiences</span></div>
+            <span class="section-label">Touring</span>
+            <h1>Cultural & Community Experiences</h1>
+            <p class="section-subtitle" style="margin-top: 1rem;">Book standard experiences directly or send inquiry requests for customized programs.</p>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="grid grid-3">
+                <article class="card" th:each="exp : ${experiences}">
+                    <div class="card__image">
+                        <img th:src="${exp.primaryImageUrl != null ? exp.primaryImageUrl : '/images/logo.jpg'}" alt="Experience" onerror="this.onerror=null;this.src='/images/logo.jpg';"/>
+                        <span class="card__badge" th:text="${exp.bookingType}">DIRECT</span>
+                    </div>
+                    <div class="card__body">
+                        <span class="card__category" th:text="${exp.experienceType}">CULTURAL</span>
+                        <h3 class="card__title"><a th:href="@{|/experiences/${exp.slug}|}" th:text="${exp.title}">Experience</a></h3>
+                        <p class="card__text" th:text="${exp.shortDescription}">Description</p>
+                        <div class="card__meta">
+                            <span style="color: var(--color-gray-500);" th:text="${exp.durationHours != null ? exp.durationHours + ' hrs' : 'Flexible duration'}">2.5 hrs</span>
+                            <a class="btn btn--ghost btn--sm" th:href="@{|/experiences/${exp.slug}|}">View →</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

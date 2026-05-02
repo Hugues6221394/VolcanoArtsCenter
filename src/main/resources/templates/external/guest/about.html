@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>About Us</title>
+</head>
+
+<body>
+<main layout:fragment="content">
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb">
+                <a th:href="@{/}">Home</a>
+                <span class="breadcrumb__separator">/</span>
+                <span>About Us</span>
+            </div>
+            <span class="section-label">Who We Are</span>
+            <h1>About Volcano Arts Center</h1>
+            <p class="section-subtitle" style="margin-top: 1rem;">
+                A cultural and creative hub located near Volcanoes National Park, empowering
+                communities through art and tourism since 2012.
+            </p>
+        </div>
+    </section>
+
+    <!-- Our Story -->
+    <section class="section" id="story">
+        <div class="container">
+            <div class="animate-on-scroll" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+                <div>
+                    <span class="section-label">Our Story</span>
+                    <h2>Built on Authentic Connection</h2>
+                    <p style="color: var(--color-gray-400); margin-top: 1.5rem; line-height: 1.8;">
+                        Founded in 2012 in Musanze District, Northern Province, Volcano Arts Center Inc
+                        was born from the conviction that tourism should directly benefit the communities
+                        it touches. We collaborate closely with local artists, performers, guides, and youth,
+                        ensuring that tourism creates real, sustainable impact.
+                    </p>
+                    <p style="color: var(--color-gray-400); margin-top: 1rem; line-height: 1.8;">
+                        Through our arts center and cultural programs, we provide a platform for local
+                        talent to showcase their work, generate income, and preserve cultural heritage
+                        in a meaningful and modern way.
+                    </p>
+                    <p style="color: var(--color-gray-400); margin-top: 1rem; line-height: 1.8;">
+                        Our mission is to <strong style="color: var(--color-white);">empower women and youth with sustainable creative skills</strong> through
+                        art and tourism by creating opportunities that preserve cultural heritage,
+                        support local livelihoods, and foster genuine connections between visitors
+                        and the people they meet.
+                    </p>
+                </div>
+                <div style="position: relative;">
+                    <div style="aspect-ratio: 4/5; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.06);">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--color-primary-dark), var(--color-dark-surface)); display: flex; align-items: center; justify-content: center;">
+                            <div style="text-align: center; padding: 2rem;">
+                                <div style="font-size: 4rem; margin-bottom: 1rem;">🌋</div>
+                                <p style="font-family: var(--font-display); font-size: 1.25rem; font-style: italic; color: var(--color-primary-light);">
+                                    Musanze, Kinigi Road
+                                </p>
+                                <p style="color: var(--color-gray-500); margin-top: 0.5rem; font-size: 0.85rem;">Near Volcanoes National Park</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Departments -->
+    <section class="section section--elevated" id="departments">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 3rem;">
+                <span class="section-label" style="justify-content: center;">Our Structure</span>
+                <h2>7 Departments, One United Mission</h2>
+                <p class="section-subtitle centered" style="margin-top: 1rem;">
+                    Each department plays a critical role in our ecosystem of art, culture, community, and tourism.
+                </p>
+            </div>
+
+            <div style="display: grid; gap: 1.5rem;">
+                <!-- Dept 1 -->
+                <div class="animate-on-scroll" style="display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; padding: 2rem; background: var(--gradient-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg);">
+                    <div class="dept-card__icon" style="margin-bottom: 0;">🎭</div>
+                    <div>
+                        <h3 style="font-size: var(--fs-h4); margin-bottom: 0.5rem;">1. Arts &amp; Cultural Center</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.9rem; line-height: 1.7;">
+                            The creative heart of the company, focusing on showcasing, curating, and promoting Rwandan art and culture.
+                            Supports local artists by providing exhibitions, sales platforms, and cultural experiences including storytelling and visual arts.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dept 2 -->
+                <div class="animate-on-scroll" style="display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; padding: 2rem; background: var(--gradient-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg);">
+                    <div class="dept-card__icon" style="margin-bottom: 0;">🌍</div>
+                    <div>
+                        <h3 style="font-size: var(--fs-h4); margin-bottom: 0.5rem;">2. Community-Based Tourism &amp; Visitor Experiences</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.9rem; line-height: 1.7;">
+                            Designs and delivers authentic cultural tourism experiences — village walking, biking, authentic traditional weddings,
+                            and cultural tours that connect visitors with Rwandan culture around Volcanoes National Park.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dept 3 -->
+                <div class="animate-on-scroll" style="display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; padding: 2rem; background: var(--gradient-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg);">
+                    <div class="dept-card__icon" style="margin-bottom: 0;">🌱</div>
+                    <div>
+                        <h3 style="font-size: var(--fs-h4); margin-bottom: 0.5rem;">3. Environmental Conservation Initiative</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.9rem; line-height: 1.7;">
+                            Focuses on environmental awareness, conservation education, and community engagement. Promotes sustainable tourism
+                            practices and protects nature and biodiversity for future generations.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dept 4 -->
+                <div class="animate-on-scroll" style="display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; padding: 2rem; background: var(--gradient-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg);">
+                    <div class="dept-card__icon" style="margin-bottom: 0;">💃</div>
+                    <div>
+                        <h3 style="font-size: var(--fs-h4); margin-bottom: 0.5rem;">4. Talent Development &amp; Media</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.9rem; line-height: 1.7;">
+                            Trains and supports youth, single mothers, persons with disabilities, and elderly community members through
+                            traditional dance and cultural performance development.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dept 5 -->
+                <div class="animate-on-scroll" style="display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; padding: 2rem; background: var(--gradient-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg);">
+                    <div class="dept-card__icon" style="margin-bottom: 0;">🧭</div>
+                    <div>
+                        <h3 style="font-size: var(--fs-h4); margin-bottom: 0.5rem;">5. Tour Operations &amp; Guest Coordination</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.9rem; line-height: 1.7;">
+                            Manages visitor logistics, tour coordination, and experience planning. Ensures smooth communication
+                            between guests, guides, and community experiences.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dept 6 -->
+                <div class="animate-on-scroll" style="display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; padding: 2rem; background: var(--gradient-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg);">
+                    <div class="dept-card__icon" style="margin-bottom: 0;">🤝</div>
+                    <div>
+                        <h3 style="font-size: var(--fs-h4); margin-bottom: 0.5rem;">6. Partnerships &amp; Business Development</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.9rem; line-height: 1.7;">
+                            Builds relationships with tour companies, hotels, NGOs, cultural institutions, and international partners
+                            to expand reach and strategic growth globally.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dept 7 -->
+                <div class="animate-on-scroll" style="display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; padding: 2rem; background: var(--gradient-card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg);">
+                    <div class="dept-card__icon" style="margin-bottom: 0;">✋</div>
+                    <div>
+                        <h3 style="font-size: var(--fs-h4); margin-bottom: 0.5rem;">7. Artisan &amp; Community Empowerment Program</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.9rem; line-height: 1.7;">
+                            Supports local artisans, craftspeople, and community members with training, income opportunities,
+                            and access to markets through fair-trade practices.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="cta">
+        <div class="container animate-on-scroll">
+            <span class="section-label" style="justify-content: center;">Work With Us</span>
+            <h2>Partner With Volcano Arts Center</h2>
+            <p>
+                Whether you're a tour operator, hotel, NGO, or cultural institution —
+                we're always looking for meaningful partnerships.
+            </p>
+            <div class="btn-group">
+                <a th:href="@{/contact}" class="btn btn--primary btn--lg">Get In Touch</a>
+                <a th:href="@{/experiences}" class="btn btn--outline btn--lg">Explore Experiences</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

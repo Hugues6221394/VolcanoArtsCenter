@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Experience</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb"><a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><a th:href="@{/experiences}">Experiences</a><span class="breadcrumb__separator">/</span><span th:text="${experience.title}">Experience</span></div>
+            <span class="section-label">Experience</span>
+            <h1 th:text="${experience.title}">Experience</h1>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container" style="display:grid; grid-template-columns: 1fr 1fr; gap:2rem;">
+            <div>
+                <img th:src="${experience.primaryImageUrl != null ? experience.primaryImageUrl : '/images/logo.jpg'}" alt="Experience image" style="width:100%; border-radius: var(--radius-lg); border:1px solid rgba(255,255,255,.08)" onerror="this.onerror=null;this.src='/images/logo.jpg';"/>
+                <div th:if="${!#lists.isEmpty(experience.additionalImages)}" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; margin-top: 0.75rem;">
+                    <div th:each="imageUrl : ${experience.additionalImages}" style="border-radius: var(--radius-md); border:1px solid rgba(255,255,255,.08); overflow:hidden; background:rgba(255,255,255,.03); min-height:120px;">
+                        <img th:src="${imageUrl}" alt="Additional experience image" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none';" style="width:100%; height:120px; object-fit:cover; display:block;" />
+                    </div>
+                </div>
+                <p style="margin-top:1rem; color:var(--color-gray-300);" th:text="${experience.description}">Description</p>
+            </div>
+            <div>
+                <p><strong>Experience Type:</strong> <span th:text="${experience.experienceType}">CULTURAL</span></p>
+                <p><strong>Booking Type:</strong> <span th:text="${experience.bookingType}">DIRECT</span></p>
+                <p th:if="${experience.durationHours != null}"><strong>Duration:</strong> <span th:text="${experience.durationHours}">2.0</span> hours</p>
+                <p><strong>Price per person:</strong> $<span th:text="${experience.pricePerPerson != null ? #numbers.formatDecimal(experience.pricePerPerson,1,'COMMA',2,'POINT') : 'On request'}">0.00</span></p>
+                <p th:if="${experience.groupPrice != null}"><strong>Group price:</strong> $<span th:text="${#numbers.formatDecimal(experience.groupPrice,1,'COMMA',2,'POINT')}">0.00</span></p>
+                <p th:if="${experience.priceNote != null}"><strong>Price note:</strong> <span th:text="${experience.priceNote}">Price note</span></p>
+                <p><strong>Group size:</strong> <span th:text="${experience.minGroupSize}">1</span> - <span th:text="${experience.maxGroupSize}">15</span></p>
+                <p th:if="${experience.location != null}"><strong>Location:</strong> <span th:text="${experience.location}">Location</span></p>
+                <p th:if="${experience.meetingPoint != null}"><strong>Meeting point:</strong> <span th:text="${experience.meetingPoint}">Meeting point</span></p>
+                <p><strong>Languages:</strong> <span th:text="${experience.languagesOffered}">English, French</span></p>
+                <p>
+                    <strong>Availability:</strong>
+                    <span th:text="${experience.availableDaily ? 'Available daily' : (experience.availableDays != null ? experience.availableDays : 'Custom schedule')}">Availability</span>
+                </p>
+                <p th:if="${experience.bookingType.name() == 'INQUIRY'}" style="color: var(--color-gray-500);">Request-only or tailored schedule.</p>
+                <div style="margin:.8rem 0 1.1rem;">
+                    <strong>Upcoming Calendar (30 days):</strong>
+                    <div th:if="${#lists.isEmpty(availabilitySlots)}" class="text-muted">No slots currently published.</div>
+                    <ul th:if="${!#lists.isEmpty(availabilitySlots)}" style="margin-top:.5rem; display:grid; gap:.35rem;">
+                        <li th:each="s : ${availabilitySlots}">
+                            <span th:text="${#temporals.format(s.slotDate,'yyyy-MM-dd')}">2026-01-01</span>
+                            - <span th:text="${s.status}">AVAILABLE</span>
+                            (<span th:text="${s.bookedCount}">0</span>/<span th:text="${s.maxCapacity}">15</span>)
+                        </li>
+                    </ul>
+                </div>
+
+                <div th:if="${experience.whatsIncluded != null}" style="margin-bottom:1rem;">
+                    <h3 style="margin-bottom:0.5rem;">What's Included</h3>
+                    <p style="color:var(--color-gray-300);" th:text="${experience.whatsIncluded}">Included details</p>
+                </div>
+
+                <div th:if="${experience.whatToBring != null}" style="margin-bottom:1rem;">
+                    <h3 style="margin-bottom:0.5rem;">What To Bring</h3>
+                    <p style="color:var(--color-gray-300);" th:text="${experience.whatToBring}">Bring list</p>
+                </div>
+
+                <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin: 1rem 0;" th:text="${successMessage}"></div>
+                <div th:if="${errorMessage}" style="background: rgba(183,28,28,0.16); border: 1px solid rgba(229,115,115,0.35); border-radius: var(--radius-md); color: #FFCDD2; padding: 1rem; margin: 1rem 0;" th:text="${errorMessage}"></div>
+
+                <form th:if="${isAuthenticated}" th:action="@{|/experiences/${experience.slug}/book|}" method="post" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-top:1rem;">
+                    <h3 style="margin-bottom:1rem;">Book / Inquire</h3>
+                    <div class="form-group"><label class="form-label">Guest Name</label><input class="form-input" name="guestName" required/></div>
+                    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="guestEmail" required/></div>
+                    <div class="form-group"><label class="form-label">Preferred Date</label><input class="form-input" type="date" name="preferredDate" required/></div>
+                    <div class="form-group"><label class="form-label">Alternative Date</label><input class="form-input" type="date" name="alternativeDate"/></div>
+                    <div class="form-group"><label class="form-label">Group Size</label><input class="form-input" type="number" name="groupSize" min="1" value="1" required/></div>
+                    <div class="form-group"><label class="form-label">Language</label><select class="form-select" name="preferredLanguage"><option>English</option><option>French</option></select></div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <select class="form-select" name="paymentMethod">
+                            <option value="">Confirm Payment Later</option>
+                            <option value="STRIPE_CARD">Card (Stripe)</option>
+                            <option value="MTN_MOMO">MTN Mobile Money</option>
+                            <option value="AIRTEL_MONEY">Airtel Money</option>
+                        </select>
+                        <p class="text-muted" style="margin-top:.4rem;">Recommended for testing: leave this on <strong>Confirm Payment Later</strong> so the booking request is recorded without live payment setup.</p>
+                    </div>
+                    <div class="form-group"><label class="form-label">Special Requests</label><textarea class="form-textarea" name="specialRequests"></textarea></div>
+                    <input class="form-input" name="captchaToken" placeholder="Captcha token" />
+                    <button class="btn btn--primary" type="submit" th:text="${experience.bookingType.name() == 'DIRECT' ? 'Submit Booking' : 'Submit Inquiry'}">Submit</button>
+                </form>
+                <div th:if="${!isAuthenticated}" style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1rem; margin-top:1rem;">
+                    <h3 style="margin-bottom:.5rem;">Booking requires account</h3>
+                    <p class="text-muted" style="margin-bottom:.8rem;">Sign in as a registered client to book or submit a custom inquiry.</p>
+                    <a class="btn btn--primary btn--sm" th:href="@{/login}">Sign in to Continue</a>
+                </div>
+
+                <div style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-lg); padding:1.25rem; margin-top:1rem; background:rgba(255,255,255,.02);">
+                    <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; margin-bottom:1rem;">
+                        <div>
+                            <h3 style="margin-bottom:.35rem;">Verified Review</h3>
+                            <p style="color:var(--color-gray-500); margin:0;">Only completed experiences unlock verified review submission.</p>
+                        </div>
+                        <span class="chip chip--info" th:text="${#lists.size(reviews)} + ' approved'">0 approved</span>
+                    </div>
+
+                    <div th:if="${isAuthenticated and canSubmitReview}" style="margin-bottom:1rem; padding:0.85rem 1rem; border-radius:var(--radius-md); border:1px solid rgba(46,125,50,0.35); background:rgba(46,125,50,0.12); color:#C8E6C9;">
+                        <strong th:text="${reviewerDisplayName}">Reviewer</strong>
+                        <span th:if="${reviewerDisplayEmail != null}" th:text="' · ' + ${reviewerDisplayEmail}">reviewer@example.com</span>
+                        <div style="margin-top:.4rem; color:#A5D6A7;" th:text="${reviewStatusMessage}">Your account is eligible to submit a verified review for this experience.</div>
+                    </div>
+                    <div th:if="${isAuthenticated and !canSubmitReview}" style="margin-bottom:1rem; padding:0.85rem 1rem; border-radius:var(--radius-md); border:1px solid rgba(255,193,7,0.35); background:rgba(255,193,7,0.12); color:#FFE082;" th:text="${reviewStatusMessage}">
+                        Review access unlocks after one of your bookings for this experience is marked completed.
+                    </div>
+
+                    <form th:if="${isAuthenticated and canSubmitReview}" th:action="@{|/experiences/${experience.slug}/reviews|}" method="post">
+                        <div class="form-group">
+                            <label class="form-label">Rating</label>
+                            <select class="form-select" name="rating" required>
+                                <option value="">Choose a rating</option>
+                                <option value="5">5 / 5</option>
+                                <option value="4">4 / 5</option>
+                                <option value="3">3 / 5</option>
+                                <option value="2">2 / 5</option>
+                                <option value="1">1 / 5</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Comment</label>
+                            <textarea class="form-textarea" name="comment" rows="4" required placeholder="Tell future guests what the team delivered well and whether the experience matched the brief."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Captcha Token</label>
+                            <input class="form-input" name="captchaToken" placeholder="Enter captcha token if enabled" />
+                        </div>
+                        <button class="btn btn--outline" type="submit">Submit Verified Review</button>
+                    </form>
+
+                    <p th:if="${!isAuthenticated}" class="text-muted" style="margin:0;">Sign in as a registered client to submit verified reviews for completed experiences.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top:0;">
+        <div class="container">
+            <div style="border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-xl); padding:1.5rem; background:rgba(255,255,255,.02);">
+                <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; margin-bottom:1.25rem;">
+                    <div>
+                        <span class="section-label">Guest Feedback</span>
+                        <h2 style="margin:.35rem 0 0;">Approved Reviews</h2>
+                    </div>
+                    <span class="chip chip--info" th:text="${#lists.size(reviews)} + ' visible'">0 visible</span>
+                </div>
+
+                <div th:if="${#lists.isEmpty(reviews)}" style="padding:1.25rem; border-radius:var(--radius-lg); border:1px dashed rgba(255,255,255,.12); color:var(--color-gray-500);">
+                    No approved reviews are visible for this experience yet.
+                </div>
+
+                <div th:if="${!#lists.isEmpty(reviews)}" style="display:grid; gap:1rem;">
+                    <article th:each="review : ${reviews}" style="padding:1.1rem 1.15rem; border-radius:var(--radius-lg); border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02);">
+                        <div style="display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; margin-bottom:.6rem;">
+                            <div>
+                                <h3 style="margin:0;" th:text="${review.reviewerName}">Reviewer</h3>
+                                <p style="margin:.25rem 0 0; color:var(--color-gray-500);" th:text="${review.reviewerCountry != null ? review.reviewerCountry : 'Verified guest'}">Verified guest</p>
+                            </div>
+                            <div style="text-align:right;">
+                                <div class="chip chip--success" th:text="${review.rating} + ' / 5'">5 / 5</div>
+                                <p style="margin:.45rem 0 0; color:var(--color-gray-500);" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">2026-04-30</p>
+                            </div>
+                        </div>
+                        <p style="margin:0; color:var(--color-gray-300);" th:text="${review.comment}">Review comment</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Blog</title></head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header">
+        <div class="page-header__decor"></div>
+        <div class="container">
+            <div class="breadcrumb"><a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Blog</span></div>
+            <span class="section-label">Stories & Updates</span>
+            <h1>Blog & News</h1>
+            <p class="section-subtitle" style="margin-top:1rem;">Stories, events, impact highlights, and cultural insights from Volcano Arts Center.</p>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="grid grid-3">
+                <article class="card" th:each="post : ${posts}">
+                    <div class="card__image"><img th:src="${post.featuredImageUrl != null ? post.featuredImageUrl : '/images/logo.jpg'}" alt="Post image"/></div>
+                    <div class="card__body">
+                        <span class="card__category" th:text="${post.category}">UPDATE</span>
+                        <h3 class="card__title"><a th:href="@{|/blog/${post.slug}|}" th:text="${post.title}">Post</a></h3>
+                        <p class="card__text" th:text="${post.excerpt}">Excerpt</p>
+                        <a class="btn btn--ghost btn--sm" th:href="@{|/blog/${post.slug}|}">Read →</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

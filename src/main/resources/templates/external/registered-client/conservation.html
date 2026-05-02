@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Conservation</title>
+    <style>
+        .impact-prog {
+            background: rgba(255,255,255,0.1);
+            height: 6px;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        .impact-prog__fill {
+            background: var(--color-primary);
+            height: 100%;
+        }
+        .donation-form-shell {
+            background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+            border: 1px solid var(--color-border);
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+        .donation-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .65rem;
+            margin-bottom: 1rem;
+        }
+        .donation-chip-grid button {
+            border: 1px solid var(--color-border);
+            background: rgba(255,255,255,.03);
+            color: var(--color-text);
+            border-radius: 16px;
+            padding: .8rem .9rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .donation-note {
+            padding: .95rem 1rem;
+            border-radius: 18px;
+            background: rgba(255,255,255,.03);
+            color: var(--color-gray-400);
+            font-size: .92rem;
+            line-height: 1.55;
+        }
+    </style>
+</head>
+<body>
+<main layout:fragment="content">
+    <section class="page-header" style="padding-top: 6rem; padding-bottom: 4rem;">
+        <div class="page-header__decor"></div>
+        <div class="container" style="text-align: center; max-width: 840px;">
+            <div class="breadcrumb" style="justify-content: center;">
+                <a th:href="@{/}">Home</a><span class="breadcrumb__separator">/</span><span>Conservation</span>
+            </div>
+            <span class="section-label">Environmental Action</span>
+            <h1 style="font-size: 3.35rem; line-height: 1.08; margin-bottom: 1.5rem;">Protecting Our <span style="color: var(--color-primary);">Natural Heritage</span></h1>
+            <p class="section-subtitle" style="margin: 0 auto; font-size: 1.2rem;">
+                Volcano Arts Center links tourism, community livelihoods, and environmental preservation around Volcanoes National Park. This page turns that mission into a working contribution flow.
+            </p>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="grid grid-3" style="gap: 2rem;">
+                <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden;">
+                    <div style="height: 160px; background: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop&q=60') center/cover;"></div>
+                    <div style="padding: 1.5rem;">
+                        <h3 style="margin-bottom: 0.5rem; font-family: var(--font-heading);">Reforestation Drive</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.95rem; line-height: 1.6;">Restoring habitats with indigenous tree planting and buffer-zone stewardship.</p>
+                        <div class="impact-prog"><div class="impact-prog__fill" style="width: 85%;"></div></div>
+                        <p style="font-size: 0.8rem; color: var(--color-gray-500); margin-top: 0.5rem;">85,000 / 100,000 Trees Planted</p>
+                    </div>
+                </div>
+
+                <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden;">
+                    <div style="height: 160px; background: url('https://images.unsplash.com/photo-1601552554625-f04bfdf22fcd?w=800&auto=format&fit=crop&q=60') center/cover;"></div>
+                    <div style="padding: 1.5rem;">
+                        <h3 style="margin-bottom: 0.5rem; font-family: var(--font-heading);">Community Education</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.95rem; line-height: 1.6;">Training youth, guides, and local partners in long-term conservation practice.</p>
+                        <div class="impact-prog"><div class="impact-prog__fill" style="width: 60%;"></div></div>
+                        <p style="font-size: 0.8rem; color: var(--color-gray-500); margin-top: 0.5rem;">12 / 20 Communities Reached</p>
+                    </div>
+                </div>
+
+                <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden;">
+                    <div style="height: 160px; background: url('https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=800&auto=format&fit=crop&q=60') center/cover;"></div>
+                    <div style="padding: 1.5rem;">
+                        <h3 style="margin-bottom: 0.5rem; font-family: var(--font-heading);">Sustainable Art Practice</h3>
+                        <p style="color: var(--color-gray-400); font-size: 0.95rem; line-height: 1.6;">Supporting low-waste making, recycled material use, and responsible sourcing.</p>
+                        <div class="impact-prog"><div class="impact-prog__fill" style="width: 100%;"></div></div>
+                        <p style="font-size: 0.8rem; color: var(--color-gray-500); margin-top: 0.5rem;">Core Practice Adopted</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: rgba(0,0,0,0.2); border-top: 1px solid var(--color-border); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -50%; left: -20%; width: 600px; height: 600px; background: var(--color-primary); opacity: 0.05; filter: blur(100px); border-radius: 50%;"></div>
+
+        <div class="container" style="position: relative; z-index: 1;">
+            <div th:if="${successMessage}" style="background: rgba(46,125,50,0.1); border: 1px solid rgba(46,125,50,0.3); border-radius: var(--radius-md); color: #81c784; padding: 1.5rem; margin-bottom: 2rem; text-align: center; font-weight: 500;" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" style="background: rgba(183,28,28,0.12); border: 1px solid rgba(229,115,115,0.3); border-radius: var(--radius-md); color: #ffcdd2; padding: 1.5rem; margin-bottom: 2rem; text-align: center; font-weight: 500;" th:text="${errorMessage}"></div>
+
+            <div style="display: grid; grid-template-columns: 1.08fr 460px; gap: 3.5rem; align-items: start;">
+                <div>
+                    <h2 style="font-size: 2.4rem; line-height: 1.2; margin-bottom: 1.25rem; font-family: var(--font-heading);">Invest in the Future of Rwanda's Ecosystem</h2>
+                    <p style="color: var(--color-gray-300); font-size: 1.08rem; line-height: 1.7; margin-bottom: 2rem;">
+                        This flow now records real donation requests, connects them to your profile when signed in, and supports either a safe pay-later test path or configured payment providers.
+                    </p>
+
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; color: var(--color-gray-300); margin-bottom: 1.8rem;">
+                        <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <span style="color: var(--color-primary); font-size: 1.2rem;">✓</span>
+                            <span><strong>Direct impact:</strong> contributions are logged against purpose, amount, and optional campaign.</span>
+                        </li>
+                        <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <span style="color: var(--color-primary); font-size: 1.2rem;">✓</span>
+                            <span><strong>Operational visibility:</strong> donations appear in the donor dashboard and admin donation board.</span>
+                        </li>
+                        <li style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <span style="color: var(--color-primary); font-size: 1.2rem;">✓</span>
+                            <span><strong>Testing-safe:</strong> you can choose <em>Confirm Payment Later</em> to avoid depending on live payment setup.</span>
+                        </li>
+                    </ul>
+
+                    <div class="donation-note">
+                        Recommended for testing: use a real name and email, choose a purpose, and leave payment on <strong>Confirm Payment Later</strong>. That records the donation request without requiring Stripe or mobile money credentials.
+                    </div>
+                </div>
+
+                <div class="donation-form-shell">
+                    <h3 style="font-family: var(--font-heading); margin-bottom: 0.45rem;">Make a Contribution</h3>
+                    <p style="color: var(--color-gray-500); font-size: 0.95rem; margin-bottom: 1.5rem;">Choose an amount, select where it should help most, and submit a real donation record.</p>
+
+                    <form th:action="@{/conservation/donate}" method="post">
+                        <div class="donation-chip-grid">
+                            <button type="button" onclick="document.getElementById('amt').value='25'">$25</button>
+                            <button type="button" onclick="document.getElementById('amt').value='50'">$50</button>
+                            <button type="button" onclick="document.getElementById('amt').value='100'">$100</button>
+                            <button type="button" onclick="document.getElementById('amt').value='250'">$250</button>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Donor Name</label>
+                            <input class="form-input" name="donorName" required placeholder="Full name"/>
+                        </div>
+
+                        <div class="grid grid-2" style="gap: 1rem;">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label">Donor Email</label>
+                                <input class="form-input" type="email" name="donorEmail" required placeholder="name@example.com"/>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label">Country</label>
+                                <input class="form-input" name="donorCountry" placeholder="Rwanda"/>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-2" style="gap: 1rem;">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label">Amount</label>
+                                <input class="form-input" id="amt" name="amount" type="number" min="1" step="0.01" value="50" required placeholder="Enter amount"/>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label">Currency</label>
+                                <select class="form-select" name="currency">
+                                    <option value="USD">USD</option>
+                                    <option value="RWF">RWF</option>
+                                    <option value="EUR">EUR</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Fund Allocation</label>
+                            <select class="form-select" name="purpose" required>
+                                <option th:each="purpose : ${donationPurposes}" th:value="${purpose.name()}" th:text="${#strings.capitalizeWords(#strings.toLowerCase(#strings.replace(purpose.name(), '_', ' ')))}">General</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Campaign</label>
+                            <select class="form-select" name="campaignId">
+                                <option value="">General fund</option>
+                                <option th:each="campaign : ${campaigns}" th:value="${campaign.id}" th:text="${campaign.name}">Campaign</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-2" style="gap: 1rem;">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label">Payment Method</label>
+                                <select class="form-select" name="paymentMethod">
+                                    <option value="">Confirm Payment Later</option>
+                                    <option value="STRIPE_CARD">Card (Stripe)</option>
+                                    <option value="MTN_MOMO">MTN Mobile Money</option>
+                                    <option value="AIRTEL_MONEY">Airtel Money</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label class="form-label">Recurring Frequency</label>
+                                <select class="form-select" name="recurringFrequency">
+                                    <option value="">One-time donation</option>
+                                    <option th:each="frequency : ${recurringFrequencies}" th:value="${frequency.name()}" th:text="${#strings.capitalizeWords(#strings.toLowerCase(frequency.name()))}">Monthly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-textarea" name="message" rows="3" placeholder="Leave a note of encouragement or intent..."></textarea>
+                        </div>
+
+                        <label style="display: flex; align-items: center; gap: 0.6rem; font-size: 0.95rem; color: var(--color-gray-300); cursor: pointer; margin-bottom: 1rem;">
+                            <input type="checkbox" name="isRecurring" value="true" />
+                            Make this a recurring donation
+                        </label>
+
+                        <div class="form-group" style="margin-bottom: 1.4rem;">
+                            <label class="form-label">Captcha Token</label>
+                            <input class="form-input" name="captchaToken" placeholder="Enter captcha token if enabled"/>
+                        </div>
+
+                        <button type="submit" class="btn btn--primary" style="width: 100%;">Submit Donation</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

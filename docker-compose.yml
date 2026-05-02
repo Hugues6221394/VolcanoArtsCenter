@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: volcano-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: volcano_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: trigga
+    ports:
+      - "5432:5432"
+    volumes:
+      - volcano_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d volcano_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  volcano_pgdata:
+    driver: local

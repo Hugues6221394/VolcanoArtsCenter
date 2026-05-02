@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- SEO -->
+    <title layout:title-pattern="$CONTENT_TITLE — Volcano Arts Center">Volcano Arts Center</title>
+    <meta name="description" th:content="${metaDescription != null ? metaDescription : 'Experience Rwanda through Arts, Culture, and People. Volcano Arts Center Inc — your gateway to authentic community-based tourism near Volcanoes National Park.'}" />
+    <meta name="author" content="Volcano Arts Center Inc" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Volcano Arts Center" />
+    <meta property="og:title" th:content="${pageTitle != null ? pageTitle : 'Volcano Arts Center — Art & Community Based Tourism'}" />
+    <meta property="og:description" th:content="${metaDescription != null ? metaDescription : 'Experience Rwanda through Arts, Culture, and People.'}" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <script>
+        (function () {
+            try {
+                var savedTheme = localStorage.getItem('vac-theme');
+                if (savedTheme === 'light' || savedTheme === 'dark') {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                }
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+
+    <!-- Page-specific styles -->
+    <th:block layout:fragment="styles"></th:block>
+</head>
+<body>
+
+    <!-- ── Navigation ── -->
+    <nav class="nav" id="main-nav">
+        <div class="nav__inner">
+            <a href="/" class="nav__logo" th:href="@{/}">
+                <img th:src="@{/images/logo.jpg}" src="/images/logo.jpg" alt="Volcano Arts Center logo" class="nav__logo-image" />
+                <div class="nav__logo-text">
+                    <span>Volcano Arts Center</span>
+                    <span>Art &amp; Community Tourism</span>
+                </div>
+            </a>
+
+            <ul class="nav__links" id="nav-links">
+                <li th:if="${!navContext.authenticated or navContext.registeredClient}"><a th:href="@{/}" th:classappend="${#strings.equals(currentPage, 'home')} ? 'active'">Home</a></li>
+                <li th:if="${!navContext.authenticated or navContext.registeredClient}"><a th:href="@{/about}" th:classappend="${#strings.equals(currentPage, 'about')} ? 'active'">About</a></li>
+                <li th:if="${!navContext.authenticated or navContext.registeredClient}"><a th:href="@{/art-store}" th:classappend="${#strings.equals(currentPage, 'art-store')} ? 'active'">Art Store</a></li>
+                <li th:if="${!navContext.authenticated or navContext.registeredClient}"><a th:href="@{/experiences}" th:classappend="${#strings.equals(currentPage, 'experiences')} ? 'active'">Experiences</a></li>
+                <li th:if="${!navContext.authenticated or navContext.registeredClient}"><a th:href="@{/conservation}" th:classappend="${#strings.equals(currentPage, 'conservation')} ? 'active'">Conservation</a></li>
+                <li th:if="${!navContext.authenticated or navContext.registeredClient or navContext.talentApplicant}"><a th:href="@{/talent}" th:classappend="${#strings.equals(currentPage, 'talent')} ? 'active'">Talent</a></li>
+                <li th:if="${!navContext.authenticated or navContext.registeredClient}"><a th:href="@{/blog}" th:classappend="${#strings.equals(currentPage, 'blog')} ? 'active'">Blog</a></li>
+                <li th:if="${!navContext.authenticated or navContext.registeredClient or navContext.tourOperator}"><a th:href="@{/contact}" th:classappend="${#strings.equals(currentPage, 'contact')} ? 'active'">Contact</a></li>
+
+                <li th:if="${navContext.superAdmin}"><a th:href="@{/admin/dashboard}">Admin Home</a></li>
+                <li th:if="${navContext.superAdmin}"><a th:href="@{/admin/content/products}">Content</a></li>
+                <li th:if="${navContext.superAdmin}"><a th:href="@{/admin/ops/bookings}">Operations</a></li>
+
+                <li th:if="${navContext.contentManager}"><a th:href="@{/admin/content/products}">Catalog</a></li>
+                <li th:if="${navContext.contentManager}"><a th:href="@{/admin/content/blog-posts}">Blog</a></li>
+                <li th:if="${navContext.contentManager}"><a th:href="@{/admin/content/media-library}">Media</a></li>
+
+                <li th:if="${navContext.opsManager}"><a th:href="@{/admin/ops/bookings}">Bookings</a></li>
+                <li th:if="${navContext.opsManager}"><a th:href="@{/admin/ops/shipping-orders}">Orders</a></li>
+                <li th:if="${navContext.opsManager}"><a th:href="@{/admin/ops/availability-slots}">Availability</a></li>
+
+                <li th:if="${navContext.tourOperator}"><a th:href="@{/tour-operators/portal}">Operator Portal</a></li>
+                <li th:if="${navContext.talentApplicant}"><a th:href="@{/talent/dashboard}">My Dashboard</a></li>
+                <li th:if="${navContext.registeredClient}"><a th:href="@{/cart}" th:classappend="${#strings.equals(currentPage, 'cart')} ? 'active'">Cart</a></li>
+            </ul>
+
+            <div class="nav__cta">
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme">
+                    <span class="theme-toggle__icon" id="theme-toggle-icon">🌙</span>
+                    <span class="theme-toggle__label" id="theme-toggle-label">Dark</span>
+                </button>
+                <a th:if="${!navContext.authenticated}" th:href="@{/experiences}" class="btn btn--primary btn--sm">Book Experience</a>
+                <a th:if="${!navContext.authenticated}" th:href="@{/login}" class="btn btn--outline btn--sm" style="margin-left:.5rem;">Login</a>
+                <div th:if="${navContext.registeredClient}" class="nav__client-utility">
+                    <a th:href="@{/client/dashboard}" class="nav__client-pill nav__client-pill--strong" th:classappend="${#strings.equals(currentPage, 'client-dashboard')} ? ' nav__client-pill--active'">Client Home</a>
+                    <a th:href="@{/cart}" class="nav__client-pill" th:classappend="${#strings.equals(currentPage, 'cart')} ? ' nav__client-pill--active'">Cart</a>
+                    <form th:action="@{/logout}" method="post" style="display:inline-block;">
+                        <button type="submit" class="nav__client-pill nav__client-pill--button">Logout</button>
+                    </form>
+                </div>
+                <a th:if="${navContext.authenticated and !navContext.registeredClient}" th:href="${navContext.dashboardUrl}" class="btn btn--primary btn--sm" th:text="${navContext.roleLabel + ' Home'}">Dashboard</a>
+                <form th:if="${navContext.authenticated and !navContext.registeredClient}" th:action="@{/logout}" method="post" style="display:inline-block;">
+                    <button type="submit" class="btn btn--outline btn--sm" style="margin-left:.5rem;">Logout</button>
+                </form>
+            </div>
+
+            <button class="nav__toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ── Main Content ── -->
+    <main layout:fragment="content">
+        <!-- Page content injected here -->
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="footer" id="site-footer">
+        <div class="container">
+            <div class="footer__grid">
+                <!-- Brand column -->
+                <div class="footer__brand">
+                    <a href="/" class="nav__logo" th:href="@{/}">
+                        <img th:src="@{/images/logo.jpg}" src="/images/logo.jpg" alt="Volcano Arts Center logo" class="nav__logo-image" />
+                        <div class="nav__logo-text">
+                            <span>Volcano Arts Center</span>
+                            <span>Art &amp; Community Tourism</span>
+                        </div>
+                    </a>
+                    <p>Where Art Tells Stories and Communities Bring Them to Life. Experience Rwanda through arts, culture, and people near Volcanoes National Park.</p>
+                    <div class="footer__social">
+                        <a href="#" aria-label="Facebook">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                        </a>
+                        <a href="#" aria-label="WhatsApp">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="footer__heading">Explore</h4>
+                    <ul class="footer__links">
+                        <li><a th:href="@{/art-store}">Art Store</a></li>
+                        <li><a th:href="@{/experiences}">Experiences</a></li>
+                        <li><a th:href="@{/conservation}">Conservation</a></li>
+                        <li><a th:href="@{/talent}">Talent Program</a></li>
+                        <li><a th:href="@{/blog}">Stories &amp; News</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="footer__heading">Company</h4>
+                    <ul class="footer__links">
+                        <li><a th:href="@{/about}">About Us</a></li>
+                        <li><a th:href="@{/about#departments}">Departments</a></li>
+                        <li><a th:href="@{/contact}">Contact</a></li>
+                        <li><a th:href="@{/about#partners}">Partnerships</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="footer__heading">Get In Touch</h4>
+                    <ul class="footer__links">
+                        <li>Musanze, Kinigi Road</li>
+                        <li>Near Volcanoes National Park</li>
+                        <li>Northern Province, Rwanda</li>
+                        <li style="margin-top: 0.5rem;"><a href="mailto:info@volcanoartsandhospes.com">info@volcanoartsandhospes.com</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer__bottom">
+                <span>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span> Volcano Arts Center Inc. All rights reserved.</span>
+                <span>Designed &amp; Built by <a href="https://www.codafriqa.rw" target="_blank" rel="noopener">CODAFRIQA</a></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script th:src="@{/js/main.js}"></script>
+    <th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

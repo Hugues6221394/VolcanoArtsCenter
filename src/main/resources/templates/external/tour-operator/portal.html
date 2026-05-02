@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head><title>Tour Operator Portal</title></head>
+<body>
+<main layout:fragment="content" style="background-color: var(--color-background-alt); padding: 3rem 0; min-height: 80vh;">
+    <div class="container" style="max-width: 1200px;">
+        
+        <!-- Page Header -->
+        <div class="admin-page-header" style="background:transparent; padding:0; margin-bottom:2rem; border-bottom:none;">
+            <div class="admin-page-header__info">
+                <h1>Operator Workspace</h1>
+                <p>Welcome, partner. Submit requests, track statuses, and access pricing/itineraries.</p>
+            </div>
+            <div class="admin-page-header__actions">
+                <a class="btn btn--outline btn--sm" th:href="@{/experiences}">View Experiences</a>
+                <a class="btn btn--primary btn--sm" href="#new-request">New Request</a>
+            </div>
+        </div>
+
+        <div th:if="${successMessage}" style="background: rgba(46,125,50,0.16); border: 1px solid rgba(46,125,50,0.35); border-radius: var(--radius-md); color: #A5D6A7; padding: 1rem; margin-bottom: 2rem;" th:text="${successMessage}"></div>
+
+        <!-- KPI Strip -->
+        <div class="admin-kpi-grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 2rem;">
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Requests</div><div class="admin-kpi__value" th:text="${stats.total}">0</div></a>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Submitted</div><div class="admin-kpi__value" th:text="${stats.submitted}">0</div></a>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Under Review</div><div class="admin-kpi__value" th:text="${stats.underReview}">0</div></a>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Invoice Pending</div><div class="admin-kpi__value" th:text="${stats.invoicePending}">0</div></a>
+            <a class="admin-kpi" href="#my-requests"><div class="admin-kpi__label">Confirmed</div><div class="admin-kpi__value" th:text="${stats.confirmed}">0</div></a>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="admin-grid-2" style="grid-template-columns: 1.1fr 0.9fr;">
+            <!-- Submit Request Column -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <div class="admin-card" id="new-request">
+                    <div class="admin-card__header"><h3>Submit New B2B Request</h3></div>
+                    <div class="admin-card__body">
+                        <form method="post" th:action="@{/tour-operators/portal/requests}" class="modal-form">
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Company</label><input class="form-input" name="companyName" required/></div>
+                                <div class="form-group"><label class="form-label">Contact Name</label><input class="form-input" name="contactName" required/></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Phone</label><input class="form-input" name="contactPhone"/></div>
+                                <div class="form-group"><label class="form-label">Country</label><input class="form-input" name="country"/></div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Request Type</label>
+                                    <select class="form-select" name="requestType" required>
+                                        <option th:each="t : ${T(com.volcanoartscenter.platform.shared.model.TourOperatorRequest.RequestType).values()}" th:value="${t}" th:text="${t}">MICE</option>
+                                    </select>
+                                </div>
+                                <div class="form-group"><label class="form-label">Experience</label>
+                                    <select class="form-select" name="requestedExperienceSlug">
+                                        <option value="">Any / to be discussed</option>
+                                        <option th:each="e : ${experiences}" th:value="${e.slug}" th:text="${e.title}">Exp</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label class="form-label">Group Size</label><input class="form-input" name="estimatedGroupSize" type="number" min="1" value="1"/></div>
+                                <div class="form-group"><label class="form-label">Est. Date</label><input class="form-input" name="estimatedDate" type="date"/></div>
+                                <div class="form-group"><label class="form-label">Comm Channel</label>
+                                    <select class="form-select" name="preferredContactChannel">
+                                        <option value="EMAIL">Email</option>
+                                        <option value="WHATSAPP">WhatsApp</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row--full" style="margin-bottom:0.5rem;">
+                                <label style="display:flex; align-items:center; gap:0.5rem;"><input type="checkbox" name="invoiceRequired" value="true" checked /> Invoice required</label>
+                            </div>
+                            <div class="form-row--full">
+                                <div class="form-group"><label class="form-label">Details</label><textarea class="form-input" name="requestDetails" rows="3" placeholder="Program objective, special requirements..." required></textarea></div>
+                            </div>
+                            <div class="form-actions" style="margin-top:0.5rem;"><button class="btn btn--primary" type="submit" style="width:100%;">Submit Request</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights Column -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                <div class="admin-card" th:if="${latestConfirmed != null}">
+                    <div class="admin-card__header"><h3>Latest Confirmed</h3></div>
+                    <div class="admin-card__body">
+                        <p style="margin-bottom:0.5rem;"><strong th:text="'#' + ${latestConfirmed.id}">#1</strong> — <span th:text="${latestConfirmed.companyName}">Company</span></p>
+                        <p class="text-muted" style="margin-bottom:1rem;" th:text="${latestConfirmed.partnerPrice != null ? 'Partner price: ' + latestConfirmed.partnerPrice + ' ' + latestConfirmed.partnerPriceCurrency : 'Partner price pending'}"></p>
+                        <a th:if="${latestConfirmed.itineraryAssetUrl != null && !#strings.isEmpty(latestConfirmed.itineraryAssetUrl)}" class="btn btn--outline btn--sm" th:href="${latestConfirmed.itineraryAssetUrl}" target="_blank" rel="noopener">Download Itinerary</a>
+                    </div>
+                </div>
+                
+                <div class="admin-card">
+                    <div class="admin-card__header"><h3>Catalog Snapshot</h3></div>
+                    <div class="admin-card__body">
+                        <ul class="list-rows">
+                            <li class="list-row">
+                                <div><div class="list-row__title">Experiences</div><div class="list-row__meta">Available offerings</div></div>
+                                <strong th:text="${#lists.size(experiences)}">0</strong>
+                            </li>
+                            <li class="list-row">
+                                <div><div class="list-row__title">Artworks</div><div class="list-row__meta">Catalog products</div></div>
+                                <strong th:text="${#lists.size(catalogProducts)}">0</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests Table -->
+        <div class="admin-card" id="my-requests" style="margin-top:2rem;">
+            <div class="admin-card__header"><h3>My Requests</h3></div>
+            <div class="admin-card__body--flush">
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead><tr><th>ID/Type</th><th>Experience</th><th>Status / Notes</th><th>Partner Price</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr th:each="r : ${requests}">
+                                <td><div class="cell-primary" th:text="'#' + ${r.id}">#1</div><div style="font-size:0.75rem; color:var(--color-gray-500);" th:text="${r.requestType}">TYPE</div></td>
+                                <td>
+                                    <div th:text="${r.requestedExperienceSlug != null && !#strings.isEmpty(r.requestedExperienceSlug) ? r.requestedExperienceSlug : 'Custom Request'}">Exp</div>
+                                    <div style="font-size:0.75rem; color:var(--color-gray-500); margin-top:0.25rem;"><span th:text="${r.estimatedGroupSize}">0</span> pax <span th:if="${r.estimatedDate != null}">• <span th:text="${r.estimatedDate}">Date</span></span></div>
+                                </td>
+                                <td>
+                                    <span class="chip" th:data-status="${r.status}" th:text="${r.status}">STATUS</span>
+                                    <div th:if="${r.adminNotes != null && !#strings.isEmpty(r.adminNotes)}" style="font-size:0.8rem; margin-top:0.5rem; color:var(--text-color); max-width:250px; overflow:hidden; text-overflow:ellipsis;" th:text="${'Op Notes: ' + r.adminNotes}">Notes</div>
+                                </td>
+                                <td>
+                                    <span th:text="${r.partnerPrice != null ? r.partnerPrice + ' ' + r.partnerPriceCurrency : '-'}">-</span>
+                                    <div th:if="${r.itineraryAssetUrl != null && !#strings.isEmpty(r.itineraryAssetUrl)}" style="margin-top:0.25rem;">
+                                        <a th:href="${r.itineraryAssetUrl}" target="_blank" rel="noopener" style="font-size:0.8rem; text-decoration:underline;">Itinerary ↓</a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div th:if="${r.status != T(com.volcanoartscenter.platform.shared.model.TourOperatorRequest.RequestStatus).CONFIRMED and r.status != T(com.volcanoartscenter.platform.shared.model.TourOperatorRequest.RequestStatus).DECLINED}" style="display:flex; gap:0.35rem; align-items:center;">
+                                        <button class="btn btn--outline btn--xs" th:onclick="'document.getElementById(\'edit-req-' + ${r.id} + '\').style.display=document.getElementById(\'edit-req-' + ${r.id} + '\').style.display===\'none\'?\'block\' : \'none\''">Edit</button>
+                                        <form th:action="@{|/tour-operators/portal/requests/${r.id}/cancel|}" method="post">
+                                            <button class="btn btn--ghost btn--xs" type="submit" onclick="return confirm('Cancel request?')">Cancel</button>
+                                        </form>
+                                    </div>
+                                    <span th:if="${r.status == T(com.volcanoartscenter.platform.shared.model.TourOperatorRequest.RequestStatus).CONFIRMED or r.status == T(com.volcanoartscenter.platform.shared.model.TourOperatorRequest.RequestStatus).DECLINED}" style="font-size:0.8rem; color:var(--color-gray-500);">Finalized</span>
+                                    
+                                    <!-- Inline Edit Form (Hidden) -->
+                                    <div th:id="'edit-req-' + ${r.id}" style="display:none; margin-top:0.5rem; padding:0.75rem; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.08);">
+                                        <form th:action="@{|/tour-operators/portal/requests/${r.id}/update|}" method="post" style="display:grid; gap:0.5rem;">
+                                            <div style="display:flex; gap:0.5rem;">
+                                                <input class="form-input" type="number" min="1" name="estimatedGroupSize" th:value="${r.estimatedGroupSize}" placeholder="Group size" style="padding:0.4rem;"/>
+                                                <input class="form-input" type="date" name="estimatedDate" th:value="${r.estimatedDate}" style="padding:0.4rem;"/>
+                                            </div>
+                                            <div style="display:flex; gap:0.5rem;">
+                                                <input class="form-input" name="preferredContactChannel" th:value="${r.preferredContactChannel}" placeholder="Channel" style="padding:0.4rem;"/>
+                                                <input class="form-input" name="requestDetails" th:value="${r.requestDetails}" placeholder="Needs" style="padding:0.4rem; flex:1;"/>
+                                            </div>
+                                            <button class="btn btn--primary btn--xs" type="submit" style="justify-self:start;">Save Changes</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(requests)}"><td colspan="5" style="text-align:center; padding:2rem; color:var(--color-gray-500);">No requests submitted yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</main>
+</body>
+</html>
